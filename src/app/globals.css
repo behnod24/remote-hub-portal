@@ -1,0 +1,48 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --font-sans: "Inter", system-ui;
+    --font-display: "Outfit", system-ui;
+    
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --primary: 0 100% 54%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 0 100% 95%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+  }
+}
+
+@layer base {
+  body {
+    @apply bg-background text-text antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display;
+  }
+}
+
+@layer components {
+  .nav-link {
+    @apply relative px-3 py-2 text-text-secondary hover:text-text transition-colors;
+  }
+
+  .nav-link::after {
+    @apply content-[''] absolute left-0 bottom-0 w-full h-0.5 bg-primary scale-x-0 transition-transform duration-300 origin-bottom-right;
+  }
+
+  .nav-link:hover::after {
+    @apply scale-x-100 origin-bottom-left;
+  }
+
+  .glass-card {
+    @apply backdrop-blur-md bg-white/80 rounded-2xl shadow-lg border border-white/20;
+  }
+}
