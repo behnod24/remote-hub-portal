@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { 
@@ -64,10 +63,23 @@ export default function Dashboard() {
           .from('user_profiles')
           .select('avatar_url')
           .eq('user_id', user.id)
-          .single()
+          .maybeSingle()
 
         if (data) {
           setUserProfile(data)
+        } else {
+          // If no profile exists, create one
+          const { data: newProfile, error: createError } = await supabase
+            .from('user_profiles')
+            .insert([
+              { user_id: user.id }
+            ])
+            .select('avatar_url')
+            .maybeSingle()
+
+          if (newProfile) {
+            setUserProfile(newProfile)
+          }
         }
       }
     }
