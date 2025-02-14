@@ -1,20 +1,15 @@
 
 import { useState } from 'react'
-import { createBrowserClient } from '@supabase/ssr'
-import Link from 'next/link'
+import { Link } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Mail } from 'lucide-react'
+import { supabase } from '@/integrations/supabase/client'
 
 export default function ResetPassword() {
   const [email, setEmail] = useState('')
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
-
-  const supabase = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  )
 
   const handleResetPassword = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -72,7 +67,7 @@ export default function ResetPassword() {
 
           <div className="mt-6 text-center text-sm text-text-secondary">
             Remember your password?{' '}
-            <Link href="/auth/signin" className="text-primary hover:text-primary/80">
+            <Link to="/auth/signin" className="text-primary hover:text-primary/80">
               Sign In
             </Link>
           </div>
