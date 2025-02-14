@@ -114,7 +114,7 @@ export default function DashboardSidebar({ userEmail, userRole, avatarUrl }: Das
               onClick={toggleSidebar}
               className="rounded-full p-2 hover:bg-[#292929] transition-colors"
             >
-              <Menu className="h-6 w-6 text-white" />
+              <Menu className={`text-white ${isSidebarCollapsed ? 'h-5 w-5' : 'h-6 w-6'}`} />
             </button>
           </div>
 
@@ -124,7 +124,7 @@ export default function DashboardSidebar({ userEmail, userRole, avatarUrl }: Das
                 isSidebarCollapsed ? 'justify-center' : ''
               }`}
             >
-              <LayoutDashboard className="h-6 w-6 text-white" />
+              <LayoutDashboard className={`text-white ${isSidebarCollapsed ? 'h-5 w-5' : 'h-6 w-6'}`} />
               {!isSidebarCollapsed && (
                 <span className="text-sm font-medium text-white">Dashboard</span>
               )}
@@ -138,7 +138,7 @@ export default function DashboardSidebar({ userEmail, userRole, avatarUrl }: Das
                     isSidebarCollapsed ? 'justify-center' : ''
                   }`}
                 >
-                  <item.icon className="h-6 w-6" />
+                  <item.icon className={`${isSidebarCollapsed ? 'h-5 w-5' : 'h-6 w-6'}`} />
                   {!isSidebarCollapsed && (
                     <>
                       <span className="flex-1 text-sm font-medium">{item.label}</span>
