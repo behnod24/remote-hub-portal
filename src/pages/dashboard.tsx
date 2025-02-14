@@ -70,20 +70,11 @@ export default function Dashboard() {
         setIsLoading(true)
         setError(null)
 
-        const timeoutPromise = new Promise((_, reject) => {
-          setTimeout(() => reject(new Error('Request timed out')), 5000)
-        })
-
-        const fetchPromise = supabase
+        const { data, error } = await supabase
           .from('user_profiles')
           .select('*')
           .eq('user_id', user.id)
           .maybeSingle()
-
-        const { data, error } = await Promise.race([
-          fetchPromise,
-          timeoutPromise
-        ]) as any
 
         if (error) throw error
 
@@ -92,12 +83,10 @@ export default function Dashboard() {
         } else {
           const { data: newProfile, error: createError } = await supabase
             .from('user_profiles')
-            .insert([
-              { 
-                user_id: user.id,
-                role: 'user'
-              }
-            ])
+            .insert([{ 
+              user_id: user.id,
+              role: 'user'
+            }])
             .select('*')
             .maybeSingle()
 
