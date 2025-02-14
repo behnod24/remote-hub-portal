@@ -3,9 +3,9 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { 
   Search, Bell, Menu, User, Settings, 
-  Gauge, Users, LayoutDashboard, LinkedinLogo, 
+  Gauge, Users, LayoutDashboard, Linkedin, 
   Presentation, FileText, MessageSquare, 
-  HelpCircle, TwitterLogo 
+  HelpCircle, Twitter 
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
@@ -55,6 +55,25 @@ export default function Dashboard() {
   const [isOpen, setIsOpen] = useState(false)
   const { user } = useAuth()
   const [searchQuery, setSearchQuery] = useState("")
+  const [userProfile, setUserProfile] = useState<{ avatar_url: string | null }>({ avatar_url: null })
+
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      if (user?.id) {
+        const { data, error } = await supabase
+          .from('user_profiles')
+          .select('avatar_url')
+          .eq('user_id', user.id)
+          .single()
+
+        if (data) {
+          setUserProfile(data)
+        }
+      }
+    }
+
+    fetchUserProfile()
+  }, [user])
 
   return (
     <div className="relative flex min-h-screen flex-col bg-black">
@@ -103,9 +122,9 @@ export default function Dashboard() {
               <div className="flex flex-col gap-4">
                 <div className="flex gap-3">
                   <div className="h-10 w-10 rounded-full bg-[#292929]">
-                    {user?.avatar_url ? (
+                    {userProfile?.avatar_url ? (
                       <img
-                        src={user.avatar_url}
+                        src={userProfile.avatar_url}
                         alt="Profile"
                         className="h-full w-full rounded-full object-cover"
                       />
@@ -130,7 +149,7 @@ export default function Dashboard() {
                     { icon: User, label: "Company Profile" },
                     { icon: Users, label: "Employees" },
                     { icon: LayoutDashboard, label: "Projects" },
-                    { icon: LinkedinLogo, label: "Jobs" },
+                    { icon: Linkedin, label: "Jobs" },
                     { icon: Presentation, label: "Reports & Analytics" },
                     { icon: FileText, label: "File Management" },
                     { icon: MessageSquare, label: "Messaging" },
@@ -221,7 +240,7 @@ export default function Dashboard() {
               >
                 <div className="flex items-center gap-4">
                   <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-[#292929] shrink-0">
-                    <TwitterLogo className="h-6 w-6 text-white" />
+                    <Twitter className="h-6 w-6 text-white" />
                   </div>
                   <div className="flex flex-col justify-center">
                     <p className="text-base font-medium text-white line-clamp-1">
