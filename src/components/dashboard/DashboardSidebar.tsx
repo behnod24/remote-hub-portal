@@ -1,16 +1,19 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { User, Users, LayoutDashboard, Linkedin, Presentation, FileText, MessageSquare, Settings, HelpCircle, ChevronDown, Menu } from 'lucide-react';
+
 interface DashboardSidebarProps {
   userEmail: string;
   userRole: string;
   avatarUrl: string | null;
 }
+
 interface MenuItem {
   icon: any;
   label: string;
   subMenus?: string[];
 }
+
 const menuItems: MenuItem[] = [{
   icon: User,
   label: "Company Profile",
@@ -48,6 +51,7 @@ const menuItems: MenuItem[] = [{
   label: "Support & Help",
   subMenus: ["Documentation", "FAQs", "Contact Support", "Training"]
 }];
+
 export default function DashboardSidebar({
   userEmail,
   userRole,

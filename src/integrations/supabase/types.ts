@@ -11,30 +11,89 @@ export type Database = {
     Tables: {
       companies: {
         Row: {
+          brand_guidelines: string | null
           created_at: string | null
           description: string | null
           id: string
           logo_url: string | null
           name: string
+          primary_color: string | null
+          secondary_color: string | null
           updated_at: string | null
+          website_url: string | null
         }
         Insert: {
+          brand_guidelines?: string | null
           created_at?: string | null
           description?: string | null
           id?: string
           logo_url?: string | null
           name: string
+          primary_color?: string | null
+          secondary_color?: string | null
           updated_at?: string | null
+          website_url?: string | null
         }
         Update: {
+          brand_guidelines?: string | null
           created_at?: string | null
           description?: string | null
           id?: string
           logo_url?: string | null
           name?: string
+          primary_color?: string | null
+          secondary_color?: string | null
           updated_at?: string | null
+          website_url?: string | null
         }
         Relationships: []
+      }
+      company_locations: {
+        Row: {
+          address: string
+          city: string
+          company_id: string | null
+          country: string
+          created_at: string | null
+          id: string
+          is_headquarters: boolean | null
+          postal_code: string | null
+          state: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          address: string
+          city: string
+          company_id?: string | null
+          country: string
+          created_at?: string | null
+          id?: string
+          is_headquarters?: boolean | null
+          postal_code?: string | null
+          state?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          address?: string
+          city?: string
+          company_id?: string | null
+          country?: string
+          created_at?: string | null
+          id?: string
+          is_headquarters?: boolean | null
+          postal_code?: string | null
+          state?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_locations_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       company_members: {
         Row: {
