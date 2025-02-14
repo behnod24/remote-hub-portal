@@ -1,7 +1,6 @@
 
 import { useState } from 'react'
-import Link from 'next/link'
-import { useRouter } from 'next/router'
+import { Link, useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Mail, Lock, User } from 'lucide-react'
@@ -13,7 +12,7 @@ export default function SignUp() {
   const [password, setPassword] = useState('')
   const [fullName, setFullName] = useState('')
   const [isLoading, setIsLoading] = useState(false)
-  const router = useRouter()
+  const navigate = useNavigate()
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -33,7 +32,7 @@ export default function SignUp() {
       if (error) throw error
       
       toast.success('Successfully signed up! Please check your email to verify your account.')
-      router.push('/auth/signin')
+      navigate('/auth/signin')
     } catch (error: any) {
       toast.error(error.message)
     } finally {
@@ -101,7 +100,7 @@ export default function SignUp() {
 
           <div className="mt-6 text-center text-sm text-text-secondary">
             Already have an account?{' '}
-            <Link href="/auth/signin" className="text-primary hover:text-primary/80">
+            <Link to="/auth/signin" className="text-primary hover:text-primary/80">
               Sign In
             </Link>
           </div>

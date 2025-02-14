@@ -1,10 +1,12 @@
 
 import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ChevronRight, Users, Briefcase, Code, PenTool, MessageSquare, DollarSign } from "lucide-react";
 
 const Index = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const navigate = useNavigate();
 
   const categories = [
     { icon: Code, title: "Engineering", count: "500+" },
@@ -19,19 +21,29 @@ const Index = () => {
       <nav className="fixed w-full z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <div className="text-2xl font-display font-bold text-primary">PamirHub</div>
+            <Link to="/" className="text-2xl font-display font-bold text-primary">PamirHub</Link>
             
             <div className="hidden md:flex items-center space-x-8">
-              <a href="#" className="nav-link">Hire Employee</a>
-              <a href="#" className="nav-link">Companies</a>
-              <a href="#" className="nav-link">How It Works</a>
-              <a href="#" className="nav-link">Blog</a>
-              <a href="#" className="nav-link">Contact</a>
+              <Link to="/hire-employee" className="nav-link">Hire Employee</Link>
+              <Link to="/companies" className="nav-link">Companies</Link>
+              <Link to="/how-it-works" className="nav-link">How It Works</Link>
+              <Link to="/blog" className="nav-link">Blog</Link>
+              <Link to="/contact" className="nav-link">Contact</Link>
             </div>
 
             <div className="hidden md:flex items-center space-x-4">
-              <button className="px-4 py-2 text-text-secondary hover:text-text transition-colors">Login</button>
-              <button className="btn-primary">Sign Up</button>
+              <button 
+                className="px-4 py-2 text-text-secondary hover:text-text transition-colors"
+                onClick={() => navigate('/auth/signin')}
+              >
+                Login
+              </button>
+              <button 
+                className="btn-primary"
+                onClick={() => navigate('/auth/signup')}
+              >
+                Sign Up
+              </button>
             </div>
 
             <button 
@@ -51,14 +63,30 @@ const Index = () => {
         <div className="fixed inset-0 z-40 bg-white md:hidden pt-20">
           <div className="container mx-auto px-4 py-4">
             <div className="flex flex-col space-y-4">
-              <a href="#" className="nav-link">Hire Employee</a>
-              <a href="#" className="nav-link">Companies</a>
-              <a href="#" className="nav-link">How It Works</a>
-              <a href="#" className="nav-link">Blog</a>
-              <a href="#" className="nav-link">Contact</a>
+              <Link to="/hire-employee" className="nav-link" onClick={() => setIsMenuOpen(false)}>Hire Employee</Link>
+              <Link to="/companies" className="nav-link" onClick={() => setIsMenuOpen(false)}>Companies</Link>
+              <Link to="/how-it-works" className="nav-link" onClick={() => setIsMenuOpen(false)}>How It Works</Link>
+              <Link to="/blog" className="nav-link" onClick={() => setIsMenuOpen(false)}>Blog</Link>
+              <Link to="/contact" className="nav-link" onClick={() => setIsMenuOpen(false)}>Contact</Link>
               <div className="pt-4 flex flex-col space-y-4">
-                <button className="px-4 py-2 text-text-secondary hover:text-text transition-colors">Login</button>
-                <button className="btn-primary">Sign Up</button>
+                <button 
+                  className="px-4 py-2 text-text-secondary hover:text-text transition-colors"
+                  onClick={() => {
+                    setIsMenuOpen(false);
+                    navigate('/auth/signin');
+                  }}
+                >
+                  Login
+                </button>
+                <button 
+                  className="btn-primary"
+                  onClick={() => {
+                    setIsMenuOpen(false);
+                    navigate('/auth/signup');
+                  }}
+                >
+                  Sign Up
+                </button>
               </div>
             </div>
           </div>
