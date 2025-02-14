@@ -25,21 +25,51 @@ export default function SignIn() {
       
       if (error) {
         if (error.message.includes('Invalid login credentials')) {
-          toast.error('Invalid email or password. Please check your credentials or sign up if you don\'t have an account.')
+          toast.error('Invalid email or password. Please check your credentials or sign up if you don\'t have an account.', {
+            style: {
+              background: '#FF3333',
+              color: '#FFFFFF',
+              border: '1px solid #FF0000',
+            },
+          })
         } else if (error.message.includes('Email not confirmed')) {
-          toast.error('Please verify your email address before signing in. Check your inbox for the verification link.')
+          toast.error('Please verify your email address before signing in. Check your inbox for the verification link.', {
+            style: {
+              background: '#FF3333',
+              color: '#FFFFFF',
+              border: '1px solid #FF0000',
+            },
+          })
         } else {
-          toast.error(error.message)
+          toast.error(error.message, {
+            style: {
+              background: '#FF3333',
+              color: '#FFFFFF',
+              border: '1px solid #FF0000',
+            },
+          })
         }
         return
       }
       
       if (data?.user) {
-        toast.success('Successfully signed in!')
+        toast.success('Successfully signed in!', {
+          style: {
+            background: '#4CAF50',
+            color: '#FFFFFF',
+            border: '1px solid #45A049',
+          },
+        })
         navigate('/')
       }
     } catch (error: any) {
-      toast.error('An unexpected error occurred. Please try again.')
+      toast.error('An unexpected error occurred. Please try again.', {
+        style: {
+          background: '#FF3333',
+          color: '#FFFFFF',
+          border: '1px solid #FF0000',
+        },
+      })
       console.error('Sign in error:', error)
     } finally {
       setIsLoading(false)
