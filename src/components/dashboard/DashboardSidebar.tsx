@@ -91,7 +91,7 @@ export default function DashboardSidebar({
             
             {menuItems.map((item, index) => <div key={index} className="flex flex-col">
                 <button onClick={() => toggleMenu(item.label)} className={`flex items-center gap-3 px-3 py-2 text-white hover:bg-[#292929] rounded-full transition-colors ${isSidebarCollapsed ? 'justify-center' : ''}`}>
-                  <item.icon className={`${isSidebarCollapsed ? 'h-6 w-6' : 'h-6 w-6'}`} />
+                  <item.icon className="bg-red-600 hover:bg-red-500 rounded-full mx-0" />
                   {!isSidebarCollapsed && <>
                       <span className="flex-1 text-sm font-medium">{item.label}</span>
                       <ChevronDown className={`h-4 w-4 transition-transform ${expandedMenus.includes(item.label) ? 'rotate-180' : ''}`} />
