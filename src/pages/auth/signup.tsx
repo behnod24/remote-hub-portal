@@ -29,12 +29,35 @@ export default function SignUp() {
         },
       })
       
-      if (error) throw error
-      
-      toast.success('Successfully signed up! Please check your email to verify your account.')
-      navigate('/auth/signin')
+      if (error) {
+        toast.error(error.message, {
+          style: {
+            background: '#FF3333',
+            color: '#FFFFFF',
+            border: '1px solid #FF0000',
+          },
+        })
+      } else {
+        toast.success('Successfully signed up! Please check your email to verify your account.', {
+          style: {
+            background: '#4CAF50',
+            color: '#FFFFFF',
+            border: '1px solid #45A049',
+            fontSize: '16px',
+            padding: '16px',
+          },
+          duration: 5000, // Show for 5 seconds to ensure user sees it
+        })
+        navigate('/auth/signin')
+      }
     } catch (error: any) {
-      toast.error(error.message)
+      toast.error(error.message, {
+        style: {
+          background: '#FF3333',
+          color: '#FFFFFF',
+          border: '1px solid #FF0000',
+        },
+      })
     } finally {
       setIsLoading(false)
     }
