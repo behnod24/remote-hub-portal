@@ -217,6 +217,41 @@ export type Database = {
           },
         ]
       }
+      sentiment_data: {
+        Row: {
+          created_at: string | null
+          date_recorded: string
+          id: string
+          sentiment_score: number
+          tweet_count: number
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          date_recorded: string
+          id?: string
+          sentiment_score: number
+          tweet_count: number
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          date_recorded?: string
+          id?: string
+          sentiment_score?: number
+          tweet_count?: number
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sentiment_data_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tasks: {
         Row: {
           assigned_to: string | null
@@ -277,6 +312,76 @@ export type Database = {
             columns: ["project_id"]
             isOneToOne: false
             referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tweets: {
+        Row: {
+          author: string
+          content: string
+          created_at: string | null
+          id: string
+          posted_at: string
+          sentiment: string
+          user_id: string | null
+        }
+        Insert: {
+          author: string
+          content: string
+          created_at?: string | null
+          id?: string
+          posted_at: string
+          sentiment: string
+          user_id?: string | null
+        }
+        Update: {
+          author?: string
+          content?: string
+          created_at?: string | null
+          id?: string
+          posted_at?: string
+          sentiment?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tweets_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string | null
+          id: string
+          user_id: string
+          username: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string | null
+          id?: string
+          user_id: string
+          username?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string | null
+          id?: string
+          user_id?: string
+          username?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_profiles_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "users"
             referencedColumns: ["id"]
           },
         ]
