@@ -1,13 +1,56 @@
 
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { createBrowserClient } from '@supabase/ssr'
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { Search, Bell, Menu } from "lucide-react"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { Search, Bell, Menu, User } from "lucide-react"
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false)
+  const [user, setUser] = useState<any>(null)
+  const router = useRouter()
+
+  const supabase = createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  )
+
+  useEffect(() => {
+    const getUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser()
+      setUser(user)
+    }
+
+    getUser()
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null)
+    })
+
+    return () => subscription.unsubscribe()
+  }, [supabase.auth])
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut()
+    router.push('/')
+  }
+
+  const truncateEmail = (email: string) => {
+    if (email.length > 20) {
+      return email.substring(0, 17) + '...'
+    }
+    return email
+  }
 
   return (
     <header className="border-b bg-white/80 backdrop-blur-md sticky top-0 z-50">
@@ -39,10 +82,37 @@ const Header = () => {
             <Button variant="ghost" size="icon">
               <Bell className="h-5 w-5" />
             </Button>
-            <div className="hidden sm:flex items-center gap-2">
-              <Button variant="ghost">Sign in</Button>
-              <Button>Create account</Button>
-            </div>
+            {user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="gap-2">
+                    <User className="h-5 w-5" />
+                    <span className="hidden sm:inline">{truncateEmail(user.email)}</span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuItem>
+                    Profile Settings
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    Dashboard
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleSignOut}>
+                    Sign Out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <div className="hidden sm:flex items-center gap-2">
+                <Button variant="ghost" onClick={() => router.push('/auth/signin')}>
+                  Sign in
+                </Button>
+                <Button onClick={() => router.push('/auth/signup')}>
+                  Create account
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       </div>
