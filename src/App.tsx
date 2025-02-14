@@ -12,24 +12,27 @@ import Companies from '@/pages/companies'
 import Contact from '@/pages/contact'
 import HireEmployee from '@/pages/hire-employee'
 import HowItWorks from '@/pages/how-it-works'
+import { AuthProvider } from '@/contexts/AuthContext'
 
 function App() {
   return (
     <Router>
-      <Routes>
-        <Route path="/" element={<Index />} />
-        <Route path="/auth/signin" element={<SignIn />} />
-        <Route path="/auth/signup" element={<SignUp />} />
-        <Route path="/auth/reset-password" element={<ResetPassword />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/blog" element={<Blog />} />
-        <Route path="/companies" element={<Companies />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/hire-employee" element={<HireEmployee />} />
-        <Route path="/how-it-works" element={<HowItWorks />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-      <Toaster />
+      <AuthProvider>
+        <Routes>
+          <Route path="/" element={<Index />} />
+          <Route path="/auth/signin" element={<SignIn />} />
+          <Route path="/auth/signup" element={<SignUp />} />
+          <Route path="/auth/reset-password" element={<ResetPassword />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/blog" element={<Blog />} />
+          <Route path="/companies" element={<Companies />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/hire-employee" element={<HireEmployee />} />
+          <Route path="/how-it-works" element={<HowItWorks />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+        <Toaster />
+      </AuthProvider>
     </Router>
   )
 }

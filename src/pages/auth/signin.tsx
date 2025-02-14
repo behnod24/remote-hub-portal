@@ -1,6 +1,6 @@
 
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Mail, Lock } from 'lucide-react'
@@ -13,7 +13,6 @@ export default function SignIn() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [isLoading, setIsLoading] = useState(false)
-  const navigate = useNavigate()
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -51,10 +50,7 @@ export default function SignIn() {
             },
           })
         }
-        return
-      }
-      
-      if (data?.user) {
+      } else if (data?.user) {
         toast.success('Successfully signed in!', {
           style: {
             background: '#4CAF50',
@@ -62,7 +58,7 @@ export default function SignIn() {
             border: '1px solid #45A049',
           },
         })
-        navigate('/')
+        // The redirect will be handled by AuthContext
       }
     } catch (error: any) {
       toast.error('An unexpected error occurred. Please try again.', {

@@ -1,6 +1,6 @@
 
 import { createContext, useContext, useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { supabase } from '@/integrations/supabase/client'
 import { User, Session } from '@supabase/supabase-js'
 
@@ -8,12 +8,14 @@ type AuthContextType = {
   user: User | null
   session: Session | null
   isLoading: boolean
+  signOut: () => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextType>({
   user: null,
   session: null,
   isLoading: true,
+  signOut: async () => {},
 })
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
@@ -21,6 +23,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [session, setSession] = useState<Session | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const navigate = useNavigate()
+  const location = useLocation()
 
   useEffect(() => {
     // Check active session
@@ -28,6 +31,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setSession(session)
       setUser(session?.user ?? null)
       setIsLoading(false)
+      
+      // Redirect to dashboard if user is authenticated and on auth pages
+      if (session && (location.pathname.startsWith('/auth/') || location.pathname === '/')) {
+        navigate('/dashboard')
+      }
     })
 
     // Listen for auth changes
@@ -36,17 +44,27 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setUser(session?.user ?? null)
       setIsLoading(false)
 
-      if (!session) {
-        // Redirect to login when session ends
+      if (session && (location.pathname.startsWith('/auth/') || location.pathname === '/')) {
+        navigate('/dashboard')
+      } else if (!session && !location.pathname.startsWith('/auth/')) {
         navigate('/auth/signin')
       }
     })
 
     return () => subscription.unsubscribe()
-  }, [navigate])
+  }, [navigate, location.pathname])
+
+  const signOut = async () => {
+    try {
+      await supabase.auth.signOut()
+      navigate('/auth/signin')
+    } catch (error) {
+      console.error('Error signing out:', error)
+    }
+  }
 
   return (
-    <AuthContext.Provider value={{ user, session, isLoading }}>
+    <AuthContext.Provider value={{ user, session, isLoading, signOut }}>
       {children}
     </AuthContext.Provider>
   )
