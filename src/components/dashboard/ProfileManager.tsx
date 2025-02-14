@@ -12,6 +12,7 @@ interface ProfileData {
   bio: string | null
   phone: string | null
   company: string | null
+  company_name: string | null
   position: string | null
   role: 'admin' | 'user'
 }
@@ -80,6 +81,8 @@ export default function ProfileManager({ userId, initialProfile, onProfileUpdate
         title: "Success",
         description: "Profile updated successfully",
       })
+      
+      onProfileUpdate(updatedProfile)
     } catch (error) {
       toast({
         title: "Error",
@@ -129,6 +132,15 @@ export default function ProfileManager({ userId, initialProfile, onProfileUpdate
       </div>
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div>
+          <label className="text-sm text-white/60">Company Name</label>
+          <Input
+            value={profile.company_name || ''}
+            onChange={(e) => handleInputChange('company_name', e.target.value)}
+            className="mt-1"
+            placeholder="Your company name"
+          />
+        </div>
         <div>
           <label className="text-sm text-white/60">Phone</label>
           <Input

@@ -56,6 +56,7 @@ interface UserProfile {
   bio: string | null
   phone: string | null
   company: string | null
+  company_name: string | null
   position: string | null
   role: 'admin' | 'user'
 }
@@ -172,7 +173,7 @@ export default function Dashboard() {
                 <LayoutDashboard />
               </div>
               <h2 className="text-lg font-bold leading-tight tracking-[-0.015em]">
-                Crypto Sentiment Dashboard
+                {userProfile?.company_name || 'Crypto Sentiment Dashboard'}
               </h2>
             </div>
             
