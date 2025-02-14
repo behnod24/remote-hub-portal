@@ -85,7 +85,7 @@ export default function DashboardSidebar({
 
           <nav className="flex flex-col gap-2">
             <Link to="/dashboard" className="">
-              <LayoutDashboard className="px-[7px] bg-red-600 hover:bg-red-500 mx-[2px] py-0 rounded-full" />
+              <LayoutDashboard className="px-[4px] bg-red-600 hover:bg-red-500 mx-[2px] py-0 rounded-full" />
               {!isSidebarCollapsed && <span className="text-sm font-medium text-white">Dashboard</span>}
             </Link>
             
