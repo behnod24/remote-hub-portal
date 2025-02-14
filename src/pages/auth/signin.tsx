@@ -18,17 +18,29 @@ export default function SignIn() {
     setIsLoading(true)
     
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       })
       
-      if (error) throw error
+      if (error) {
+        if (error.message.includes('Invalid login credentials')) {
+          toast.error('Invalid email or password. Please check your credentials or sign up if you don\'t have an account.')
+        } else if (error.message.includes('Email not confirmed')) {
+          toast.error('Please verify your email address before signing in. Check your inbox for the verification link.')
+        } else {
+          toast.error(error.message)
+        }
+        return
+      }
       
-      toast.success('Successfully signed in!')
-      navigate('/')
+      if (data?.user) {
+        toast.success('Successfully signed in!')
+        navigate('/')
+      }
     } catch (error: any) {
-      toast.error(error.message)
+      toast.error('An unexpected error occurred. Please try again.')
+      console.error('Sign in error:', error)
     } finally {
       setIsLoading(false)
     }
