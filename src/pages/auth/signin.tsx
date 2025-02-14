@@ -1,34 +1,37 @@
 
 import { useState } from 'react'
-import { createBrowserClient } from '@supabase/ssr'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Mail, Lock } from 'lucide-react'
+import { supabase } from '@/integrations/supabase/client'
+import { toast } from 'sonner'
 
 export default function SignIn() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
-
-  const supabase = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  )
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault()
+    setIsLoading(true)
+    
     try {
       const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
       })
+      
       if (error) throw error
+      
+      toast.success('Successfully signed in!')
       router.push('/')
     } catch (error: any) {
-      setError(error.message)
+      toast.error(error.message)
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -37,12 +40,6 @@ export default function SignIn() {
       <div className="w-full max-w-md">
         <div className="glass-card p-8">
           <h1 className="text-3xl font-bold text-center mb-8">Sign In</h1>
-          
-          {error && (
-            <div className="bg-red-50 text-red-500 p-4 rounded-lg mb-6">
-              {error}
-            </div>
-          )}
 
           <form onSubmit={handleSignIn} className="space-y-6">
             <div className="space-y-2">
@@ -75,8 +72,8 @@ export default function SignIn() {
               </div>
             </div>
 
-            <Button type="submit" className="w-full">
-              Sign In
+            <Button type="submit" className="w-full" disabled={isLoading}>
+              {isLoading ? 'Signing in...' : 'Sign In'}
             </Button>
           </form>
 

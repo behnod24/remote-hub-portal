@@ -1,26 +1,24 @@
 
 import { useState } from 'react'
-import { createBrowserClient } from '@supabase/ssr'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Mail, Lock, User } from 'lucide-react'
+import { supabase } from '@/integrations/supabase/client'
+import { toast } from 'sonner'
 
 export default function SignUp() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [fullName, setFullName] = useState('')
-  const [error, setError] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
-
-  const supabase = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  )
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault()
+    setIsLoading(true)
+    
     try {
       const { error } = await supabase.auth.signUp({
         email,
@@ -31,10 +29,15 @@ export default function SignUp() {
           },
         },
       })
+      
       if (error) throw error
-      router.push('/')
+      
+      toast.success('Successfully signed up! Please check your email to verify your account.')
+      router.push('/auth/signin')
     } catch (error: any) {
-      setError(error.message)
+      toast.error(error.message)
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -43,12 +46,6 @@ export default function SignUp() {
       <div className="w-full max-w-md">
         <div className="glass-card p-8">
           <h1 className="text-3xl font-bold text-center mb-8">Create Account</h1>
-          
-          {error && (
-            <div className="bg-red-50 text-red-500 p-4 rounded-lg mb-6">
-              {error}
-            </div>
-          )}
 
           <form onSubmit={handleSignUp} className="space-y-6">
             <div className="space-y-2">
@@ -97,8 +94,8 @@ export default function SignUp() {
               </div>
             </div>
 
-            <Button type="submit" className="w-full">
-              Sign Up
+            <Button type="submit" className="w-full" disabled={isLoading}>
+              {isLoading ? 'Creating account...' : 'Sign Up'}
             </Button>
           </form>
 
