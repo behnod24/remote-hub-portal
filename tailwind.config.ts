@@ -15,11 +15,13 @@ export default {
     },
     extend: {
       colors: {
-        primary: "#FF1654",
-        secondary: "#FFE5E5",
+        primary: "#FF0042",
+        secondary: "#FF1B51",
         background: "#FFFFFF",
-        text: "#1A1A1A",
-        "text-secondary": "#4A4A4A",
+        text: "#000000",
+        "text-secondary": "#333333",
+        "gradient-start": "#FFE5E5",
+        "gradient-end": "#F5E6FF",
       },
       fontFamily: {
         sans: ["Inter", "sans-serif"],
