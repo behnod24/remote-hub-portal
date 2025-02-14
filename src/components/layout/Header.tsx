@@ -24,8 +24,10 @@ const Header = () => {
               JobHub
             </Link>
             <nav className="hidden lg:flex items-center space-x-6">
+              <Link href="/hire-employee" className="nav-link">Hire Employee</Link>
               <Link href="/companies" className="nav-link">Companies</Link>
-              <Link href="/about" className="nav-link">About us</Link>
+              <Link href="/how-it-works" className="nav-link">How It Works</Link>
+              <Link href="/blog" className="nav-link">Blog</Link>
               <Link href="/contact" className="nav-link">Contact</Link>
             </nav>
           </div>
@@ -41,6 +43,34 @@ const Header = () => {
               <Button variant="ghost">Sign in</Button>
               <Button>Create account</Button>
             </div>
+          </div>
+        </div>
+      </div>
+      
+      {/* Mobile menu */}
+      <div className={`
+        lg:hidden fixed inset-0 z-50 bg-background transform transition-transform duration-300
+        ${isOpen ? "translate-x-0" : "-translate-x-full"}
+      `}>
+        <div className="flex flex-col h-full">
+          <div className="flex items-center justify-between p-4 border-b">
+            <Link href="/" className="text-2xl font-display font-bold text-primary">
+              JobHub
+            </Link>
+            <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)}>
+              <Menu className="h-6 w-6" />
+            </Button>
+          </div>
+          <nav className="flex-1 p-4 space-y-4">
+            <Link href="/hire-employee" className="block py-2 text-lg">Hire Employee</Link>
+            <Link href="/companies" className="block py-2 text-lg">Companies</Link>
+            <Link href="/how-it-works" className="block py-2 text-lg">How It Works</Link>
+            <Link href="/blog" className="block py-2 text-lg">Blog</Link>
+            <Link href="/contact" className="block py-2 text-lg">Contact</Link>
+          </nav>
+          <div className="p-4 border-t space-y-4">
+            <Button className="w-full">Create account</Button>
+            <Button variant="outline" className="w-full">Sign in</Button>
           </div>
         </div>
       </div>
