@@ -357,22 +357,40 @@ export type Database = {
       user_profiles: {
         Row: {
           avatar_url: string | null
+          bio: string | null
+          company: string | null
           created_at: string | null
           id: string
+          phone: string | null
+          position: string | null
+          role: Database["public"]["Enums"]["user_role"] | null
+          settings: Json | null
           user_id: string
           username: string | null
         }
         Insert: {
           avatar_url?: string | null
+          bio?: string | null
+          company?: string | null
           created_at?: string | null
           id?: string
+          phone?: string | null
+          position?: string | null
+          role?: Database["public"]["Enums"]["user_role"] | null
+          settings?: Json | null
           user_id: string
           username?: string | null
         }
         Update: {
           avatar_url?: string | null
+          bio?: string | null
+          company?: string | null
           created_at?: string | null
           id?: string
+          phone?: string | null
+          position?: string | null
+          role?: Database["public"]["Enums"]["user_role"] | null
+          settings?: Json | null
           user_id?: string
           username?: string | null
         }
@@ -421,7 +439,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      user_role: "admin" | "user"
     }
     CompositeTypes: {
       [_ in never]: never

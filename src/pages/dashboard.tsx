@@ -17,8 +17,9 @@ import { Input } from '@/components/ui/input'
 import { useAuth } from '@/contexts/AuthContext'
 import { supabase } from '@/integrations/supabase/client'
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts'
+import ProfileManager from '@/components/dashboard/ProfileManager'
+import { useToast } from '@/components/ui/use-toast'
 
-// Sample data - replace with real data from your API
 const sentimentData = [
   { name: 'Mon', value: 65 },
   { name: 'Tue', value: 75 },
@@ -50,18 +51,29 @@ const tweets = [
   }
 ]
 
+interface UserProfile {
+  avatar_url: string | null
+  bio: string | null
+  phone: string | null
+  company: string | null
+  position: string | null
+  role: 'admin' | 'user'
+}
+
 export default function Dashboard() {
   const [isOpen, setIsOpen] = useState(false)
   const { user } = useAuth()
   const [searchQuery, setSearchQuery] = useState("")
-  const [userProfile, setUserProfile] = useState<{ avatar_url: string | null }>({ avatar_url: null })
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null)
+  const [showProfileManager, setShowProfileManager] = useState(false)
+  const { toast } = useToast()
 
   useEffect(() => {
     const fetchUserProfile = async () => {
       if (user?.id) {
         const { data, error } = await supabase
           .from('user_profiles')
-          .select('avatar_url')
+          .select('*')
           .eq('user_id', user.id)
           .maybeSingle()
 
@@ -72,9 +84,12 @@ export default function Dashboard() {
           const { data: newProfile, error: createError } = await supabase
             .from('user_profiles')
             .insert([
-              { user_id: user.id }
+              { 
+                user_id: user.id,
+                role: 'user'
+              }
             ])
-            .select('avatar_url')
+            .select('*')
             .maybeSingle()
 
           if (newProfile) {
@@ -86,6 +101,15 @@ export default function Dashboard() {
 
     fetchUserProfile()
   }, [user])
+
+  const handleProfileUpdate = (updatedProfile: UserProfile) => {
+    setUserProfile(updatedProfile)
+    setShowProfileManager(false)
+    toast({
+      title: "Success",
+      description: "Profile updated successfully",
+    })
+  }
 
   return (
     <div className="relative flex min-h-screen flex-col bg-black">
@@ -117,7 +141,12 @@ export default function Dashboard() {
             </div>
             
             <div className="flex gap-2">
-              <Button variant="ghost" size="icon" className="rounded-full bg-[#292929]">
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="rounded-full bg-[#292929]"
+                onClick={() => setShowProfileManager(true)}
+              >
                 <Settings className="h-5 w-5 text-white" />
               </Button>
               <Button variant="ghost" size="icon" className="rounded-full bg-[#292929]">
@@ -148,7 +177,9 @@ export default function Dashboard() {
                     <h1 className="text-base font-medium text-white">
                       {user?.email}
                     </h1>
-                    <p className="text-sm text-[#ABABAB]">View profile</p>
+                    <p className="text-sm text-[#ABABAB]">
+                      {userProfile?.role === 'admin' ? 'Admin' : 'User'}
+                    </p>
                   </div>
                 </div>
 
@@ -184,90 +215,98 @@ export default function Dashboard() {
 
           {/* Main Content */}
           <div className="flex flex-1 flex-col max-w-[960px]">
-            <h1 className="px-4 pb-3 pt-6 text-[32px] font-bold leading-tight text-white">
-              Sentiment analysis
-            </h1>
+            {showProfileManager && userProfile ? (
+              <ProfileManager
+                userId={user?.id || ''}
+                initialProfile={userProfile}
+                onProfileUpdate={handleProfileUpdate}
+                isAdmin={userProfile.role === 'admin'}
+              />
+            ) : (
+              <>
+                <h1 className="px-4 pb-3 pt-6 text-[32px] font-bold leading-tight text-white">
+                  Sentiment analysis
+                </h1>
 
-            <div className="flex flex-wrap gap-4 px-4 py-6">
-              {/* Sentiment Analysis Card */}
-              <div className="flex min-w-72 flex-1 flex-col gap-2">
-                <p className="text-base font-medium text-white">Sentiment Analysis</p>
-                <p className="text-[32px] font-bold leading-tight text-white">
-                  75% Positive
-                </p>
-                <p className="text-base text-[#ABABAB]">Last 24h +5%</p>
-                <div className="min-h-[180px] py-4">
-                  <ResponsiveContainer width="100%" height={180}>
-                    <LineChart data={sentimentData}>
-                      <XAxis dataKey="name" stroke="#ABABAB" />
-                      <YAxis stroke="#ABABAB" />
-                      <Tooltip />
-                      <Line
-                        type="monotone"
-                        dataKey="value"
-                        stroke="#ABABAB"
-                        strokeWidth={2}
-                        dot={false}
-                      />
-                    </LineChart>
-                  </ResponsiveContainer>
-                </div>
-              </div>
-
-              {/* Bitcoin Popularity Card */}
-              <div className="flex min-w-72 flex-1 flex-col gap-2">
-                <p className="text-base font-medium text-white">Bitcoin Popularity</p>
-                <p className="text-[32px] font-bold leading-tight text-white">
-                  1200 Tweets
-                </p>
-                <p className="text-base text-[#ABABAB]">Last 7d -2%</p>
-                <div className="min-h-[180px] py-4">
-                  <ResponsiveContainer width="100%" height={180}>
-                    <LineChart data={sentimentData}>
-                      <XAxis dataKey="name" stroke="#ABABAB" />
-                      <YAxis stroke="#ABABAB" />
-                      <Tooltip />
-                      <Line
-                        type="monotone"
-                        dataKey="value"
-                        stroke="#ABABAB"
-                        strokeWidth={2}
-                        dot={false}
-                      />
-                    </LineChart>
-                  </ResponsiveContainer>
-                </div>
-              </div>
-            </div>
-
-            {/* Highlight Posts */}
-            <h2 className="px-4 pb-3 pt-5 text-[22px] font-bold leading-tight text-white">
-              Highlight posts
-            </h2>
-            
-            {tweets.map((tweet) => (
-              <div
-                key={tweet.id}
-                className="flex items-center justify-between gap-4 bg-black px-4 py-2 min-h-[72px]"
-              >
-                <div className="flex items-center gap-4">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-[#292929] shrink-0">
-                    <Twitter className="h-6 w-6 text-white" />
+                <div className="flex flex-wrap gap-4 px-4 py-6">
+                  <div className="flex min-w-72 flex-1 flex-col gap-2">
+                    <p className="text-base font-medium text-white">Sentiment Analysis</p>
+                    <p className="text-[32px] font-bold leading-tight text-white">
+                      75% Positive
+                    </p>
+                    <p className="text-base text-[#ABABAB]">Last 24h +5%</p>
+                    <div className="min-h-[180px] py-4">
+                      <ResponsiveContainer width="100%" height={180}>
+                        <LineChart data={sentimentData}>
+                          <XAxis dataKey="name" stroke="#ABABAB" />
+                          <YAxis stroke="#ABABAB" />
+                          <Tooltip />
+                          <Line
+                            type="monotone"
+                            dataKey="value"
+                            stroke="#ABABAB"
+                            strokeWidth={2}
+                            dot={false}
+                          />
+                        </LineChart>
+                      </ResponsiveContainer>
+                    </div>
                   </div>
-                  <div className="flex flex-col justify-center">
-                    <p className="text-base font-medium text-white line-clamp-1">
-                      {tweet.content}
+
+                  <div className="flex min-w-72 flex-1 flex-col gap-2">
+                    <p className="text-base font-medium text-white">Bitcoin Popularity</p>
+                    <p className="text-[32px] font-bold leading-tight text-white">
+                      1200 Tweets
                     </p>
-                    <p className="text-sm text-[#ABABAB] line-clamp-2">
-                      {tweet.author}
-                    </p>
+                    <p className="text-base text-[#ABABAB]">Last 7d -2%</p>
+                    <div className="min-h-[180px] py-4">
+                      <ResponsiveContainer width="100%" height={180}>
+                        <LineChart data={sentimentData}>
+                          <XAxis dataKey="name" stroke="#ABABAB" />
+                          <YAxis stroke="#ABABAB" />
+                          <Tooltip />
+                          <Line
+                            type="monotone"
+                            dataKey="value"
+                            stroke="#ABABAB"
+                            strokeWidth={2}
+                            dot={false}
+                          />
+                        </LineChart>
+                      </ResponsiveContainer>
+                    </div>
                   </div>
                 </div>
-                <div className="shrink-0">
-                  <p className="text-sm text-[#ABABAB]">{tweet.timeAgo}</p>
-                </div>
-              </div>
-            ))}
+
+                <h2 className="px-4 pb-3 pt-5 text-[22px] font-bold leading-tight text-white">
+                  Highlight posts
+                </h2>
+                
+                {tweets.map((tweet) => (
+                  <div
+                    key={tweet.id}
+                    className="flex items-center justify-between gap-4 bg-black px-4 py-2 min-h-[72px]"
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-[#292929] shrink-0">
+                        <Twitter className="h-6 w-6 text-white" />
+                      </div>
+                      <div className="flex flex-col justify-center">
+                        <p className="text-base font-medium text-white line-clamp-1">
+                          {tweet.content}
+                        </p>
+                        <p className="text-sm text-[#ABABAB] line-clamp-2">
+                          {tweet.author}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="shrink-0">
+                      <p className="text-sm text-[#ABABAB]">{tweet.timeAgo}</p>
+                    </div>
+                  </div>
+                ))}
+              </>
+            )}
           </div>
         </div>
       </div>
