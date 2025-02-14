@@ -124,7 +124,7 @@ export default function DashboardSidebar({ userEmail, userRole, avatarUrl }: Das
                 isSidebarCollapsed ? 'justify-center' : ''
               }`}
             >
-              <LayoutDashboard className={isSidebarCollapsed ? "h-8 w-8" : "h-6 w-6"} />
+              <LayoutDashboard className={isSidebarCollapsed ? "h-10 w-10" : "h-6 w-6"} />
               {!isSidebarCollapsed && (
                 <span className="text-sm font-medium">Dashboard</span>
               )}
@@ -138,7 +138,7 @@ export default function DashboardSidebar({ userEmail, userRole, avatarUrl }: Das
                     isSidebarCollapsed ? 'justify-center' : ''
                   }`}
                 >
-                  <item.icon className={isSidebarCollapsed ? "h-8 w-8" : "h-6 w-6"} />
+                  <item.icon className={isSidebarCollapsed ? "h-10 w-10" : "h-6 w-6"} />
                   {!isSidebarCollapsed && (
                     <>
                       <span className="flex-1 text-sm font-medium">{item.label}</span>
