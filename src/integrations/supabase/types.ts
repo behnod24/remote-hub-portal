@@ -133,6 +133,7 @@ export type Database = {
       }
       contact_submissions: {
         Row: {
+          accepts_marketing: boolean | null
           accepts_privacy: boolean
           created_at: string | null
           email: string
@@ -141,9 +142,12 @@ export type Database = {
           last_name: string
           location: string | null
           message: string
+          phone: string | null
+          recaptcha_token: string | null
           team_size: string | null
         }
         Insert: {
+          accepts_marketing?: boolean | null
           accepts_privacy?: boolean
           created_at?: string | null
           email: string
@@ -152,9 +156,12 @@ export type Database = {
           last_name: string
           location?: string | null
           message: string
+          phone?: string | null
+          recaptcha_token?: string | null
           team_size?: string | null
         }
         Update: {
+          accepts_marketing?: boolean | null
           accepts_privacy?: boolean
           created_at?: string | null
           email?: string
@@ -163,6 +170,8 @@ export type Database = {
           last_name?: string
           location?: string | null
           message?: string
+          phone?: string | null
+          recaptcha_token?: string | null
           team_size?: string | null
         }
         Relationships: []

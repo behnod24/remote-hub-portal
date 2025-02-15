@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useState } from "react"
@@ -96,7 +97,18 @@ function ContactForm() {
       // First save to database
       const { error: dbError } = await supabase
         .from('contact_submissions')
-        .insert([{ ...formData, recaptcha_token: recaptchaToken }])
+        .insert([{
+          first_name: formData.first_name,
+          last_name: formData.last_name,
+          email: formData.email,
+          phone: formData.phone,
+          team_size: formData.team_size,
+          location: formData.location,
+          message: formData.message,
+          accepts_privacy: formData.accepts_privacy,
+          accepts_marketing: formData.accepts_marketing,
+          recaptcha_token: recaptchaToken
+        }])
 
       if (dbError) throw dbError
 
