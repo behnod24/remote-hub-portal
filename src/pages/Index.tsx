@@ -8,26 +8,39 @@ import { supabase } from "@/integrations/supabase/client"
 const Index = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [logoUrl, setLogoUrl] = useState("");
+  const [backgroundUrl, setBackgroundUrl] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchLogo = async () => {
+    const fetchAssets = async () => {
       try {
-        const { data: { publicUrl } } = supabase
+        // Fetch logo
+        const { data: logoData } = supabase
           .storage
           .from('site-assets')
-          .getPublicUrl('logo.png') // Added .png extension
+          .getPublicUrl('logo.png')
         
-        if (publicUrl) {
-          console.log('Logo URL:', publicUrl) // Debug log
-          setLogoUrl(publicUrl)
+        if (logoData.publicUrl) {
+          console.log('Logo URL:', logoData.publicUrl)
+          setLogoUrl(logoData.publicUrl)
+        }
+
+        // Fetch background
+        const { data: bgData } = supabase
+          .storage
+          .from('site-assets')
+          .getPublicUrl('background.png')
+        
+        if (bgData.publicUrl) {
+          console.log('Background URL:', bgData.publicUrl)
+          setBackgroundUrl(bgData.publicUrl)
         }
       } catch (error) {
-        console.error('Error fetching logo:', error)
+        console.error('Error fetching assets:', error)
       }
     }
 
-    fetchLogo()
+    fetchAssets()
   }, [])
 
   const categories = [
@@ -125,10 +138,19 @@ const Index = () => {
       )}
 
       {/* Hero Section */}
-      <section className="pt-32 pb-20 px-4">
-        <div className="container mx-auto text-center">
+      <section 
+        className="pt-32 pb-20 px-4 relative"
+        style={{
+          backgroundImage: backgroundUrl ? `url(${backgroundUrl})` : 'none',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat'
+        }}
+      >
+        <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" /> {/* Overlay for better text readability */}
+        <div className="container mx-auto text-center relative z-10">
           <motion.h1 
-            className="text-4xl md:text-6xl font-bold mb-6 leading-tight"
+            className="text-4xl md:text-6xl font-bold mb-6 leading-tight text-white"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
@@ -136,7 +158,7 @@ const Index = () => {
             Modernizing Workforce Hiring <br className="hidden md:block" />for Companies
           </motion.h1>
           <motion.p 
-            className="text-lg md:text-xl text-text-secondary mb-8 max-w-3xl mx-auto"
+            className="text-lg md:text-xl text-white/90 mb-8 max-w-3xl mx-auto"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
