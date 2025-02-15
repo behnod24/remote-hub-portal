@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useState, useEffect } from "react"
@@ -404,7 +405,7 @@ function ContactForm() {
         return (
           <div className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <label className="flex flex-col">
+              <label className="flex flex-col relative"> {/* Added relative positioning */}
                 <p className="text-base font-medium leading-normal pb-2">Company size</p>
                 <Select
                   value={formData.team_size}
@@ -413,7 +414,7 @@ function ContactForm() {
                   <SelectTrigger className="rounded-xl h-14 border-[#E0E0E0] bg-[#FFFFFF]">
                     <SelectValue placeholder="Select company size" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="z-[100] bg-white"> {/* Added high z-index and explicit background */}
                     {COMPANY_SIZES.map((size) => (
                       <SelectItem key={size} value={size}>
                         {size}
@@ -422,7 +423,7 @@ function ContactForm() {
                   </SelectContent>
                 </Select>
               </label>
-              <label className="flex flex-col">
+              <label className="flex flex-col relative"> {/* Added relative positioning */}
                 <p className="text-base font-medium leading-normal pb-2">Location</p>
                 <Select
                   value={formData.location}
@@ -432,7 +433,7 @@ function ContactForm() {
                   <SelectTrigger className="rounded-xl h-14 border-[#E0E0E0] bg-[#FFFFFF]">
                     <SelectValue placeholder={availableCities.length === 0 ? "Select a country first" : "Select city"} />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="z-[100] bg-white"> {/* Added high z-index and explicit background */}
                     {availableCities.map((city) => (
                       <SelectItem key={city} value={city}>
                         {city}
@@ -501,7 +502,7 @@ function ContactForm() {
   return (
     <div className="min-h-screen relative">
       <div 
-        className="fixed inset-0 z-0"
+        className="fixed inset-0"
         style={{
           backgroundImage: `url(${bgUrl})`,
           backgroundSize: 'cover',
@@ -512,7 +513,7 @@ function ContactForm() {
         }}
       />
 
-      <div className="relative z-10">
+      <div className="relative z-[1]"> {/* Adjusted z-index to be explicit and lower than dropdowns */}
         <FormLayout
           title={
             <div className="flex items-center gap-4">
