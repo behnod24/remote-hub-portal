@@ -10,9 +10,6 @@ import { useToast } from "@/components/ui/use-toast"
 import { ArrowLeft } from "lucide-react"
 import PhoneInput from 'react-phone-input-2'
 import 'react-phone-input-2/lib/style.css'
-import { useGoogleReCaptcha, GoogleReCaptchaProvider } from 'react-google-recaptcha-v3'
-
-const RECAPTCHA_SITE_KEY = "6LcqX9gqAAAAAHLEEDlhVsH_LAwrqQfW1_Nus8ce"
 
 interface ContactFormData {
   first_name: string
@@ -26,12 +23,9 @@ interface ContactFormData {
   accepts_marketing: boolean
 }
 
-interface FormErrors extends Partial<Record<keyof ContactFormData, string>> {
-  recaptcha?: string;
-}
+interface FormErrors extends Partial<Record<keyof ContactFormData, string>> {}
 
 function ContactForm() {
-  const { executeRecaptcha } = useGoogleReCaptcha()
   const { toast } = useToast()
   const [loading, setLoading] = useState(false)
   const [errors, setErrors] = useState<FormErrors>({})
@@ -61,7 +55,6 @@ function ContactForm() {
     if (!formData.phone) newErrors.phone = "Phone number is required"
     if (!formData.message) newErrors.message = "Message is required"
     if (!formData.accepts_privacy) newErrors.accepts_privacy = "You must accept the privacy policy"
-    if (!executeRecaptcha) newErrors.recaptcha = "ReCAPTCHA is not ready yet"
 
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
@@ -69,15 +62,6 @@ function ContactForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
-    if (!executeRecaptcha) {
-      toast({
-        title: "Error",
-        description: "ReCAPTCHA not ready. Please try again in a moment.",
-        variant: "destructive"
-      })
-      return
-    }
 
     if (!validateForm()) {
       toast({
@@ -91,9 +75,6 @@ function ContactForm() {
     setLoading(true)
 
     try {
-      // Execute reCAPTCHA
-      const recaptchaToken = await executeRecaptcha('contact_form')
-
       // First save to database
       const { error: dbError } = await supabase
         .from('contact_submissions')
@@ -106,15 +87,14 @@ function ContactForm() {
           location: formData.location,
           message: formData.message,
           accepts_privacy: formData.accepts_privacy,
-          accepts_marketing: formData.accepts_marketing,
-          recaptcha_token: recaptchaToken
+          accepts_marketing: formData.accepts_marketing
         }])
 
       if (dbError) throw dbError
 
       // Then send emails
       const { error: emailError } = await supabase.functions.invoke('send-contact-email', {
-        body: { ...formData, recaptcha_token: recaptchaToken }
+        body: { ...formData }
       })
 
       if (emailError) throw emailError
@@ -206,7 +186,6 @@ function ContactForm() {
                 <div className="flex w-full flex-col gap-3">
                   <h2 className="text-black text-3xl md:text-4xl font-black leading-tight tracking-[-0.033em]">We'd love to help</h2>
                   <p className="text-neutral-500 text-base font-normal leading-normal">Reach out and we'll get in touch within 24 hours.</p>
-                  {errors.recaptcha && <p className="text-red-500 text-sm">{errors.recaptcha}</p>}
                 </div>
               </div>
 
@@ -358,16 +337,5 @@ function ContactForm() {
 }
 
 export default function ContactPage() {
-  return (
-    <GoogleReCaptchaProvider
-      reCaptchaKey={RECAPTCHA_SITE_KEY}
-      scriptProps={{
-        async: true,
-        defer: true,
-        appendTo: "head",
-      }}
-    >
-      <ContactForm />
-    </GoogleReCaptchaProvider>
-  )
+  return <ContactForm />
 }

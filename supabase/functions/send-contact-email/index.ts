@@ -4,7 +4,6 @@ import { Resend } from "npm:resend@2.0.0";
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 const ADMIN_EMAIL = Deno.env.get("ADMIN_EMAIL");
-const RECAPTCHA_SECRET_KEY = Deno.env.get("RECAPTCHA_SECRET_KEY");
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -19,28 +18,7 @@ interface ContactFormData {
   team_size: string;
   location: string;
   message: string;
-  recaptcha_token: string;
 }
-
-const verifyRecaptcha = async (token: string) => {
-  try {
-    console.log("Verifying reCAPTCHA token...");
-    const response = await fetch('https://www.google.com/recaptcha/api/siteverify', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: `secret=${RECAPTCHA_SECRET_KEY}&response=${token}`,
-    });
-
-    const data = await response.json();
-    console.log("reCAPTCHA verification response:", data);
-    return data.success;
-  } catch (error) {
-    console.error("Error verifying reCAPTCHA:", error);
-    return false;
-  }
-};
 
 const handler = async (req: Request): Promise<Response> => {
   if (req.method === "OPTIONS") {
@@ -50,24 +28,6 @@ const handler = async (req: Request): Promise<Response> => {
   try {
     const formData: ContactFormData = await req.json();
     console.log("Received form data:", formData);
-    
-    // Verify reCAPTCHA token
-    if (!formData.recaptcha_token) {
-      throw new Error("No reCAPTCHA token provided");
-    }
-
-    const isValid = await verifyRecaptcha(formData.recaptcha_token);
-    console.log("reCAPTCHA validation result:", isValid);
-
-    if (!isValid) {
-      return new Response(
-        JSON.stringify({ error: "reCAPTCHA verification failed" }),
-        {
-          status: 400,
-          headers: { "Content-Type": "application/json", ...corsHeaders },
-        }
-      );
-    }
 
     // Send notification to admin
     const adminEmailResponse = await resend.emails.send({
