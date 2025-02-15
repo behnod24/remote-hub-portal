@@ -1,4 +1,3 @@
-
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
@@ -68,9 +67,9 @@ export default function SignUp() {
   return (
     <div className="min-h-screen flex flex-col">
       <Header isAuthPage={true} currentPage="signup" />
-      <div className="flex-1 flex items-center justify-center bg-gradient-to-br from-gradient-start to-gradient-end">
+      <div className="flex-1 flex items-center justify-center bg-gradient-to-br from-gradient-start to-gradient-end py-16 px-4">
         <div className="w-full max-w-md">
-          <div className="glass-card p-8">
+          <div className="glass-card p-8 md:p-10">
             <h1 className="text-3xl font-bold text-center mb-8">Create Account</h1>
 
             <form onSubmit={handleSignUp} className="space-y-6">
@@ -120,7 +119,7 @@ export default function SignUp() {
                 </div>
               </div>
 
-              <Button type="submit" className="w-full" disabled={isLoading}>
+              <Button type="submit" className="w-full text-white" disabled={isLoading}>
                 {isLoading ? 'Creating account...' : 'Sign Up'}
               </Button>
             </form>

@@ -1,4 +1,3 @@
-
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
@@ -77,9 +76,9 @@ export default function SignIn() {
   return (
     <div className="min-h-screen flex flex-col">
       <Header isAuthPage={true} currentPage="signin" />
-      <div className="flex-1 flex items-center justify-center bg-gradient-to-br from-gradient-start to-gradient-end">
+      <div className="flex-1 flex items-center justify-center bg-gradient-to-br from-gradient-start to-gradient-end py-16 px-4">
         <div className="w-full max-w-md">
-          <div className="glass-card p-8">
+          <div className="glass-card p-8 md:p-10">
             <h1 className="text-3xl font-bold text-center mb-8">Sign In</h1>
 
             <form onSubmit={handleSignIn} className="space-y-6">
@@ -113,7 +112,7 @@ export default function SignIn() {
                 </div>
               </div>
 
-              <Button type="submit" className="w-full" disabled={isLoading}>
+              <Button type="submit" className="w-full text-white" disabled={isLoading}>
                 {isLoading ? 'Signing in...' : 'Sign In'}
               </Button>
             </form>
