@@ -453,70 +453,73 @@ function ContactForm() {
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
-          opacity: 0.1
+          opacity: 0.1,
+          zIndex: -1
         }}
       />
 
-      <FormLayout
-        title={
-          <div className="flex items-center gap-4">
-            <img 
-              src={logoUrl}
-              alt="PamirHub Logo" 
-              className="w-10 h-10 rounded-full object-cover"
-              onError={(e) => console.error('Error loading contact form logo:', e)}
-            />
-            <Link 
-              to="/" 
-              className="flex items-center gap-2 px-4 py-2 text-sm font-medium bg-gray-100 hover:bg-gray-200 rounded-full transition-colors"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              Back to Site
-            </Link>
-          </div>
-        }
-        currentStep={currentStep}
-        totalSteps={STEPS.length}
-        onNext={currentStep < STEPS.length ? handleNext : undefined}
-        onPrev={currentStep > 1 ? handlePrev : undefined}
-        isLastStep={currentStep === STEPS.length}
-      >
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="flex flex-wrap justify-between gap-3">
-            <div className="flex w-full flex-col gap-3">
-              <h2 className="text-3xl md:text-4xl font-black leading-tight tracking-[-0.033em]">
-                We'd love to help
-              </h2>
-              <p className="text-neutral-500 text-base font-normal leading-normal">
-                Reach out and we'll get in touch within 24 hours.
-              </p>
+      <div className="relative z-10">
+        <FormLayout
+          title={
+            <div className="flex items-center gap-4">
+              <img 
+                src={logoUrl}
+                alt="PamirHub Logo" 
+                className="w-10 h-10 rounded-full object-cover"
+                onError={(e) => console.error('Error loading contact form logo:', e)}
+              />
+              <Link 
+                to="/" 
+                className="flex items-center gap-2 px-4 py-2 text-sm font-medium bg-gray-100 hover:bg-gray-200 rounded-full transition-colors"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                Back to Site
+              </Link>
             </div>
-          </div>
-
-          {showSuccess && (
-            <div className="absolute inset-0 flex items-center justify-center bg-white/80 backdrop-blur-sm animate-fade-in z-50">
-              <div className="text-center space-y-4 animate-scale-in">
-                <h3 className="text-2xl font-bold text-green-600">Message Sent Successfully!</h3>
-                <p className="text-gray-600">Thank you for reaching out. We'll be in touch soon!</p>
+          }
+          currentStep={currentStep}
+          totalSteps={STEPS.length}
+          onNext={currentStep < STEPS.length ? handleNext : undefined}
+          onPrev={currentStep > 1 ? handlePrev : undefined}
+          isLastStep={currentStep === STEPS.length}
+        >
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="flex flex-wrap justify-between gap-3">
+              <div className="flex w-full flex-col gap-3">
+                <h2 className="text-3xl md:text-4xl font-black leading-tight tracking-[-0.033em]">
+                  We'd love to help
+                </h2>
+                <p className="text-neutral-500 text-base font-normal leading-normal">
+                  Reach out and we'll get in touch within 24 hours.
+                </p>
               </div>
             </div>
-          )}
 
-          {renderStepContent()}
+            {showSuccess && (
+              <div className="absolute inset-0 flex items-center justify-center bg-white/80 backdrop-blur-sm animate-fade-in z-50">
+                <div className="text-center space-y-4 animate-scale-in">
+                  <h3 className="text-2xl font-bold text-green-600">Message Sent Successfully!</h3>
+                  <p className="text-gray-600">Thank you for reaching out. We'll be in touch soon!</p>
+                </div>
+              </div>
+            )}
 
-          {currentStep === STEPS.length && (
-            <div className="flex justify-center py-3">
-              <button
-                type="submit"
-                disabled={loading}
-                className="flex min-w-[84px] w-full max-w-[480px] items-center justify-center overflow-hidden rounded-full h-12 px-5 bg-[#EA2831] text-white text-base font-bold leading-normal tracking-[0.015em] hover:bg-[#D62429] disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <span className="truncate">{loading ? 'Sending...' : 'Send message'}</span>
-              </button>
-            </div>
-          )}
-        </form>
-      </FormLayout>
+            {renderStepContent()}
+
+            {currentStep === STEPS.length && (
+              <div className="flex justify-center py-3">
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="flex min-w-[84px] w-full max-w-[480px] items-center justify-center overflow-hidden rounded-full h-12 px-5 bg-[#EA2831] text-white text-base font-bold leading-normal tracking-[0.015em] hover:bg-[#D62429] disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <span className="truncate">{loading ? 'Sending...' : 'Send message'}</span>
+                </button>
+              </div>
+            )}
+          </form>
+        </FormLayout>
+      </div>
     </div>
   )
 }
