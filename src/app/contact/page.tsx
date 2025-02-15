@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useState } from "react"
@@ -28,7 +29,7 @@ interface ContactFormData {
 function ContactForm() {
   const { toast } = useToast()
   const [loading, setLoading] = useState(false)
-  const [recaptchaToken, setRecaptchaToken] = useState("")
+  const [recaptchaToken, setRecaptchaToken] = useState<string>("")
   const [errors, setErrors] = useState<Partial<ContactFormData>>({})
   
   const [formData, setFormData] = useState<ContactFormData>({
@@ -311,7 +312,7 @@ function ContactForm() {
           </div>
         </div>
       </div>
-      <GoogleReCaptcha onVerify={token => setRecaptchaToken(token)} />
+      <GoogleReCaptcha onVerify={(token: string) => setRecaptchaToken(token)} />
     </div>
   )
 }
