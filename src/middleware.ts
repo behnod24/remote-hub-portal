@@ -47,10 +47,27 @@ export async function middleware(request: NextRequest) {
     '/blog/edit',
   ]
 
+  // Public routes that should never redirect to signin
+  const publicPaths = [
+    '/',
+    '/auth/signin',
+    '/auth/signup',
+    '/auth/reset-password',
+    '/blog',
+    '/companies',
+    '/contact',
+    '/how-it-works',
+  ]
+
   const isProtectedPath = protectedPaths.some(path => 
     request.nextUrl.pathname.startsWith(path)
   )
 
+  const isPublicPath = publicPaths.some(path =>
+    request.nextUrl.pathname === path
+  )
+
+  // Only redirect to signin if it's a protected path and user is not authenticated
   if (isProtectedPath && !session) {
     return NextResponse.redirect(new URL('/auth/signin', request.url))
   }
@@ -60,11 +77,12 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
+    '/',
+    '/auth/:path*',
     '/hire-employee/:path*',
-    '/companies/manage/:path*',
-    '/companies/dashboard/:path*',
-    '/blog/admin/:path*',
-    '/blog/create/:path*',
-    '/blog/edit/:path*',
+    '/companies/:path*',
+    '/blog/:path*',
+    '/contact',
+    '/how-it-works',
   ],
 }

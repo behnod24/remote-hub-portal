@@ -31,11 +31,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setSession(session)
       setUser(session?.user ?? null)
       setIsLoading(false)
-      
-      // Only redirect to dashboard if user is authenticated and on auth pages
-      if (session && location.pathname.startsWith('/auth/')) {
-        navigate('/dashboard')
-      }
     })
 
     // Listen for auth changes
@@ -44,10 +39,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setUser(session?.user ?? null)
       setIsLoading(false)
 
+      // Only redirect if user is on auth pages and is authenticated
       if (session && location.pathname.startsWith('/auth/')) {
         navigate('/dashboard')
-      } else if (!session && !location.pathname.startsWith('/auth/')) {
-        navigate('/auth/signin')
       }
     })
 
