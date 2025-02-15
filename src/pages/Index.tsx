@@ -51,7 +51,7 @@ const Index = () => {
   ];
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-gradient-to-b from-white to-gray-50">
       {/* Navigation */}
       <nav className="fixed w-full z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
         <div className="container mx-auto px-4 py-4">
@@ -138,45 +138,55 @@ const Index = () => {
       )}
 
       {/* Hero Section */}
-      <section 
-        className="pt-32 pb-20 px-4 relative min-h-[600px] flex items-center"
-        style={{
-          backgroundImage: backgroundUrl ? `url(${backgroundUrl})` : 'none',
-          backgroundSize: 'contain',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
-          backgroundColor: '#f5f5f5' // Light background to complement the image
-        }}
-      >
-        <div className="absolute inset-0 bg-gradient-to-b from-black/60 to-black/40" /> {/* Gradient overlay for better text readability */}
-        <div className="container mx-auto text-center relative z-10">
-          <motion.h1 
-            className="text-4xl md:text-6xl font-bold mb-6 leading-tight text-white"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            Modernizing Workforce Hiring <br className="hidden md:block" />for Companies
-          </motion.h1>
-          <motion.p 
-            className="text-lg md:text-xl text-white/90 mb-8 max-w-3xl mx-auto"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-          >
-            PamirHub's expert team delivers engineering, IT, design, sales, and marketing solutions 
-            remotely—efficient, cost-effective, and hassle-free.
-          </motion.p>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.4 }}
-          >
-            <button className="btn-primary inline-flex items-center">
-              Hire Experts Today
-              <ChevronRight className="ml-2 w-5 h-5" />
-            </button>
-          </motion.div>
+      <section className="relative min-h-[80vh] flex items-center overflow-hidden">
+        {/* Background with overlay */}
+        <div 
+          className="absolute inset-0 z-0"
+          style={{
+            backgroundImage: backgroundUrl ? `url(${backgroundUrl})` : 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
+            backgroundSize: '100% auto',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            opacity: 0.8
+          }}
+        />
+        
+        {/* Gradient overlays for depth */}
+        <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-transparent z-1" />
+        <div className="absolute inset-0 bg-gradient-to-b from-white/80 via-transparent to-white/80 z-1" />
+        
+        {/* Content */}
+        <div className="container mx-auto px-4 pt-32 pb-20 relative z-10">
+          <div className="max-w-4xl mx-auto text-center">
+            <motion.h1 
+              className="text-4xl md:text-6xl font-bold mb-6 leading-tight bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              Modernizing Workforce Hiring <br className="hidden md:block" />for Companies
+            </motion.h1>
+            <motion.p 
+              className="text-lg md:text-xl text-text-secondary mb-8 max-w-3xl mx-auto"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+            >
+              PamirHub's expert team delivers engineering, IT, design, sales, and marketing solutions 
+              remotely—efficient, cost-effective, and hassle-free.
+            </motion.p>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+              className="space-x-4"
+            >
+              <button className="btn-primary inline-flex items-center">
+                Hire Experts Today
+                <ChevronRight className="ml-2 w-5 h-5" />
+              </button>
+            </motion.div>
+          </div>
         </div>
       </section>
 
