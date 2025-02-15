@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react'
 import { AlertCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -11,6 +10,7 @@ import DashboardHeader from '@/components/dashboard/DashboardHeader'
 import DashboardSidebar from '@/components/dashboard/DashboardSidebar'
 import SentimentAnalysis from '@/components/dashboard/SentimentAnalysis'
 import TweetList from '@/components/dashboard/TweetList'
+import { useIsMobile } from '@/hooks/use-mobile'
 
 const sentimentData = [
   { name: 'Mon', value: 65 },
@@ -63,6 +63,8 @@ export default function Dashboard() {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const { toast } = useToast()
+  const isMobile = useIsMobile()
+  const [isSidebarOpen, setIsSidebarOpen] = useState(!isMobile)
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -153,11 +155,11 @@ export default function Dashboard() {
             <Button
               variant="ghost"
               onClick={() => navigate('/')}
-              className="text-white hover:text-primary px-4 py-2 h-10"
+              className="text-white hover:text-primary px-4 py-2 h-10 text-sm md:text-base"
             >
               Back to Site
             </Button>
-            <span className="text-white text-lg font-semibold whitespace-nowrap">
+            <span className="text-white text-base md:text-lg font-semibold whitespace-nowrap">
               PamirHub
             </span>
           </div>
@@ -169,14 +171,22 @@ export default function Dashboard() {
             onSettingsClick={() => setShowProfileManager(true)}
           />
 
-          <div className="flex flex-1 gap-1 px-6 py-5">
-            <DashboardSidebar
-              userEmail={user?.email || ''}
-              userRole={userProfile?.role || 'user'}
-              avatarUrl={userProfile?.avatar_url}
-            />
+          <div className="flex flex-1 flex-col lg:flex-row gap-1 px-2 md:px-6 py-5">
+            {(isSidebarOpen || !isMobile) && (
+              <div className={`${isMobile ? 'fixed inset-0 z-50 bg-black/50' : ''}`} onClick={() => isMobile && setIsSidebarOpen(false)}>
+                <div className={`${isMobile ? 'w-64 h-full' : ''}`} onClick={e => e.stopPropagation()}>
+                  <DashboardSidebar
+                    userEmail={user?.email || ''}
+                    userRole={userProfile?.role || 'user'}
+                    avatarUrl={userProfile?.avatar_url}
+                    onClose={() => setIsSidebarOpen(false)}
+                    isMobile={isMobile}
+                  />
+                </div>
+              </div>
+            )}
 
-            <div className="flex flex-1 flex-col max-w-[960px]">
+            <div className="flex flex-1 flex-col max-w-full lg:max-w-[960px]">
               {showProfileManager && userProfile ? (
                 <ProfileManager
                   userId={user?.id || ''}
@@ -186,16 +196,33 @@ export default function Dashboard() {
                 />
               ) : (
                 <>
-                  <h1 className="px-4 pb-3 pt-6 text-[32px] font-bold leading-tight text-white">
-                    Sentiment analysis
-                  </h1>
-
-                  <div className="flex flex-wrap gap-4 px-4 py-6">
-                    <SentimentAnalysis data={sentimentData} />
-                    <SentimentAnalysis data={sentimentData} />
+                  <div className="flex items-center justify-between px-4 pb-3 pt-6">
+                    <h1 className="text-2xl md:text-[32px] font-bold leading-tight text-white">
+                      Sentiment analysis
+                    </h1>
+                    {isMobile && (
+                      <Button
+                        variant="ghost"
+                        onClick={() => setIsSidebarOpen(true)}
+                        className="lg:hidden text-white"
+                      >
+                        Menu
+                      </Button>
+                    )}
                   </div>
 
-                  <TweetList tweets={tweets} />
+                  <div className="flex flex-wrap gap-4 px-4 py-6">
+                    <div className="w-full md:w-auto">
+                      <SentimentAnalysis data={sentimentData} />
+                    </div>
+                    <div className="w-full md:w-auto">
+                      <SentimentAnalysis data={sentimentData} />
+                    </div>
+                  </div>
+
+                  <div className="px-4">
+                    <TweetList tweets={tweets} />
+                  </div>
                 </>
               )}
             </div>
