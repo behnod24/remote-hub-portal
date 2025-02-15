@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useState, useEffect } from "react"
@@ -367,12 +368,39 @@ function ContactForm() {
 
   return (
     <FormLayout
-      title="Contact Us"
+      title={
+        <div className="flex items-center justify-between w-full">
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3">
+              <div
+                className="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10"
+                style={{backgroundImage: 'url("/placeholder.svg")'}}
+              />
+              <h1 className="text-base font-medium leading-normal">PamirHub</h1>
+            </div>
+            <Link 
+              to="/" 
+              className="flex items-center gap-2 px-4 py-2 text-sm font-medium bg-gray-100 hover:bg-gray-200 rounded-full transition-colors"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Back to Site
+            </Link>
+          </div>
+          <button
+            onClick={() => setDarkMode(!darkMode)}
+            className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700"
+          >
+            {darkMode ? <Sun className="h-6 w-6" /> : <Moon className="h-6 w-6" />}
+          </button>
+        </div>
+      }
       currentStep={currentStep}
       totalSteps={STEPS.length}
       onNext={currentStep < STEPS.length ? handleNext : undefined}
       onPrev={currentStep > 1 ? handlePrev : undefined}
       isLastStep={currentStep === STEPS.length}
+      nextButtonClassName="w-full sm:w-auto px-6 py-2 bg-[#EA2831] text-white rounded-full hover:bg-[#D62429] transition-colors"
+      prevButtonClassName="w-full sm:w-auto px-6 py-2 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors"
     >
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="flex flex-wrap justify-between gap-3">
