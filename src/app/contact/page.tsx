@@ -11,6 +11,13 @@ import PhoneInput from 'react-phone-input-2'
 import 'react-phone-input-2/lib/style.css'
 import FormLayout from "@/components/layout/FormLayout"
 import confetti from 'canvas-confetti'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 interface ContactFormData {
   first_name: string
@@ -29,6 +36,25 @@ interface FormErrors extends Partial<Record<keyof ContactFormData, string>> {}
 const STORAGE_KEY = 'contact_form_data'
 const STEPS = ['Basic Info', 'Company Details', 'Message']
 
+const COMPANY_SIZES = [
+  "1-10 employees",
+  "11-50 employees",
+  "51-200 employees",
+  "201-500 employees",
+  "501-1000 employees",
+  "1000+ employees"
+]
+
+// Major cities by country code
+const CITIES_BY_COUNTRY: { [key: string]: string[] } = {
+  us: ["New York", "Los Angeles", "Chicago", "Houston", "Phoenix", "Philadelphia"],
+  gb: ["London", "Manchester", "Birmingham", "Glasgow", "Liverpool", "Edinburgh"],
+  ca: ["Toronto", "Montreal", "Vancouver", "Calgary", "Ottawa", "Edmonton"],
+  au: ["Sydney", "Melbourne", "Brisbane", "Perth", "Adelaide", "Gold Coast"],
+  nz: ["Auckland", "Wellington", "Christchurch", "Hamilton", "Tauranga", "Dunedin"],
+  // Add more countries as needed
+}
+
 function ContactForm() {
   const { toast } = useToast()
   const [loading, setLoading] = useState(false)
@@ -37,6 +63,8 @@ function ContactForm() {
   const [showSuccess, setShowSuccess] = useState(false)
   const [logoUrl, setLogoUrl] = useState("")
   const [bgUrl, setBgUrl] = useState("")
+  const [selectedCountry, setSelectedCountry] = useState("")
+  const [availableCities, setAvailableCities] = useState<string[]>([])
   
   const [formData, setFormData] = useState<ContactFormData>({
     first_name: "",
@@ -80,9 +108,19 @@ function ContactForm() {
     fetchAssets()
   }, [])
 
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(formData))
-  }, [formData])
+  // Update cities when country changes
+  const handlePhoneChange = (value: string, country: any) => {
+    setFormData(prev => ({ ...prev, phone: value }))
+    if (country?.countryCode) {
+      setSelectedCountry(country.countryCode.toLowerCase())
+      const cities = CITIES_BY_COUNTRY[country.countryCode.toLowerCase()] || []
+      setAvailableCities(cities)
+      // Reset location if the current location is not in the new cities list
+      if (!cities.includes(formData.location)) {
+        setFormData(prev => ({ ...prev, location: "" }))
+      }
+    }
+  }
 
   const suggestCompanySize = async () => {
     if (formData.location && !formData.team_size) {
@@ -353,7 +391,7 @@ function ContactForm() {
               <PhoneInput
                 country={'us'}
                 value={formData.phone}
-                onChange={phone => setFormData(prev => ({ ...prev, phone }))}
+                onChange={(phone, country) => handlePhoneChange(phone, country)}
                 containerClass="!w-full"
                 inputClass="!w-full !h-14 !rounded-xl !border-[#E0E0E0] !bg-[#FFFFFF]"
                 buttonClass="!border-[#E0E0E0] !rounded-l-xl"
@@ -368,24 +406,40 @@ function ContactForm() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <label className="flex flex-col">
                 <p className="text-base font-medium leading-normal pb-2">Company size</p>
-                <Input
-                  placeholder="1-50 people"
+                <Select
                   value={formData.team_size}
-                  onChange={e => setFormData(prev => ({ ...prev, team_size: e.target.value }))}
-                  className="rounded-xl h-14 border-[#E0E0E0] bg-[#FFFFFF]"
-                />
+                  onValueChange={(value) => setFormData(prev => ({ ...prev, team_size: value }))}
+                >
+                  <SelectTrigger className="rounded-xl h-14 border-[#E0E0E0] bg-[#FFFFFF]">
+                    <SelectValue placeholder="Select company size" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {COMPANY_SIZES.map((size) => (
+                      <SelectItem key={size} value={size}>
+                        {size}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </label>
               <label className="flex flex-col">
                 <p className="text-base font-medium leading-normal pb-2">Location</p>
-                <Input
-                  placeholder="New Zealand"
+                <Select
                   value={formData.location}
-                  onChange={e => {
-                    setFormData(prev => ({ ...prev, location: e.target.value }))
-                    suggestCompanySize()
-                  }}
-                  className="rounded-xl h-14 border-[#E0E0E0] bg-[#FFFFFF]"
-                />
+                  onValueChange={(value) => setFormData(prev => ({ ...prev, location: value }))}
+                  disabled={availableCities.length === 0}
+                >
+                  <SelectTrigger className="rounded-xl h-14 border-[#E0E0E0] bg-[#FFFFFF]">
+                    <SelectValue placeholder={availableCities.length === 0 ? "Select a country first" : "Select city"} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {availableCities.map((city) => (
+                      <SelectItem key={city} value={city}>
+                        {city}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </label>
             </div>
           </div>
