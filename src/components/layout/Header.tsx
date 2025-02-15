@@ -120,20 +120,20 @@ const Header = ({ isAuthPage, currentPage }: HeaderProps) => {
               <div className="flex items-center gap-2">
                 {!isAuthPage ? (
                   <>
-                    <Button variant="ghost" onClick={() => navigate('/auth/signin')}>
+                    <Button variant="ghost" onClick={() => navigate('/auth/signin')} className="text-white">
                       Sign in
                     </Button>
-                    <Button onClick={() => navigate('/auth/signup')}>
+                    <Button onClick={() => navigate('/auth/signup')} className="text-white">
                       Create account
                     </Button>
                   </>
                 ) : (
                   currentPage === 'signin' ? (
-                    <Button onClick={() => navigate('/auth/signup')}>
+                    <Button onClick={() => navigate('/auth/signup')} className="text-white">
                       Create account
                     </Button>
                   ) : (
-                    <Button variant="ghost" onClick={() => navigate('/auth/signin')}>
+                    <Button variant="ghost" onClick={() => navigate('/auth/signin')} className="text-white">
                       Sign in
                     </Button>
                   )
