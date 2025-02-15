@@ -14,13 +14,13 @@ export default function ContactPage() {
   const { toast } = useToast()
   const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
+    first_name: "",
+    last_name: "",
     email: "",
-    teamSize: "",
+    team_size: "",
     location: "",
     message: "",
-    acceptsPrivacy: false
+    accepts_privacy: false
   })
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -41,13 +41,13 @@ export default function ContactPage() {
 
       // Reset form
       setFormData({
-        firstName: "",
-        lastName: "",
+        first_name: "",
+        last_name: "",
         email: "",
-        teamSize: "",
+        team_size: "",
         location: "",
         message: "",
-        acceptsPrivacy: false
+        accepts_privacy: false
       })
     } catch (error) {
       console.error('Error submitting form:', error)
@@ -123,8 +123,8 @@ export default function ContactPage() {
                   <p className="text-black text-base font-medium leading-normal pb-2">First name</p>
                   <Input
                     placeholder="First name"
-                    value={formData.firstName}
-                    onChange={e => setFormData(prev => ({ ...prev, firstName: e.target.value }))}
+                    value={formData.first_name}
+                    onChange={e => setFormData(prev => ({ ...prev, first_name: e.target.value }))}
                     className="rounded-xl h-14 border-[#E0E0E0] bg-[#FFFFFF] focus:border-[#E0E0E0]"
                     required
                   />
@@ -133,8 +133,8 @@ export default function ContactPage() {
                   <p className="text-black text-base font-medium leading-normal pb-2">Last name</p>
                   <Input
                     placeholder="Last name"
-                    value={formData.lastName}
-                    onChange={e => setFormData(prev => ({ ...prev, lastName: e.target.value }))}
+                    value={formData.last_name}
+                    onChange={e => setFormData(prev => ({ ...prev, last_name: e.target.value }))}
                     className="rounded-xl h-14 border-[#E0E0E0] bg-[#FFFFFF] focus:border-[#E0E0E0]"
                     required
                   />
@@ -158,8 +158,8 @@ export default function ContactPage() {
                   <p className="text-black text-base font-medium leading-normal pb-2">Team size</p>
                   <Input
                     placeholder="1-50 people"
-                    value={formData.teamSize}
-                    onChange={e => setFormData(prev => ({ ...prev, teamSize: e.target.value }))}
+                    value={formData.team_size}
+                    onChange={e => setFormData(prev => ({ ...prev, team_size: e.target.value }))}
                     className="rounded-xl h-14 border-[#E0E0E0] bg-[#FFFFFF] focus:border-[#E0E0E0]"
                   />
                 </label>
@@ -189,8 +189,8 @@ export default function ContactPage() {
                 <label className="flex gap-x-3 py-3 flex-row">
                   <input
                     type="checkbox"
-                    checked={formData.acceptsPrivacy}
-                    onChange={e => setFormData(prev => ({ ...prev, acceptsPrivacy: e.target.checked }))}
+                    checked={formData.accepts_privacy}
+                    onChange={e => setFormData(prev => ({ ...prev, accepts_privacy: e.target.checked }))}
                     className="h-5 w-5 rounded border-[#E0E0E0] border-2 bg-transparent text-[#EA2831] checked:bg-[#EA2831] checked:border-[#EA2831] focus:ring-0 focus:ring-offset-0"
                     required
                   />
