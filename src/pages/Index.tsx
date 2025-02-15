@@ -1,10 +1,17 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ChevronRight, Users, Briefcase, Code, PenTool, MessageSquare, DollarSign } from "lucide-react";
+import { ChevronRight, Briefcase, Code, PenTool, MessageSquare } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/context/AuthContext";
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, Button } from "@radix-ui/react-dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { 
+  DropdownMenu, 
+  DropdownMenuTrigger, 
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuSeparator 
+} from "@/components/ui/dropdown-menu";
 import { User } from "lucide-react";
 
 const Index = () => {
@@ -17,7 +24,6 @@ const Index = () => {
   useEffect(() => {
     const fetchAssets = async () => {
       try {
-        // Fetch logo
         const { data: logoData } = supabase
           .storage
           .from('site-assets')
@@ -28,7 +34,6 @@ const Index = () => {
           setLogoUrl(logoData.publicUrl)
         }
 
-        // Fetch background
         const { data: bgData } = supabase
           .storage
           .from('site-assets')
@@ -55,7 +60,6 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-gray-50">
-      {/* Navigation */}
       <nav className="fixed w-full z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
@@ -135,7 +139,6 @@ const Index = () => {
         </div>
       </nav>
 
-      {/* Mobile Menu */}
       {isMenuOpen && (
         <div className="fixed inset-0 z-40 bg-white md:hidden pt-20">
           <div className="container mx-auto px-4 py-4">
@@ -197,9 +200,7 @@ const Index = () => {
         </div>
       )}
 
-      {/* Hero Section */}
       <section className="relative min-h-[80vh] md:min-h-[70vh] flex items-center overflow-hidden">
-        {/* Background with overlay */}
         <div 
           className="absolute inset-0 z-0"
           style={{
@@ -211,11 +212,9 @@ const Index = () => {
           }}
         />
         
-        {/* Gradient overlays for depth */}
         <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-transparent z-1" />
         <div className="absolute inset-0 bg-gradient-to-b from-white/90 via-white/50 to-white/90 z-1" />
         
-        {/* Content */}
         <div className="container mx-auto px-4 pt-20 md:pt-32 pb-12 md:pb-20 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
             <motion.h1 
@@ -250,7 +249,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Categories Section */}
       <section className="py-20 bg-secondary/30">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
@@ -278,7 +276,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* CTA Section */}
       <section className="py-20">
         <div className="container mx-auto px-4">
           <div className="glass-card p-8 md:p-12 text-center max-w-4xl mx-auto">
