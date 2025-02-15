@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useState, useEffect } from "react"
@@ -352,7 +353,14 @@ function ContactForm() {
               alt="PamirHub Logo" 
               className="w-10 h-10 rounded-full object-cover"
             />
-            <h1 className="text-base font-medium leading-normal">PamirHub</h1>
+            <div className="flex items-center gap-2">
+              <img 
+                src="/lovable-uploads/9a937071-e75a-4f6f-b7cb-36ba4eb120ca.png" 
+                alt="PamirHub Icon" 
+                className="w-5 h-5 rounded-full object-cover"
+              />
+              <h1 className="text-base font-medium leading-normal">PamirHub</h1>
+            </div>
           </div>
           <Link 
             to="/" 
