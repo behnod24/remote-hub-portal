@@ -1,14 +1,17 @@
-
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ChevronRight, Users, Briefcase, Code, PenTool, MessageSquare, DollarSign } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client"
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/context/AuthContext";
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, Button } from "@radix-ui/react-dropdown-menu";
+import { User } from "lucide-react";
 
 const Index = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [logoUrl, setLogoUrl] = useState("");
   const [backgroundUrl, setBackgroundUrl] = useState("");
+  const { user } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -62,7 +65,7 @@ const Index = () => {
                   src={logoUrl} 
                   alt="PamirHub Logo" 
                   className="h-8 w-auto md:h-10 object-contain"
-                  onError={(e) => console.error('Error loading image:', e)} // Debug handler
+                  onError={(e) => console.error('Error loading image:', e)}
                 />
               )}
             </Link>
@@ -76,18 +79,48 @@ const Index = () => {
             </div>
 
             <div className="hidden md:flex items-center space-x-4">
-              <button 
-                className="px-4 py-2 text-text-secondary hover:text-text transition-colors"
-                onClick={() => navigate('/auth/signin')}
-              >
-                Login
-              </button>
-              <button 
-                className="btn-primary"
-                onClick={() => navigate('/auth/signup')}
-              >
-                Sign Up
-              </button>
+              {user ? (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" className="gap-2">
+                      <User className="h-5 w-5" />
+                      <span className="hidden sm:inline">
+                        {user.email ? (user.email.length > 20 ? user.email.substring(0, 17) + '...' : user.email) : ''}
+                      </span>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-56">
+                    <DropdownMenuItem onClick={() => navigate('/dashboard')}>
+                      Dashboard
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate('/profile')}>
+                      Profile Settings
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={async () => {
+                      await supabase.auth.signOut()
+                      navigate('/')
+                    }}>
+                      Sign Out
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : (
+                <>
+                  <button 
+                    className="px-4 py-2 text-text-secondary hover:text-text transition-colors"
+                    onClick={() => navigate('/auth/signin')}
+                  >
+                    Login
+                  </button>
+                  <button 
+                    className="btn-primary"
+                    onClick={() => navigate('/auth/signup')}
+                  >
+                    Sign Up
+                  </button>
+                </>
+              )}
             </div>
 
             <button 
@@ -112,26 +145,53 @@ const Index = () => {
               <Link to="/how-it-works" className="nav-link" onClick={() => setIsMenuOpen(false)}>How It Works</Link>
               <Link to="/blog" className="nav-link" onClick={() => setIsMenuOpen(false)}>Blog</Link>
               <Link to="/contact" className="nav-link" onClick={() => setIsMenuOpen(false)}>Contact</Link>
-              <div className="pt-4 flex flex-col space-y-4">
-                <button 
-                  className="px-4 py-2 text-text-secondary hover:text-text transition-colors"
-                  onClick={() => {
-                    setIsMenuOpen(false);
-                    navigate('/auth/signin');
-                  }}
-                >
-                  Login
-                </button>
-                <button 
-                  className="btn-primary"
-                  onClick={() => {
-                    setIsMenuOpen(false);
-                    navigate('/auth/signup');
-                  }}
-                >
-                  Sign Up
-                </button>
-              </div>
+              {user ? (
+                <>
+                  <button 
+                    className="text-left px-4 py-2 text-text-secondary hover:text-text transition-colors"
+                    onClick={() => navigate('/dashboard')}
+                  >
+                    Dashboard
+                  </button>
+                  <button 
+                    className="text-left px-4 py-2 text-text-secondary hover:text-text transition-colors"
+                    onClick={() => navigate('/profile')}
+                  >
+                    Profile Settings
+                  </button>
+                  <button 
+                    className="text-left px-4 py-2 text-text-secondary hover:text-text transition-colors"
+                    onClick={async () => {
+                      await supabase.auth.signOut()
+                      navigate('/')
+                      setIsMenuOpen(false)
+                    }}
+                  >
+                    Sign Out
+                  </button>
+                </>
+              ) : (
+                <div className="pt-4 flex flex-col space-y-4">
+                  <button 
+                    className="px-4 py-2 text-text-secondary hover:text-text transition-colors"
+                    onClick={() => {
+                      setIsMenuOpen(false)
+                      navigate('/auth/signin')
+                    }}
+                  >
+                    Login
+                  </button>
+                  <button 
+                    className="btn-primary"
+                    onClick={() => {
+                      setIsMenuOpen(false)
+                      navigate('/auth/signup')
+                    }}
+                  >
+                    Sign Up
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </div>

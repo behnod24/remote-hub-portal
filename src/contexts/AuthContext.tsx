@@ -27,21 +27,25 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     // Check active session
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    const checkSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession()
       setSession(session)
       setUser(session?.user ?? null)
       setIsLoading(false)
-    })
+    }
+
+    checkSession()
 
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      console.log('Auth state changed:', _event, session?.user?.email)
       setSession(session)
       setUser(session?.user ?? null)
       setIsLoading(false)
 
       // Only redirect if user is on auth pages and is authenticated
       if (session && location.pathname.startsWith('/auth/')) {
-        navigate('/dashboard')
+        navigate('/')
       }
     })
 
@@ -51,7 +55,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const signOut = async () => {
     try {
       await supabase.auth.signOut()
-      navigate('/auth/signin')
+      navigate('/')
     } catch (error) {
       console.error('Error signing out:', error)
     }
