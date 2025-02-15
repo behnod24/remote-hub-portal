@@ -2,11 +2,13 @@
 "use client"
 
 import { useState } from "react"
+import { Link } from "react-router-dom"
 import FormLayout from "@/components/layout/FormLayout"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { supabase } from "@/integrations/supabase/client"
 import { useToast } from "@/components/ui/use-toast"
+import { ArrowLeft } from "lucide-react"
 
 export default function ContactPage() {
   const { toast } = useToast()
@@ -72,6 +74,12 @@ export default function ContactPage() {
                     style={{backgroundImage: 'url("/placeholder.svg")'}}
                   />
                   <h1 className="text-black text-base font-medium leading-normal">JobHub</h1>
+                </div>
+                <div className="flex flex-col gap-2">
+                  <Link to="/" className="flex items-center gap-3 px-3 py-2 rounded-full bg-[#EEEEEE] hover:bg-[#E0E0E0] transition-colors">
+                    <ArrowLeft className="text-black h-6 w-6" />
+                    <p className="text-black text-sm font-medium leading-normal">Back to site</p>
+                  </Link>
                 </div>
               </div>
               <div className="flex flex-col gap-1">
