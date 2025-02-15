@@ -12,6 +12,7 @@ import Companies from '@/pages/companies'
 import Contact from '@/pages/contact'
 import HireEmployee from '@/pages/hire-employee'
 import HowItWorks from '@/pages/how-it-works'
+import CompanyProfile from '@/pages/company'
 import { AuthProvider } from '@/contexts/AuthContext'
 
 function App() {
@@ -29,6 +30,7 @@ function App() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/hire-employee" element={<HireEmployee />} />
           <Route path="/how-it-works" element={<HowItWorks />} />
+          <Route path="/company" element={<CompanyProfile />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
         <Toaster />
