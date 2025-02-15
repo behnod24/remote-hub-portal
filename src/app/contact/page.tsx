@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useState, useEffect } from "react"
@@ -35,6 +36,7 @@ function ContactForm() {
   const [errors, setErrors] = useState<FormErrors>({})
   const [currentStep, setCurrentStep] = useState(1)
   const [showSuccess, setShowSuccess] = useState(false)
+  const [logoUrl, setLogoUrl] = useState("/lovable-uploads/9a937071-e75a-4f6f-b7cb-36ba4eb120ca.png")
   
   const [formData, setFormData] = useState<ContactFormData>({
     first_name: "",
@@ -49,10 +51,22 @@ function ContactForm() {
   })
 
   useEffect(() => {
-    const savedData = localStorage.getItem(STORAGE_KEY)
-    if (savedData) {
-      setFormData(JSON.parse(savedData))
+    const fetchLogo = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('site_settings')
+          .select('logo_url')
+          .single()
+
+        if (data?.logo_url) {
+          setLogoUrl(data.logo_url)
+        }
+      } catch (error) {
+        console.error('Error fetching logo:', error)
+      }
     }
+
+    fetchLogo()
   }, [])
 
   useEffect(() => {
@@ -424,7 +438,7 @@ function ContactForm() {
       title={
         <div className="flex items-center gap-4">
           <img 
-            src="/lovable-uploads/9a937071-e75a-4f6f-b7cb-36ba4eb120ca.png" 
+            src={logoUrl}
             alt="PamirHub Logo" 
             className="w-10 h-10 rounded-full object-cover"
           />
