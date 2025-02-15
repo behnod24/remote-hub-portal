@@ -36,7 +36,7 @@ function ContactForm() {
   const [errors, setErrors] = useState<FormErrors>({})
   const [currentStep, setCurrentStep] = useState(1)
   const [showSuccess, setShowSuccess] = useState(false)
-  const [logoUrl, setLogoUrl] = useState("/lovable-uploads/9a937071-e75a-4f6f-b7cb-36ba4eb120ca.png")
+  const [logoUrl, setLogoUrl] = useState("")
   
   const [formData, setFormData] = useState<ContactFormData>({
     first_name: "",
@@ -53,13 +53,14 @@ function ContactForm() {
   useEffect(() => {
     const fetchLogo = async () => {
       try {
-        const { data, error } = await supabase
-          .from('site_settings')
-          .select('logo_url')
-          .single()
+        const { data: { publicUrl } } = supabase
+          .storage
+          .from('site-assets')
+          .getPublicUrl('logo.png')
 
-        if (data?.logo_url) {
-          setLogoUrl(data.logo_url)
+        if (publicUrl) {
+          console.log('Contact Form Logo URL:', publicUrl)
+          setLogoUrl(publicUrl)
         }
       } catch (error) {
         console.error('Error fetching logo:', error)
@@ -441,6 +442,7 @@ function ContactForm() {
             src={logoUrl}
             alt="PamirHub Logo" 
             className="w-10 h-10 rounded-full object-cover"
+            onError={(e) => console.error('Error loading contact form logo:', e)}
           />
           <Link 
             to="/" 
