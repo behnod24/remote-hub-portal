@@ -1,7 +1,6 @@
-
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { Link } from "react-router-dom"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -342,12 +341,10 @@ function ContactForm() {
           </div>
         </div>
       </div>
-      <GoogleReCaptcha onVerify={(token: string) => setRecaptchaToken(token)} />
     </div>
   )
 }
 
-// Wrap the form with reCAPTCHA provider
 export default function ContactPage() {
   return (
     <GoogleReCaptchaProvider
