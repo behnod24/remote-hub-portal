@@ -45,76 +45,87 @@ const COMPANY_SIZES = [
   "1000+ employees"
 ]
 
-// Expanded list of cities by country code
+// Expanded list of cities by country code with major cities first
 const CITIES_BY_COUNTRY: { [key: string]: string[] } = {
   us: [
-    "New York", "Los Angeles", "Chicago", "Houston", "Phoenix", "Philadelphia",
-    "San Antonio", "San Diego", "Dallas", "San Jose", "Austin", "Jacksonville",
-    "Fort Worth", "Columbus", "San Francisco", "Charlotte", "Indianapolis",
-    "Seattle", "Denver", "Washington DC", "Boston", "Nashville", "Baltimore",
-    "Portland", "Las Vegas", "Milwaukee", "Albuquerque", "Atlanta", "Miami"
+    "New York", "Los Angeles", "Chicago",
+    "Albuquerque", "Atlanta", "Austin", "Baltimore", "Boston", "Charlotte",
+    "Columbus", "Dallas", "Denver", "Fort Worth", "Houston", "Indianapolis",
+    "Jacksonville", "Las Vegas", "Miami", "Milwaukee", "Nashville", "Philadelphia",
+    "Phoenix", "Portland", "San Antonio", "San Diego", "San Francisco", "San Jose",
+    "Seattle", "Washington DC"
   ],
   gb: [
-    "London", "Manchester", "Birmingham", "Glasgow", "Liverpool", "Edinburgh",
-    "Leeds", "Sheffield", "Bristol", "Newcastle", "Nottingham", "Cardiff",
-    "Belfast", "Leicester", "Aberdeen", "Cambridge", "Oxford", "Plymouth",
-    "Southampton", "Portsmouth", "Brighton", "York", "Durham", "Bath",
-    "Coventry", "Swansea", "Norwich", "Exeter", "Chester"
+    "London", "Manchester", "Birmingham",
+    "Aberdeen", "Bath", "Belfast", "Brighton", "Bristol", "Cambridge",
+    "Cardiff", "Chester", "Coventry", "Durham", "Edinburgh", "Exeter",
+    "Glasgow", "Leeds", "Leicester", "Liverpool", "Newcastle", "Norwich",
+    "Nottingham", "Oxford", "Plymouth", "Portsmouth", "Sheffield", "Southampton",
+    "Swansea", "York"
   ],
   ca: [
-    "Toronto", "Montreal", "Vancouver", "Calgary", "Ottawa", "Edmonton",
-    "Mississauga", "Winnipeg", "Quebec City", "Hamilton", "Brampton", "Surrey",
-    "Halifax", "Victoria", "London", "St. John's", "Saskatoon", "Regina",
-    "Burnaby", "Richmond", "Windsor", "Kitchener", "Longueuil", "Waterloo"
+    "Toronto", "Vancouver", "Montreal",
+    "Brampton", "Burnaby", "Calgary", "Edmonton", "Halifax", "Hamilton",
+    "Kitchener", "London", "Longueuil", "Mississauga", "Ottawa", "Quebec City",
+    "Regina", "Richmond", "Saskatoon", "St. John's", "Surrey", "Victoria",
+    "Waterloo", "Windsor", "Winnipeg"
   ],
   au: [
-    "Sydney", "Melbourne", "Brisbane", "Perth", "Adelaide", "Gold Coast",
-    "Newcastle", "Canberra", "Wollongong", "Hobart", "Geelong", "Townsville",
-    "Cairns", "Darwin", "Toowoomba", "Ballarat", "Bendigo", "Launceston",
-    "Mackay", "Rockhampton", "Bunbury", "Bundaberg", "Albury", "Wagga Wagga"
+    "Sydney", "Melbourne", "Brisbane",
+    "Adelaide", "Albury", "Ballarat", "Bendigo", "Bunbury", "Bundaberg",
+    "Cairns", "Canberra", "Darwin", "Geelong", "Gold Coast", "Hobart",
+    "Launceston", "Mackay", "Newcastle", "Perth", "Rockhampton", "Toowoomba",
+    "Townsville", "Wagga Wagga", "Wollongong"
   ],
   nz: [
-    "Auckland", "Wellington", "Christchurch", "Hamilton", "Tauranga", "Dunedin",
-    "Palmerston North", "Napier", "Porirua", "New Plymouth", "Rotorua", "Whanganui",
-    "Nelson", "Invercargill", "Whanganui", "Gisborne", "Cambridge", "Timaru",
-    "Blenheim", "Pukekohe", "Queenstown", "Masterton", "Levin", "Papakura"
+    "Auckland", "Wellington", "Christchurch",
+    "Blenheim", "Cambridge", "Dunedin", "Gisborne", "Hamilton", "Invercargill",
+    "Levin", "Masterton", "Napier", "Nelson", "New Plymouth", "Palmerston North",
+    "Papakura", "Porirua", "Pukekohe", "Queenstown", "Rotorua", "Timaru",
+    "Tauranga", "Whanganui", "Whangarei"
   ],
   de: [
-    "Berlin", "Hamburg", "Munich", "Cologne", "Frankfurt", "Stuttgart",
-    "Düsseldorf", "Leipzig", "Dortmund", "Essen", "Bremen", "Dresden",
-    "Hanover", "Nuremberg", "Duisburg", "Bochum", "Wuppertal", "Bielefeld",
-    "Bonn", "Münster", "Karlsruhe", "Mannheim", "Augsburg", "Wiesbaden"
+    "Berlin", "Hamburg", "Munich",
+    "Augsburg", "Bielefeld", "Bochum", "Bonn", "Bremen", "Cologne",
+    "Dortmund", "Dresden", "Duisburg", "Düsseldorf", "Essen", "Frankfurt",
+    "Hanover", "Karlsruhe", "Leipzig", "Mannheim", "Münster", "Nuremberg",
+    "Stuttgart", "Wiesbaden", "Wuppertal"
   ],
   fr: [
-    "Paris", "Marseille", "Lyon", "Toulouse", "Nice", "Nantes",
-    "Strasbourg", "Montpellier", "Bordeaux", "Lille", "Rennes", "Reims",
-    "Le Havre", "Saint-Étienne", "Toulon", "Grenoble", "Dijon", "Angers",
-    "Nîmes", "Villeurbanne", "Le Mans", "Aix-en-Provence", "Brest", "Tours"
+    "Paris", "Marseille", "Lyon",
+    "Aix-en-Provence", "Angers", "Bordeaux", "Brest", "Dijon", "Grenoble",
+    "Le Havre", "Le Mans", "Lille", "Montpellier", "Nantes", "Nice",
+    "Nîmes", "Reims", "Rennes", "Saint-Étienne", "Strasbourg", "Toulon",
+    "Toulouse", "Tours", "Villeurbanne"
   ],
   es: [
-    "Madrid", "Barcelona", "Valencia", "Seville", "Zaragoza", "Málaga",
-    "Murcia", "Palma", "Las Palmas", "Bilbao", "Alicante", "Córdoba",
-    "Valladolid", "Vigo", "Gijón", "L'Hospitalet", "Vitoria", "Granada",
-    "Elche", "Oviedo", "Terrassa", "Badalona", "Cartagena", "Sabadell"
+    "Madrid", "Barcelona", "Valencia",
+    "Alicante", "Badalona", "Bilbao", "Cartagena", "Córdoba", "Elche",
+    "Gijón", "Granada", "L'Hospitalet", "Las Palmas", "Málaga", "Murcia",
+    "Oviedo", "Palma", "Sabadell", "Seville", "Terrassa", "Valladolid",
+    "Vigo", "Vitoria", "Zaragoza"
   ],
   it: [
-    "Rome", "Milan", "Naples", "Turin", "Palermo", "Genoa",
-    "Bologna", "Florence", "Bari", "Catania", "Venice", "Verona",
-    "Messina", "Padua", "Trieste", "Brescia", "Parma", "Taranto",
-    "Prato", "Modena", "Reggio Calabria", "Reggio Emilia", "Perugia", "Ravenna"
+    "Rome", "Milan", "Naples",
+    "Bari", "Bologna", "Brescia", "Catania", "Florence", "Genoa",
+    "Messina", "Modena", "Padua", "Palermo", "Parma", "Perugia",
+    "Prato", "Ravenna", "Reggio Calabria", "Reggio Emilia", "Taranto",
+    "Trieste", "Turin", "Venice", "Verona"
   ],
   jp: [
-    "Tokyo", "Yokohama", "Osaka", "Nagoya", "Sapporo", "Fukuoka",
-    "Kobe", "Kyoto", "Kawasaki", "Saitama", "Hiroshima", "Sendai",
-    "Kitakyushu", "Chiba", "Sakai", "Niigata", "Hamamatsu", "Kumamoto",
-    "Sagamihara", "Shizuoka", "Okayama", "Kanazawa", "Utsunomiya", "Matsuyama"
+    "Tokyo", "Osaka", "Yokohama",
+    "Chiba", "Fukuoka", "Hamamatsu", "Hiroshima", "Kanazawa", "Kawasaki",
+    "Kitakyushu", "Kobe", "Kumamoto", "Kyoto", "Matsuyama", "Nagoya",
+    "Niigata", "Sagamihara", "Sakai", "Saitama", "Sendai", "Shizuoka",
+    "Sapporo", "Utsunomiya"
   ],
   tr: [
-    "Istanbul", "Ankara", "Izmir", "Bursa", "Antalya", "Adana",
-    "Gaziantep", "Konya", "Mersin", "Diyarbakır", "Denizli", "Eskişehir",
-    "Samsun", "Urfa", "Malatya", "Erzurum", "Trabzon", "Ordu",
-    "Tekirdağ", "Edirne", "Kayseri", "Balıkesir", "Manisa", "Aydın",
-    "Van", "Muğla", "Sakarya", "Çanakkale", "Kütahya", "Rize"
+    "Istanbul", "Ankara", "Izmir",
+    "Adana", "Antalya", "Aydın", "Balıkesir", "Bursa", "Çanakkale",
+    "Denizli", "Diyarbakır", "Edirne", "Erzurum", "Eskişehir", "Gaziantep",
+    "Kayseri", "Konya", "Kütahya", "Malatya", "Manisa", "Mersin",
+    "Muğla", "Ordu", "Rize", "Sakarya", "Samsun", "Tekirdağ",
+    "Trabzon", "Urfa", "Van"
   ]
 }
 
