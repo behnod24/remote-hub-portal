@@ -76,7 +76,7 @@ export default function SignIn() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Header />
+      <Header isAuthPage={true} currentPage="signin" />
       <div className="flex-1 flex items-center justify-center bg-gradient-to-br from-gradient-start to-gradient-end">
         <div className="w-full max-w-md">
           <div className="glass-card p-8">

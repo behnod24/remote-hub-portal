@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import { Button } from "@/components/ui/button"
@@ -12,7 +13,12 @@ import { Search, Bell, Menu, User } from "lucide-react"
 import { supabase } from "@/integrations/supabase/client"
 import { useAuth } from "@/contexts/AuthContext"
 
-const Header = () => {
+interface HeaderProps {
+  isAuthPage?: boolean;
+  currentPage?: 'signin' | 'signup';
+}
+
+const Header = ({ isAuthPage, currentPage }: HeaderProps) => {
   const [isOpen, setIsOpen] = useState(false)
   const [logoUrl, setLogoUrl] = useState("")
   const { user } = useAuth()
@@ -24,10 +30,10 @@ const Header = () => {
         const { data: { publicUrl } } = supabase
           .storage
           .from('site-assets')
-          .getPublicUrl('logo.png') // Added .png extension
+          .getPublicUrl('logo.png')
         
         if (publicUrl) {
-          console.log('Logo URL:', publicUrl) // Debug log
+          console.log('Logo URL:', publicUrl)
           setLogoUrl(publicUrl)
         }
       } catch (error) {
@@ -67,7 +73,7 @@ const Header = () => {
                   src={logoUrl} 
                   alt="PamirHub Logo" 
                   className="h-8 w-auto md:h-10 object-contain"
-                  onError={(e) => console.error('Error loading image:', e)} // Debug handler
+                  onError={(e) => console.error('Error loading image:', e)}
                 />
               )}
             </Link>
@@ -112,12 +118,26 @@ const Header = () => {
               </>
             ) : (
               <div className="flex items-center gap-2">
-                <Button variant="ghost" onClick={() => navigate('/auth/signin')}>
-                  Sign in
-                </Button>
-                <Button onClick={() => navigate('/auth/signup')}>
-                  Create account
-                </Button>
+                {!isAuthPage ? (
+                  <>
+                    <Button variant="ghost" onClick={() => navigate('/auth/signin')}>
+                      Sign in
+                    </Button>
+                    <Button onClick={() => navigate('/auth/signup')}>
+                      Create account
+                    </Button>
+                  </>
+                ) : (
+                  currentPage === 'signin' ? (
+                    <Button onClick={() => navigate('/auth/signup')}>
+                      Create account
+                    </Button>
+                  ) : (
+                    <Button variant="ghost" onClick={() => navigate('/auth/signin')}>
+                      Sign in
+                    </Button>
+                  )
+                )}
               </div>
             )}
           </div>
