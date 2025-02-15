@@ -97,7 +97,34 @@ function ContactForm() {
     return Object.keys(newErrors).length === 0
   }
 
+  const validateFirstStep = () => {
+    const newErrors: FormErrors = {}
+    
+    if (!formData.first_name) newErrors.first_name = "First name is required"
+    if (!formData.last_name) newErrors.last_name = "Last name is required"
+    if (!formData.email) {
+      newErrors.email = "Email is required"
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = "Please enter a valid email address"
+    }
+    if (!formData.phone) newErrors.phone = "Phone number is required"
+
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
+
   const handleNext = () => {
+    if (currentStep === 1) {
+      if (!validateFirstStep()) {
+        toast({
+          title: "Validation Error",
+          description: "Please fill in all required fields before proceeding.",
+          variant: "destructive"
+        })
+        return
+      }
+    }
+    
     if (currentStep < STEPS.length) {
       setCurrentStep(prev => prev + 1)
     }
