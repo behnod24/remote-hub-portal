@@ -24,9 +24,10 @@ const Header = () => {
         const { data: { publicUrl } } = supabase
           .storage
           .from('site-assets')
-          .getPublicUrl('logo')
+          .getPublicUrl('logo.png') // Added .png extension
         
         if (publicUrl) {
+          console.log('Logo URL:', publicUrl) // Debug log
           setLogoUrl(publicUrl)
         }
       } catch (error) {
@@ -66,6 +67,7 @@ const Header = () => {
                   src={logoUrl} 
                   alt="PamirHub Logo" 
                   className="h-8 w-auto md:h-10 object-contain"
+                  onError={(e) => console.error('Error loading image:', e)} // Debug handler
                 />
               )}
             </Link>
@@ -135,6 +137,7 @@ const Header = () => {
                   src={logoUrl} 
                   alt="PamirHub Logo" 
                   className="h-8 w-auto object-contain"
+                  onError={(e) => console.error('Error loading image:', e)} // Debug handler
                 />
               )}
             </Link>
