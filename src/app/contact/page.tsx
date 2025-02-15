@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useState } from "react"
@@ -11,7 +12,7 @@ import PhoneInput from 'react-phone-input-2'
 import 'react-phone-input-2/lib/style.css'
 import { GoogleReCaptchaProvider as ReCaptchaProvider, GoogleReCaptcha } from 'react-google-recaptcha-v3'
 
-const RECAPTCHA_SITE_KEY = "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" // Replace with your actual site key
+const RECAPTCHA_SITE_KEY = "6LcqX9gqAAAAAM9LRqSqVG6NT0g4v-ut94loUlIz"
 
 interface ContactFormData {
   first_name: string
@@ -25,7 +26,7 @@ interface ContactFormData {
   accepts_marketing: boolean
 }
 
-interface FormErrors extends Partial<ContactFormData> {
+interface FormErrors extends Partial<Record<keyof ContactFormData, string>> {
   recaptcha?: string;
 }
 
