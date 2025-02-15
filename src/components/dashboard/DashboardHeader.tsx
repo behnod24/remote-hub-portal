@@ -49,8 +49,8 @@ export default function DashboardHeader({
   return (
     <header className="flex items-center justify-between border-b border-[#292929] px-10 py-3">
       <div className="flex items-center gap-4 text-white">
-        <div className="h-4 w-4">
-          <LayoutDashboard />
+        <div className="h-4 w-4 text-white">
+          <LayoutDashboard className="h-full w-full" />
         </div>
         <h2 className="text-lg font-bold leading-tight tracking-[-0.015em]">
           {companyName || 'Crypto Sentiment Dashboard'}
@@ -76,8 +76,8 @@ export default function DashboardHeader({
         <div className="flex gap-2">
           <Button 
             variant="ghost" 
-            size="icon" 
-            className="rounded-full bg-[#292929]"
+            size="icon"
+            className="rounded-full bg-[#292929] hover:bg-[#363636] transition-colors"
             onClick={onSettingsClick}
           >
             <Settings className="h-5 w-5 text-white" />
@@ -85,18 +85,31 @@ export default function DashboardHeader({
           
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="rounded-full bg-[#292929]">
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="rounded-full bg-[#292929] hover:bg-[#363636] transition-colors"
+              >
                 <User className="h-5 w-5 text-white" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56" align="end">
-              <DropdownMenuLabel>My Account</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={onSettingsClick}>
+            <DropdownMenuContent 
+              className="w-56 bg-[#1F1F1F] border-[#292929] text-white" 
+              align="end"
+            >
+              <DropdownMenuLabel className="text-[#ABABAB]">My Account</DropdownMenuLabel>
+              <DropdownMenuSeparator className="bg-[#292929]" />
+              <DropdownMenuItem 
+                onClick={onSettingsClick}
+                className="text-white hover:bg-[#292929] cursor-pointer"
+              >
                 <Settings className="mr-2 h-4 w-4" />
                 Settings
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={handleSignOut}>
+              <DropdownMenuItem 
+                onClick={handleSignOut}
+                className="text-white hover:bg-[#292929] cursor-pointer"
+              >
                 <LogOut className="mr-2 h-4 w-4" />
                 Sign out
               </DropdownMenuItem>
