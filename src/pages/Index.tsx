@@ -139,15 +139,16 @@ const Index = () => {
 
       {/* Hero Section */}
       <section 
-        className="pt-32 pb-20 px-4 relative"
+        className="pt-32 pb-20 px-4 relative min-h-[600px] flex items-center"
         style={{
           backgroundImage: backgroundUrl ? `url(${backgroundUrl})` : 'none',
-          backgroundSize: 'cover',
+          backgroundSize: 'contain',
           backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat'
+          backgroundRepeat: 'no-repeat',
+          backgroundColor: '#f5f5f5' // Light background to complement the image
         }}
       >
-        <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" /> {/* Overlay for better text readability */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/60 to-black/40" /> {/* Gradient overlay for better text readability */}
         <div className="container mx-auto text-center relative z-10">
           <motion.h1 
             className="text-4xl md:text-6xl font-bold mb-6 leading-tight text-white"
