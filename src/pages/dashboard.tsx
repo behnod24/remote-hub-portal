@@ -1,6 +1,5 @@
-
 import { useState, useEffect } from 'react'
-import { AlertCircle, ArrowLeft } from 'lucide-react'
+import { AlertCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/contexts/AuthContext'
 import { supabase } from '@/integrations/supabase/client'
@@ -149,15 +148,14 @@ export default function Dashboard() {
         </div>
       ) : (
         <div className="flex h-full grow flex-col">
-          {/* Back to Home Button */}
+          {/* Back to Site Button */}
           <div className="absolute top-4 left-4 z-50">
             <Button
               variant="ghost"
-              size="icon"
               onClick={() => navigate('/')}
               className="text-white hover:text-primary"
             >
-              <ArrowLeft className="h-6 w-6" />
+              Back to Site
             </Button>
           </div>
 
