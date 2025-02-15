@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useState } from "react"
@@ -126,11 +127,12 @@ function ContactForm() {
   }
 
   return (
-    <div className="relative flex min-h-screen flex-col bg-[#FFFFFF] overflow-x-hidden">
+    <div className="relative flex min-h-screen flex-col bg-[#FFFFFF]">
       <div className="flex h-full grow flex-col">
-        <div className="gap-1 px-6 flex flex-1 justify-center py-5">
-          <div className="layout-content-container flex flex-col w-80">
-            <div className="flex h-full min-h-[700px] flex-col justify-between bg-[#FFFFFF] p-4">
+        <div className="gap-4 md:gap-6 px-4 md:px-6 flex flex-1 flex-col md:flex-row justify-center py-5">
+          {/* Left sidebar - company info */}
+          <div className="md:w-80 w-full md:max-w-[320px]">
+            <div className="flex h-full min-h-0 md:min-h-[700px] flex-col justify-between bg-[#FFFFFF] p-4">
               <div className="flex flex-col gap-4">
                 <div className="flex gap-3">
                   <div
@@ -174,43 +176,50 @@ function ContactForm() {
               </div>
             </div>
           </div>
-          <div className="layout-content-container flex flex-col max-w-[960px] flex-1">
+
+          {/* Main form content */}
+          <div className="flex-1 max-w-[960px] w-full">
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="flex flex-wrap justify-between gap-3 p-4">
-                <div className="flex min-w-72 flex-col gap-3">
-                  <h2 className="text-black text-4xl font-black leading-tight tracking-[-0.033em]">We'd love to help</h2>
+                <div className="flex w-full flex-col gap-3">
+                  <h2 className="text-black text-3xl md:text-4xl font-black leading-tight tracking-[-0.033em]">We'd love to help</h2>
                   <p className="text-neutral-500 text-base font-normal leading-normal">Reach out and we'll get in touch within 24 hours.</p>
                   {errors.recaptcha && <p className="text-red-500 text-sm">{errors.recaptcha}</p>}
                 </div>
               </div>
-              <div className="flex max-w-[480px] flex-wrap items-end gap-4 px-4">
-                <label className="flex flex-col min-w-40 flex-1">
-                  <p className="text-black text-base font-medium leading-normal pb-2">
-                    First name *
-                    {errors.first_name && <span className="text-red-500 text-sm ml-1">{errors.first_name}</span>}
-                  </p>
-                  <Input
-                    placeholder="First name"
-                    value={formData.first_name}
-                    onChange={e => setFormData(prev => ({ ...prev, first_name: e.target.value }))}
-                    className="rounded-xl h-14 border-[#E0E0E0] bg-[#FFFFFF] focus:border-[#E0E0E0]"
-                  />
-                </label>
-                <label className="flex flex-col min-w-40 flex-1">
-                  <p className="text-black text-base font-medium leading-normal pb-2">
-                    Last name *
-                    {errors.last_name && <span className="text-red-500 text-sm ml-1">{errors.last_name}</span>}
-                  </p>
-                  <Input
-                    placeholder="Last name"
-                    value={formData.last_name}
-                    onChange={e => setFormData(prev => ({ ...prev, last_name: e.target.value }))}
-                    className="rounded-xl h-14 border-[#E0E0E0] bg-[#FFFFFF] focus:border-[#E0E0E0]"
-                  />
-                </label>
-              </div>
-              <div className="flex max-w-[480px] flex-wrap items-end gap-4 px-4">
-                <label className="flex flex-col min-w-40 flex-1">
+
+              {/* Form fields */}
+              <div className="space-y-6 px-4">
+                {/* Name fields */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <label className="flex flex-col">
+                    <p className="text-black text-base font-medium leading-normal pb-2">
+                      First name *
+                      {errors.first_name && <span className="text-red-500 text-sm ml-1">{errors.first_name}</span>}
+                    </p>
+                    <Input
+                      placeholder="First name"
+                      value={formData.first_name}
+                      onChange={e => setFormData(prev => ({ ...prev, first_name: e.target.value }))}
+                      className="rounded-xl h-14 border-[#E0E0E0] bg-[#FFFFFF] focus:border-[#E0E0E0]"
+                    />
+                  </label>
+                  <label className="flex flex-col">
+                    <p className="text-black text-base font-medium leading-normal pb-2">
+                      Last name *
+                      {errors.last_name && <span className="text-red-500 text-sm ml-1">{errors.last_name}</span>}
+                    </p>
+                    <Input
+                      placeholder="Last name"
+                      value={formData.last_name}
+                      onChange={e => setFormData(prev => ({ ...prev, last_name: e.target.value }))}
+                      className="rounded-xl h-14 border-[#E0E0E0] bg-[#FFFFFF] focus:border-[#E0E0E0]"
+                    />
+                  </label>
+                </div>
+
+                {/* Email field */}
+                <label className="flex flex-col">
                   <p className="text-black text-base font-medium leading-normal pb-2">
                     Email *
                     {errors.email && <span className="text-red-500 text-sm ml-1">{errors.email}</span>}
@@ -223,9 +232,9 @@ function ContactForm() {
                     className="rounded-xl h-14 border-[#E0E0E0] bg-[#FFFFFF] focus:border-[#E0E0E0]"
                   />
                 </label>
-              </div>
-              <div className="flex max-w-[480px] flex-wrap items-end gap-4 px-4">
-                <label className="flex flex-col min-w-40 flex-1">
+
+                {/* Phone field */}
+                <label className="flex flex-col">
                   <p className="text-black text-base font-medium leading-normal pb-2">
                     Phone *
                     {errors.phone && <span className="text-red-500 text-sm ml-1">{errors.phone}</span>}
@@ -239,29 +248,31 @@ function ContactForm() {
                     buttonClass="!border-[#E0E0E0] !rounded-l-xl"
                   />
                 </label>
-              </div>
-              <div className="flex max-w-[480px] flex-wrap items-end gap-4 px-4">
-                <label className="flex flex-col min-w-40 flex-1">
-                  <p className="text-black text-base font-medium leading-normal pb-2">Company size</p>
-                  <Input
-                    placeholder="1-50 people"
-                    value={formData.team_size}
-                    onChange={e => setFormData(prev => ({ ...prev, team_size: e.target.value }))}
-                    className="rounded-xl h-14 border-[#E0E0E0] bg-[#FFFFFF] focus:border-[#E0E0E0]"
-                  />
-                </label>
-                <label className="flex flex-col min-w-40 flex-1">
-                  <p className="text-black text-base font-medium leading-normal pb-2">Location</p>
-                  <Input
-                    placeholder="New Zealand"
-                    value={formData.location}
-                    onChange={e => setFormData(prev => ({ ...prev, location: e.target.value }))}
-                    className="rounded-xl h-14 border-[#E0E0E0] bg-[#FFFFFF] focus:border-[#E0E0E0]"
-                  />
-                </label>
-              </div>
-              <div className="flex max-w-[480px] flex-wrap items-end gap-4 px-4">
-                <label className="flex flex-col min-w-40 flex-1">
+
+                {/* Company size and location */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <label className="flex flex-col">
+                    <p className="text-black text-base font-medium leading-normal pb-2">Company size</p>
+                    <Input
+                      placeholder="1-50 people"
+                      value={formData.team_size}
+                      onChange={e => setFormData(prev => ({ ...prev, team_size: e.target.value }))}
+                      className="rounded-xl h-14 border-[#E0E0E0] bg-[#FFFFFF] focus:border-[#E0E0E0]"
+                    />
+                  </label>
+                  <label className="flex flex-col">
+                    <p className="text-black text-base font-medium leading-normal pb-2">Location</p>
+                    <Input
+                      placeholder="New Zealand"
+                      value={formData.location}
+                      onChange={e => setFormData(prev => ({ ...prev, location: e.target.value }))}
+                      className="rounded-xl h-14 border-[#E0E0E0] bg-[#FFFFFF] focus:border-[#E0E0E0]"
+                    />
+                  </label>
+                </div>
+
+                {/* Message field */}
+                <label className="flex flex-col">
                   <p className="text-black text-base font-medium leading-normal pb-2">
                     Message *
                     {errors.message && <span className="text-red-500 text-sm ml-1">{errors.message}</span>}
@@ -273,44 +284,48 @@ function ContactForm() {
                     className="rounded-xl min-h-36 border-[#E0E0E0] bg-[#FFFFFF] focus:border-[#E0E0E0]"
                   />
                 </label>
-              </div>
-              <div className="px-4 space-y-4">
-                <label className="flex gap-x-3 py-3 items-start">
-                  <input
-                    type="checkbox"
-                    checked={formData.accepts_privacy}
-                    onChange={e => setFormData(prev => ({ ...prev, accepts_privacy: e.target.checked }))}
-                    className="mt-1 h-5 w-5 rounded border-[#E0E0E0] border-2 bg-transparent text-[#EA2831] checked:bg-[#EA2831] checked:border-[#EA2831] focus:ring-0 focus:ring-offset-0"
-                  />
-                  <div className="flex flex-col">
+
+                {/* Checkboxes */}
+                <div className="space-y-4">
+                  <label className="flex gap-x-3 py-3 items-start">
+                    <input
+                      type="checkbox"
+                      checked={formData.accepts_privacy}
+                      onChange={e => setFormData(prev => ({ ...prev, accepts_privacy: e.target.checked }))}
+                      className="mt-1 h-5 w-5 rounded border-[#E0E0E0] border-2 bg-transparent text-[#EA2831] checked:bg-[#EA2831] checked:border-[#EA2831] focus:ring-0 focus:ring-offset-0"
+                    />
+                    <div className="flex flex-col">
+                      <p className="text-black text-base font-normal leading-normal">
+                        I agree to the processing of personal data according to the Privacy Policy *
+                      </p>
+                      {errors.accepts_privacy && (
+                        <span className="text-red-500 text-sm">{errors.accepts_privacy}</span>
+                      )}
+                    </div>
+                  </label>
+                  <label className="flex gap-x-3 py-3 items-start">
+                    <input
+                      type="checkbox"
+                      checked={formData.accepts_marketing}
+                      onChange={e => setFormData(prev => ({ ...prev, accepts_marketing: e.target.checked }))}
+                      className="mt-1 h-5 w-5 rounded border-[#E0E0E0] border-2 bg-transparent text-[#EA2831] checked:bg-[#EA2831] checked:border-[#EA2831] focus:ring-0 focus:ring-offset-0"
+                    />
                     <p className="text-black text-base font-normal leading-normal">
-                      I agree to the processing of personal data according to the Privacy Policy *
+                      I would like to receive news and updates via email
                     </p>
-                    {errors.accepts_privacy && (
-                      <span className="text-red-500 text-sm">{errors.accepts_privacy}</span>
-                    )}
-                  </div>
-                </label>
-                <label className="flex gap-x-3 py-3 items-start">
-                  <input
-                    type="checkbox"
-                    checked={formData.accepts_marketing}
-                    onChange={e => setFormData(prev => ({ ...prev, accepts_marketing: e.target.checked }))}
-                    className="mt-1 h-5 w-5 rounded border-[#E0E0E0] border-2 bg-transparent text-[#EA2831] checked:bg-[#EA2831] checked:border-[#EA2831] focus:ring-0 focus:ring-offset-0"
-                  />
-                  <p className="text-black text-base font-normal leading-normal">
-                    I would like to receive news and updates via email
-                  </p>
-                </label>
-              </div>
-              <div className="flex px-4 py-3 justify-center">
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="flex min-w-[84px] max-w-[480px] w-full cursor-pointer items-center justify-center overflow-hidden rounded-full h-12 px-5 bg-[#EA2831] text-[#FFFFFF] text-base font-bold leading-normal tracking-[0.015em] disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <span className="truncate">{loading ? 'Sending...' : 'Send message'}</span>
-                </button>
+                  </label>
+                </div>
+
+                {/* Submit button */}
+                <div className="flex justify-center py-3">
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="flex min-w-[84px] w-full max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-12 px-5 bg-[#EA2831] text-[#FFFFFF] text-base font-bold leading-normal tracking-[0.015em] disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <span className="truncate">{loading ? 'Sending...' : 'Send message'}</span>
+                  </button>
+                </div>
               </div>
             </form>
           </div>
