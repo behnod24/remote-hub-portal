@@ -1,9 +1,10 @@
 
 import { useState, useEffect } from 'react'
-import { AlertCircle } from 'lucide-react'
+import { AlertCircle, ArrowLeft } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/contexts/AuthContext'
 import { supabase } from '@/integrations/supabase/client'
+import { useNavigate } from 'react-router-dom'
 import ProfileManager from '@/components/dashboard/ProfileManager'
 import { useToast } from '@/components/ui/use-toast'
 import DashboardHeader from '@/components/dashboard/DashboardHeader'
@@ -55,6 +56,7 @@ interface UserProfile {
 export default function Dashboard() {
   const [isOpen, setIsOpen] = useState(false)
   const { user } = useAuth()
+  const navigate = useNavigate()
   const [searchQuery, setSearchQuery] = useState("")
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null)
   const [showProfileManager, setShowProfileManager] = useState(false)
@@ -147,6 +149,18 @@ export default function Dashboard() {
         </div>
       ) : (
         <div className="flex h-full grow flex-col">
+          {/* Back to Home Button */}
+          <div className="absolute top-4 left-4 z-50">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => navigate('/')}
+              className="text-white hover:text-primary"
+            >
+              <ArrowLeft className="h-6 w-6" />
+            </Button>
+          </div>
+
           <DashboardHeader
             companyName={userProfile?.company_name}
             searchQuery={searchQuery}
