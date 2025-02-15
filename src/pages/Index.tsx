@@ -138,13 +138,13 @@ const Index = () => {
       )}
 
       {/* Hero Section */}
-      <section className="relative min-h-[80vh] flex items-center overflow-hidden">
+      <section className="relative min-h-[80vh] md:min-h-[70vh] flex items-center overflow-hidden">
         {/* Background with overlay */}
         <div 
           className="absolute inset-0 z-0"
           style={{
             backgroundImage: backgroundUrl ? `url(${backgroundUrl})` : 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
-            backgroundSize: '100% auto',
+            backgroundSize: 'cover', // Changed to cover for better mobile display
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat',
             opacity: 0.8
@@ -153,13 +153,13 @@ const Index = () => {
         
         {/* Gradient overlays for depth */}
         <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-transparent z-1" />
-        <div className="absolute inset-0 bg-gradient-to-b from-white/80 via-transparent to-white/80 z-1" />
+        <div className="absolute inset-0 bg-gradient-to-b from-white/90 via-white/50 to-white/90 z-1" />
         
         {/* Content */}
-        <div className="container mx-auto px-4 pt-32 pb-20 relative z-10">
+        <div className="container mx-auto px-4 pt-20 md:pt-32 pb-12 md:pb-20 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
             <motion.h1 
-              className="text-4xl md:text-6xl font-bold mb-6 leading-tight bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary"
+              className="text-3xl sm:text-4xl md:text-6xl font-bold mb-4 md:mb-6 leading-tight bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary px-2 md:px-0"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
@@ -167,7 +167,7 @@ const Index = () => {
               Modernizing Workforce Hiring <br className="hidden md:block" />for Companies
             </motion.h1>
             <motion.p 
-              className="text-lg md:text-xl text-text-secondary mb-8 max-w-3xl mx-auto"
+              className="text-base sm:text-lg md:text-xl text-text-secondary mb-6 md:mb-8 max-w-3xl mx-auto px-4 md:px-0"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
@@ -179,11 +179,11 @@ const Index = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.4 }}
-              className="space-x-4"
+              className="space-x-4 px-4 md:px-0"
             >
-              <button className="btn-primary inline-flex items-center">
+              <button className="btn-primary inline-flex items-center text-sm md:text-base">
                 Hire Experts Today
-                <ChevronRight className="ml-2 w-5 h-5" />
+                <ChevronRight className="ml-2 w-4 h-4 md:w-5 md:h-5" />
               </button>
             </motion.div>
           </div>
