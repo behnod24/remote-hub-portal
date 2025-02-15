@@ -1,7 +1,17 @@
 
-import { Search, Settings, User, LayoutDashboard } from 'lucide-react'
+import { Search, Settings, User, LayoutDashboard, LogOut } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { useAuth } from '@/contexts/AuthContext'
+import { useToast } from '@/components/ui/use-toast'
 
 interface DashboardHeaderProps {
   companyName: string | null
@@ -16,6 +26,26 @@ export default function DashboardHeader({
   onSearchChange,
   onSettingsClick
 }: DashboardHeaderProps) {
+  const { signOut } = useAuth()
+  const { toast } = useToast()
+
+  const handleSignOut = async () => {
+    try {
+      await signOut()
+      toast({
+        title: "Signed out successfully",
+        description: "You have been logged out of your account.",
+      })
+    } catch (error) {
+      console.error('Error signing out:', error)
+      toast({
+        title: "Error signing out",
+        description: "There was a problem signing you out. Please try again.",
+        variant: "destructive",
+      })
+    }
+  }
+
   return (
     <header className="flex items-center justify-between border-b border-[#292929] px-10 py-3">
       <div className="flex items-center gap-4 text-white">
@@ -52,9 +82,26 @@ export default function DashboardHeader({
           >
             <Settings className="h-5 w-5 text-white" />
           </Button>
-          <Button variant="ghost" size="icon" className="rounded-full bg-[#292929]">
-            <User className="h-5 w-5 text-white" />
-          </Button>
+          
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon" className="rounded-full bg-[#292929]">
+                <User className="h-5 w-5 text-white" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56" align="end">
+              <DropdownMenuLabel>My Account</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={onSettingsClick}>
+                <Settings className="mr-2 h-4 w-4" />
+                Settings
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={handleSignOut}>
+                <LogOut className="mr-2 h-4 w-4" />
+                Sign out
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
     </header>
