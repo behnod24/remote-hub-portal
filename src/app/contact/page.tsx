@@ -1,7 +1,7 @@
 
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -10,7 +10,7 @@ import { useToast } from "@/components/ui/use-toast"
 import { ArrowLeft } from "lucide-react"
 import PhoneInput from 'react-phone-input-2'
 import 'react-phone-input-2/lib/style.css'
-import { GoogleReCaptchaProvider as ReCaptchaProvider, GoogleReCaptcha } from 'react-google-recaptcha-v3'
+import { useGoogleReCaptcha, GoogleReCaptchaProvider } from 'react-google-recaptcha-v3'
 
 const RECAPTCHA_SITE_KEY = "6LcqX9gqAAAAAHLEEDlhVsH_LAwrqQfW1_Nus8ce"
 
@@ -31,9 +31,9 @@ interface FormErrors extends Partial<Record<keyof ContactFormData, string>> {
 }
 
 function ContactForm() {
+  const { executeRecaptcha } = useGoogleReCaptcha()
   const { toast } = useToast()
   const [loading, setLoading] = useState(false)
-  const [recaptchaToken, setRecaptchaToken] = useState<string>("")
   const [errors, setErrors] = useState<FormErrors>({})
   
   const [formData, setFormData] = useState<ContactFormData>({
@@ -61,7 +61,7 @@ function ContactForm() {
     if (!formData.phone) newErrors.phone = "Phone number is required"
     if (!formData.message) newErrors.message = "Message is required"
     if (!formData.accepts_privacy) newErrors.accepts_privacy = "You must accept the privacy policy"
-    if (recaptchaToken.length === 0) newErrors.recaptcha = "Please wait for reCAPTCHA verification"
+    if (!executeRecaptcha) newErrors.recaptcha = "ReCAPTCHA is not ready yet"
 
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
@@ -70,6 +70,15 @@ function ContactForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
+    if (!executeRecaptcha) {
+      toast({
+        title: "Error",
+        description: "ReCAPTCHA not ready. Please try again in a moment.",
+        variant: "destructive"
+      })
+      return
+    }
+
     if (!validateForm()) {
       toast({
         title: "Validation Error",
@@ -82,6 +91,9 @@ function ContactForm() {
     setLoading(true)
 
     try {
+      // Execute reCAPTCHA
+      const recaptchaToken = await executeRecaptcha('contact_form')
+
       // First save to database
       const { error: dbError } = await supabase
         .from('contact_submissions')
@@ -91,7 +103,7 @@ function ContactForm() {
 
       // Then send emails
       const { error: emailError } = await supabase.functions.invoke('send-contact-email', {
-        body: formData
+        body: { ...formData, recaptcha_token: recaptchaToken }
       })
 
       if (emailError) throw emailError
@@ -113,7 +125,6 @@ function ContactForm() {
         accepts_privacy: false,
         accepts_marketing: false
       })
-      setRecaptchaToken("")
     } catch (error) {
       console.error('Error submitting form:', error)
       toast({
@@ -339,8 +350,15 @@ function ContactForm() {
 // Wrap the form with reCAPTCHA provider
 export default function ContactPage() {
   return (
-    <ReCaptchaProvider reCaptchaKey={RECAPTCHA_SITE_KEY}>
+    <GoogleReCaptchaProvider
+      reCaptchaKey={RECAPTCHA_SITE_KEY}
+      scriptProps={{
+        async: true,
+        defer: true,
+        appendTo: "head",
+      }}
+    >
       <ContactForm />
-    </ReCaptchaProvider>
+    </GoogleReCaptchaProvider>
   )
 }
