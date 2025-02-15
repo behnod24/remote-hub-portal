@@ -7,7 +7,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react"
 
 interface FormLayoutProps {
   children: ReactNode
-  title: string
+  title: ReactNode
   currentStep?: number
   totalSteps?: number
   onNext?: () => void
@@ -28,12 +28,14 @@ const FormLayout = ({
     <div className="min-h-screen">
       <div className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container py-4">
-          <h1 className="text-3xl font-bold">{title}</h1>
+          <div className="flex items-center justify-between">
+            {title}
+          </div>
           {totalSteps && (
             <div className="mt-4 flex items-center gap-2">
               <div className="flex-1 h-2 bg-secondary/30 rounded-full overflow-hidden">
                 <div 
-                  className="h-full bg-primary transition-all duration-300"
+                  className="h-full bg-[#EA2831] transition-all duration-300"
                   style={{ width: `${(currentStep! / totalSteps) * 100}%` }}
                 />
               </div>
@@ -51,13 +53,20 @@ const FormLayout = ({
           {(onNext || onPrev) && (
             <div className="mt-8 flex justify-between">
               {onPrev && (
-                <Button variant="outline" onClick={onPrev}>
+                <Button 
+                  variant="outline" 
+                  onClick={onPrev}
+                  className="rounded-full px-6"
+                >
                   <ChevronLeft className="mr-2 h-4 w-4" />
                   Previous Step
                 </Button>
               )}
               {onNext && (
-                <Button className="ml-auto" onClick={onNext}>
+                <Button 
+                  className="ml-auto rounded-full px-6 bg-[#EA2831] text-white hover:bg-[#D62429]" 
+                  onClick={onNext}
+                >
                   {isLastStep ? "Submit" : "Next Step"}
                   {!isLastStep && <ChevronRight className="ml-2 h-4 w-4" />}
                 </Button>

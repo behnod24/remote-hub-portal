@@ -1,4 +1,3 @@
-
 "use client"
 
 import { useState, useEffect } from "react"
@@ -7,7 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { supabase } from "@/integrations/supabase/client"
 import { useToast } from "@/hooks/use-toast"
-import { ArrowLeft, Moon, Sun } from "lucide-react"
+import { ArrowLeft } from "lucide-react"
 import PhoneInput from 'react-phone-input-2'
 import 'react-phone-input-2/lib/style.css'
 import FormLayout from "@/components/layout/FormLayout"
@@ -48,23 +47,12 @@ function ContactForm() {
     accepts_marketing: false
   })
 
-  // Load saved form data and detect system theme preference
+  // Load saved form data
   useEffect(() => {
-    // Load saved form data
     const savedData = localStorage.getItem(STORAGE_KEY)
     if (savedData) {
       setFormData(JSON.parse(savedData))
     }
-
-    // Detect system theme preference
-    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      setDarkMode(true)
-    }
-
-    // Listen for theme changes
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
-      setDarkMode(e.matches)
-    })
   }, [])
 
   // Save form data when it changes
@@ -369,29 +357,22 @@ function ContactForm() {
   return (
     <FormLayout
       title={
-        <div className="flex items-center justify-between w-full">
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-3">
-              <div
-                className="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10"
-                style={{backgroundImage: 'url("/placeholder.svg")'}}
-              />
-              <h1 className="text-base font-medium leading-normal">PamirHub</h1>
-            </div>
-            <Link 
-              to="/" 
-              className="flex items-center gap-2 px-4 py-2 text-sm font-medium bg-gray-100 hover:bg-gray-200 rounded-full transition-colors"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              Back to Site
-            </Link>
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
+            <img 
+              src="/lovable-uploads/9a937071-e75a-4f6f-b7cb-36ba4eb120ca.png" 
+              alt="PamirHub Logo" 
+              className="w-10 h-10 rounded-full object-cover"
+            />
+            <h1 className="text-base font-medium leading-normal">PamirHub</h1>
           </div>
-          <button
-            onClick={() => setDarkMode(!darkMode)}
-            className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700"
+          <Link 
+            to="/" 
+            className="flex items-center gap-2 px-4 py-2 text-sm font-medium bg-gray-100 hover:bg-gray-200 rounded-full transition-colors"
           >
-            {darkMode ? <Sun className="h-6 w-6" /> : <Moon className="h-6 w-6" />}
-          </button>
+            <ArrowLeft className="h-4 w-4" />
+            Back to Site
+          </Link>
         </div>
       }
       currentStep={currentStep}
