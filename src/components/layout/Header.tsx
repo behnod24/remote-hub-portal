@@ -15,8 +15,28 @@ import { useAuth } from "@/contexts/AuthContext"
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false)
+  const [logoUrl, setLogoUrl] = useState("/lovable-uploads/0e65427e-6a9f-465e-bba5-a18ca746ac26.png")
   const { user } = useAuth()
   const navigate = useNavigate()
+
+  useEffect(() => {
+    const fetchLogo = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('site_settings')
+          .select('logo_url')
+          .single()
+
+        if (data?.logo_url) {
+          setLogoUrl(data.logo_url)
+        }
+      } catch (error) {
+        console.error('Error fetching logo:', error)
+      }
+    }
+
+    fetchLogo()
+  }, [])
 
   const handleSignOut = async () => {
     await supabase.auth.signOut()
@@ -41,8 +61,12 @@ const Header = () => {
             >
               <Menu className="h-6 w-6" />
             </button>
-            <Link to="/" className="text-2xl font-display font-bold text-primary">
-              JobHub
+            <Link to="/" className="flex items-center">
+              <img 
+                src={logoUrl} 
+                alt="PamirHub Logo" 
+                className="h-8 w-auto md:h-10 object-contain"
+              />
             </Link>
             <nav className="hidden lg:flex items-center space-x-6">
               <Link to="/hire-employee" className="nav-link">Hire Employee</Link>
@@ -104,8 +128,12 @@ const Header = () => {
       `}>
         <div className="flex flex-col h-full">
           <div className="flex items-center justify-between p-4 border-b">
-            <Link to="/" className="text-2xl font-display font-bold text-primary">
-              JobHub
+            <Link to="/" className="flex items-center">
+              <img 
+                src={logoUrl} 
+                alt="PamirHub Logo" 
+                className="h-8 w-auto object-contain"
+              />
             </Link>
             <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)}>
               <Menu className="h-6 w-6" />

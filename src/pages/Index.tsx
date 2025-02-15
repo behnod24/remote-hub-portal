@@ -3,10 +3,32 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ChevronRight, Users, Briefcase, Code, PenTool, MessageSquare, DollarSign } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client"
+import { useEffect } from "react";
 
 const Index = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [logoUrl, setLogoUrl] = useState("/lovable-uploads/0e65427e-6a9f-465e-bba5-a18ca746ac26.png");
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchLogo = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('site_settings')
+          .select('logo_url')
+          .single()
+
+        if (data?.logo_url) {
+          setLogoUrl(data.logo_url)
+        }
+      } catch (error) {
+        console.error('Error fetching logo:', error)
+      }
+    }
+
+    fetchLogo()
+  }, [])
 
   const categories = [
     { icon: Code, title: "Engineering", count: "500+" },
@@ -21,7 +43,13 @@ const Index = () => {
       <nav className="fixed w-full z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <Link to="/" className="text-2xl font-display font-bold text-primary">PamirHub</Link>
+            <Link to="/" className="flex items-center">
+              <img 
+                src={logoUrl} 
+                alt="PamirHub Logo" 
+                className="h-8 w-auto md:h-10 object-contain"
+              />
+            </Link>
             
             <div className="hidden md:flex items-center space-x-8">
               <Link to="/hire-employee" className="nav-link">Hire Employee</Link>
