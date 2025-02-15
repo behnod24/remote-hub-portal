@@ -149,15 +149,15 @@ export default function Dashboard() {
         </div>
       ) : (
         <div className="flex h-full grow flex-col">
-          <div className="flex items-center gap-4 absolute top-4 left-4 z-50">
+          <div className="absolute top-4 left-4 z-50 flex items-center space-x-6">
             <Button
               variant="ghost"
               onClick={() => navigate('/')}
-              className="text-white hover:text-primary p-2"
+              className="text-white hover:text-primary px-4 py-2 h-10"
             >
               Back to Site
             </Button>
-            <span className="text-white text-lg font-semibold">
+            <span className="text-white text-lg font-semibold whitespace-nowrap">
               PamirHub
             </span>
           </div>
