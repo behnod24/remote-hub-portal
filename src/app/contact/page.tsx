@@ -1,37 +1,96 @@
 
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
-import FormLayout from "@/components/layout/FormLayout"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { supabase } from "@/integrations/supabase/client"
 import { useToast } from "@/components/ui/use-toast"
 import { ArrowLeft } from "lucide-react"
+import PhoneInput from 'react-phone-input-2'
+import 'react-phone-input-2/lib/style.css'
+import { GoogleReCaptchaProvider, useGoogleReCaptcha } from 'google-recaptcha-v3'
 
-export default function ContactPage() {
+const RECAPTCHA_SITE_KEY = "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" // Replace with your actual site key
+
+interface ContactFormData {
+  first_name: string
+  last_name: string
+  email: string
+  phone: string
+  team_size: string
+  location: string
+  message: string
+  accepts_privacy: boolean
+  accepts_marketing: boolean
+}
+
+function ContactForm() {
   const { toast } = useToast()
   const [loading, setLoading] = useState(false)
-  const [formData, setFormData] = useState({
+  const { executeRecaptcha } = useGoogleReCaptcha()
+  const [errors, setErrors] = useState<Partial<ContactFormData>>({})
+  
+  const [formData, setFormData] = useState<ContactFormData>({
     first_name: "",
     last_name: "",
     email: "",
+    phone: "",
     team_size: "",
     location: "",
     message: "",
-    accepts_privacy: false
+    accepts_privacy: false,
+    accepts_marketing: false
   })
+
+  const validateForm = () => {
+    const newErrors: Partial<ContactFormData> = {}
+    
+    if (!formData.first_name) newErrors.first_name = "First name is required"
+    if (!formData.last_name) newErrors.last_name = "Last name is required"
+    if (!formData.email) {
+      newErrors.email = "Email is required"
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = "Please enter a valid email address"
+    }
+    if (!formData.phone) newErrors.phone = "Phone number is required"
+    if (!formData.message) newErrors.message = "Message is required"
+    if (!formData.accepts_privacy) newErrors.accepts_privacy = "You must accept the privacy policy"
+
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    
+    if (!validateForm()) {
+      toast({
+        title: "Validation Error",
+        description: "Please check all required fields and try again.",
+        variant: "destructive"
+      })
+      return
+    }
+
     setLoading(true)
 
     try {
+      // Verify reCAPTCHA
+      if (!executeRecaptcha) {
+        throw new Error('reCAPTCHA not initialized')
+      }
+      const reCaptchaToken = await executeRecaptcha('contact_form')
+      
+      if (!reCaptchaToken) {
+        throw new Error('Failed to verify reCAPTCHA')
+      }
+
       // First save to database
       const { error: dbError } = await supabase
         .from('contact_submissions')
-        .insert([formData])
+        .insert([{ ...formData, recaptcha_token: reCaptchaToken }])
 
       if (dbError) throw dbError
 
@@ -52,10 +111,12 @@ export default function ContactPage() {
         first_name: "",
         last_name: "",
         email: "",
+        phone: "",
         team_size: "",
         location: "",
         message: "",
-        accepts_privacy: false
+        accepts_privacy: false,
+        accepts_marketing: false
       })
     } catch (error) {
       console.error('Error submitting form:', error)
@@ -119,16 +180,19 @@ export default function ContactPage() {
             </div>
           </div>
           <div className="layout-content-container flex flex-col max-w-[960px] flex-1">
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} className="space-y-6">
               <div className="flex flex-wrap justify-between gap-3 p-4">
                 <div className="flex min-w-72 flex-col gap-3">
-                  <p className="text-black text-4xl font-black leading-tight tracking-[-0.033em]">We'd love to help</p>
+                  <h2 className="text-black text-4xl font-black leading-tight tracking-[-0.033em]">We'd love to help</h2>
                   <p className="text-neutral-500 text-base font-normal leading-normal">Reach out and we'll get in touch within 24 hours.</p>
                 </div>
               </div>
-              <div className="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
+              <div className="flex max-w-[480px] flex-wrap items-end gap-4 px-4">
                 <label className="flex flex-col min-w-40 flex-1">
-                  <p className="text-black text-base font-medium leading-normal pb-2">First name</p>
+                  <p className="text-black text-base font-medium leading-normal pb-2">
+                    First name *
+                    {errors.first_name && <span className="text-red-500 text-sm ml-1">{errors.first_name}</span>}
+                  </p>
                   <Input
                     placeholder="First name"
                     value={formData.first_name}
@@ -138,7 +202,10 @@ export default function ContactPage() {
                   />
                 </label>
                 <label className="flex flex-col min-w-40 flex-1">
-                  <p className="text-black text-base font-medium leading-normal pb-2">Last name</p>
+                  <p className="text-black text-base font-medium leading-normal pb-2">
+                    Last name *
+                    {errors.last_name && <span className="text-red-500 text-sm ml-1">{errors.last_name}</span>}
+                  </p>
                   <Input
                     placeholder="Last name"
                     value={formData.last_name}
@@ -148,9 +215,12 @@ export default function ContactPage() {
                   />
                 </label>
               </div>
-              <div className="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
+              <div className="flex max-w-[480px] flex-wrap items-end gap-4 px-4">
                 <label className="flex flex-col min-w-40 flex-1">
-                  <p className="text-black text-base font-medium leading-normal pb-2">Email</p>
+                  <p className="text-black text-base font-medium leading-normal pb-2">
+                    Email *
+                    {errors.email && <span className="text-red-500 text-sm ml-1">{errors.email}</span>}
+                  </p>
                   <Input
                     type="email"
                     placeholder="Email address"
@@ -161,7 +231,24 @@ export default function ContactPage() {
                   />
                 </label>
               </div>
-              <div className="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
+              <div className="flex max-w-[480px] flex-wrap items-end gap-4 px-4">
+                <label className="flex flex-col min-w-40 flex-1">
+                  <p className="text-black text-base font-medium leading-normal pb-2">
+                    Phone *
+                    {errors.phone && <span className="text-red-500 text-sm ml-1">{errors.phone}</span>}
+                  </p>
+                  <PhoneInput
+                    country={'us'}
+                    value={formData.phone}
+                    onChange={phone => setFormData(prev => ({ ...prev, phone }))}
+                    containerClass="!w-full"
+                    inputClass="!w-full !h-14 !rounded-xl !border-[#E0E0E0] !bg-[#FFFFFF]"
+                    buttonClass="!border-[#E0E0E0] !rounded-l-xl"
+                    required
+                  />
+                </label>
+              </div>
+              <div className="flex max-w-[480px] flex-wrap items-end gap-4 px-4">
                 <label className="flex flex-col min-w-40 flex-1">
                   <p className="text-black text-base font-medium leading-normal pb-2">Company size</p>
                   <Input
@@ -181,9 +268,14 @@ export default function ContactPage() {
                   />
                 </label>
               </div>
-              <div className="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
+              <div className="flex max
+
+-w-[480px] flex-wrap items-end gap-4 px-4">
                 <label className="flex flex-col min-w-40 flex-1">
-                  <p className="text-black text-base font-medium leading-normal pb-2">Message</p>
+                  <p className="text-black text-base font-medium leading-normal pb-2">
+                    Message *
+                    {errors.message && <span className="text-red-500 text-sm ml-1">{errors.message}</span>}
+                  </p>
                   <Textarea
                     placeholder="Leave us a message..."
                     value={formData.message}
@@ -193,23 +285,41 @@ export default function ContactPage() {
                   />
                 </label>
               </div>
-              <div className="px-4">
-                <label className="flex gap-x-3 py-3 flex-row">
+              <div className="px-4 space-y-4">
+                <label className="flex gap-x-3 py-3 items-start">
                   <input
                     type="checkbox"
                     checked={formData.accepts_privacy}
                     onChange={e => setFormData(prev => ({ ...prev, accepts_privacy: e.target.checked }))}
-                    className="h-5 w-5 rounded border-[#E0E0E0] border-2 bg-transparent text-[#EA2831] checked:bg-[#EA2831] checked:border-[#EA2831] focus:ring-0 focus:ring-offset-0"
+                    className="mt-1 h-5 w-5 rounded border-[#E0E0E0] border-2 bg-transparent text-[#EA2831] checked:bg-[#EA2831] checked:border-[#EA2831] focus:ring-0 focus:ring-offset-0"
                     required
                   />
-                  <p className="text-black text-base font-normal leading-normal">You agree to our friendly privacy policy.</p>
+                  <div className="flex flex-col">
+                    <p className="text-black text-base font-normal leading-normal">
+                      I agree to the processing of personal data according to the Privacy Policy *
+                    </p>
+                    {errors.accepts_privacy && (
+                      <span className="text-red-500 text-sm">{errors.accepts_privacy}</span>
+                    )}
+                  </div>
+                </label>
+                <label className="flex gap-x-3 py-3 items-start">
+                  <input
+                    type="checkbox"
+                    checked={formData.accepts_marketing}
+                    onChange={e => setFormData(prev => ({ ...prev, accepts_marketing: e.target.checked }))}
+                    className="mt-1 h-5 w-5 rounded border-[#E0E0E0] border-2 bg-transparent text-[#EA2831] checked:bg-[#EA2831] checked:border-[#EA2831] focus:ring-0 focus:ring-offset-0"
+                  />
+                  <p className="text-black text-base font-normal leading-normal">
+                    I would like to receive news and updates via email
+                  </p>
                 </label>
               </div>
               <div className="flex px-4 py-3 justify-center">
                 <button
                   type="submit"
                   disabled={loading}
-                  className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-12 px-5 bg-[#EA2831] text-[#FFFFFF] text-base font-bold leading-normal tracking-[0.015em] disabled:opacity-50"
+                  className="flex min-w-[84px] max-w-[480px] w-full cursor-pointer items-center justify-center overflow-hidden rounded-full h-12 px-5 bg-[#EA2831] text-[#FFFFFF] text-base font-bold leading-normal tracking-[0.015em] disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <span className="truncate">{loading ? 'Sending...' : 'Send message'}</span>
                 </button>
@@ -219,5 +329,14 @@ export default function ContactPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+// Wrap the form with reCAPTCHA provider
+export default function ContactPage() {
+  return (
+    <GoogleReCaptchaProvider reCaptchaKey={RECAPTCHA_SITE_KEY}>
+      <ContactForm />
+    </GoogleReCaptchaProvider>
   )
 }
