@@ -33,7 +33,6 @@ function ContactForm() {
   const [loading, setLoading] = useState(false)
   const [errors, setErrors] = useState<FormErrors>({})
   const [currentStep, setCurrentStep] = useState(1)
-  const [darkMode, setDarkMode] = useState(false)
   
   const [formData, setFormData] = useState<ContactFormData>({
     first_name: "",
@@ -47,7 +46,6 @@ function ContactForm() {
     accepts_marketing: false
   })
 
-  // Load saved form data
   useEffect(() => {
     const savedData = localStorage.getItem(STORAGE_KEY)
     if (savedData) {
@@ -55,12 +53,10 @@ function ContactForm() {
     }
   }, [])
 
-  // Save form data when it changes
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(formData))
   }, [formData])
 
-  // AI suggestions for company size based on location
   const suggestCompanySize = async () => {
     if (formData.location && !formData.team_size) {
       try {
@@ -126,7 +122,6 @@ function ContactForm() {
     setLoading(true)
 
     try {
-      // First save to database
       const { error: dbError } = await supabase
         .from('contact_submissions')
         .insert([{
@@ -143,14 +138,12 @@ function ContactForm() {
 
       if (dbError) throw dbError
 
-      // Then send emails
       const { error: emailError } = await supabase.functions.invoke('send-contact-email', {
         body: { ...formData }
       })
 
       if (emailError) throw emailError
 
-      // Show success toast with responsive styling
       toast({
         title: "Message Sent Successfully",
         description: (
@@ -167,10 +160,8 @@ function ContactForm() {
         duration: 5000,
       })
 
-      // Clear saved form data
       localStorage.removeItem(STORAGE_KEY)
 
-      // Reset form
       setFormData({
         first_name: "",
         last_name: "",
@@ -211,7 +202,6 @@ function ContactForm() {
       case 1:
         return (
           <div className="space-y-6">
-            {/* Basic Info Fields */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <label className="flex flex-col">
                 <p className="text-base font-medium leading-normal pb-2">
@@ -273,7 +263,6 @@ function ContactForm() {
       case 2:
         return (
           <div className="space-y-6">
-            {/* Company Details Fields */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <label className="flex flex-col">
                 <p className="text-base font-medium leading-normal pb-2">Company size</p>
@@ -303,7 +292,6 @@ function ContactForm() {
       case 3:
         return (
           <div className="space-y-6">
-            {/* Message and Terms Fields */}
             <label className="flex flex-col">
               <p className="text-base font-medium leading-normal pb-2">
                 Message *
@@ -380,8 +368,6 @@ function ContactForm() {
       onNext={currentStep < STEPS.length ? handleNext : undefined}
       onPrev={currentStep > 1 ? handlePrev : undefined}
       isLastStep={currentStep === STEPS.length}
-      nextButtonClassName="w-full sm:w-auto px-6 py-2 bg-[#EA2831] text-white rounded-full hover:bg-[#D62429] transition-colors"
-      prevButtonClassName="w-full sm:w-auto px-6 py-2 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors"
     >
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="flex flex-wrap justify-between gap-3">
