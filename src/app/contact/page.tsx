@@ -1,4 +1,3 @@
-
 "use client"
 
 import { useState, useEffect } from "react"
@@ -11,6 +10,7 @@ import { ArrowLeft } from "lucide-react"
 import PhoneInput from 'react-phone-input-2'
 import 'react-phone-input-2/lib/style.css'
 import FormLayout from "@/components/layout/FormLayout"
+import confetti from 'canvas-confetti'
 
 interface ContactFormData {
   first_name: string
@@ -34,6 +34,7 @@ function ContactForm() {
   const [loading, setLoading] = useState(false)
   const [errors, setErrors] = useState<FormErrors>({})
   const [currentStep, setCurrentStep] = useState(1)
+  const [showSuccess, setShowSuccess] = useState(false)
   
   const [formData, setFormData] = useState<ContactFormData>({
     first_name: "",
@@ -108,6 +109,50 @@ function ContactForm() {
     }
   }
 
+  const triggerConfetti = () => {
+    const count = 200
+    const defaults = {
+      origin: { y: 0.7 }
+    }
+
+    function fire(particleRatio: number, opts: any) {
+      confetti({
+        ...defaults,
+        ...opts,
+        particleCount: Math.floor(count * particleRatio),
+        spread: 90,
+        startVelocity: 30,
+      })
+    }
+
+    fire(0.25, {
+      spread: 26,
+      startVelocity: 55,
+    })
+
+    fire(0.2, {
+      spread: 60,
+    })
+
+    fire(0.35, {
+      spread: 100,
+      decay: 0.91,
+      scalar: 0.8,
+    })
+
+    fire(0.1, {
+      spread: 120,
+      startVelocity: 25,
+      decay: 0.92,
+      scalar: 1.2,
+    })
+
+    fire(0.1, {
+      spread: 120,
+      startVelocity: 45,
+    })
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
@@ -144,6 +189,9 @@ function ContactForm() {
       })
 
       if (emailError) throw emailError
+
+      setShowSuccess(true)
+      triggerConfetti()
 
       toast({
         title: "Message Sent Successfully",
@@ -195,6 +243,7 @@ function ContactForm() {
       })
     } finally {
       setLoading(false)
+      setTimeout(() => setShowSuccess(false), 3000)
     }
   }
 
@@ -388,6 +437,15 @@ function ContactForm() {
             </p>
           </div>
         </div>
+
+        {showSuccess && (
+          <div className="absolute inset-0 flex items-center justify-center bg-white/80 backdrop-blur-sm animate-fade-in z-50">
+            <div className="text-center space-y-4 animate-scale-in">
+              <h3 className="text-2xl font-bold text-green-600">Message Sent Successfully!</h3>
+              <p className="text-gray-600">Thank you for reaching out. We'll be in touch soon!</p>
+            </div>
+          </div>
+        )}
 
         {renderStepContent()}
 
