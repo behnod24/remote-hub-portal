@@ -1,4 +1,3 @@
-
 "use client"
 
 import { useState } from "react"
@@ -12,7 +11,7 @@ import PhoneInput from 'react-phone-input-2'
 import 'react-phone-input-2/lib/style.css'
 import { GoogleReCaptchaProvider as ReCaptchaProvider, GoogleReCaptcha } from 'react-google-recaptcha-v3'
 
-const RECAPTCHA_SITE_KEY = "6LcqX9gqAAAAAM9LRqSqVG6NT0g4v-ut94loUlIz"
+const RECAPTCHA_SITE_KEY = "6LcqX9gqAAAAAHLEEDlhVsH_LAwrqQfW1_Nus8ce"
 
 interface ContactFormData {
   first_name: string
