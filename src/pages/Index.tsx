@@ -8,7 +8,7 @@ import { useEffect } from "react";
 
 const Index = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [logoUrl, setLogoUrl] = useState("/lovable-uploads/0e65427e-6a9f-465e-bba5-a18ca746ac26.png");
+  const [logoUrl, setLogoUrl] = useState("/lovable-uploads/9a937071-e75a-4f6f-b7cb-36ba4eb120ca.png");
   const navigate = useNavigate();
 
   useEffect(() => {
