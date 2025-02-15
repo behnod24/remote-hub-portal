@@ -1,26 +1,25 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ChevronRight, Users, Briefcase, Code, PenTool, MessageSquare, DollarSign } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client"
-import { useEffect } from "react";
 
 const Index = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [logoUrl, setLogoUrl] = useState("/lovable-uploads/9a937071-e75a-4f6f-b7cb-36ba4eb120ca.png");
+  const [logoUrl, setLogoUrl] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchLogo = async () => {
       try {
-        const { data, error } = await supabase
-          .from('site_settings')
-          .select('logo_url')
-          .single()
-
-        if (data?.logo_url) {
-          setLogoUrl(data.logo_url)
+        const { data: { publicUrl } } = supabase
+          .storage
+          .from('site-assets')
+          .getPublicUrl('logo')
+        
+        if (publicUrl) {
+          setLogoUrl(publicUrl)
         }
       } catch (error) {
         console.error('Error fetching logo:', error)
@@ -44,11 +43,13 @@ const Index = () => {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <Link to="/" className="flex items-center">
-              <img 
-                src={logoUrl} 
-                alt="PamirHub Logo" 
-                className="h-8 w-auto md:h-10 object-contain"
-              />
+              {logoUrl && (
+                <img 
+                  src={logoUrl} 
+                  alt="PamirHub Logo" 
+                  className="h-8 w-auto md:h-10 object-contain"
+                />
+              )}
             </Link>
             
             <div className="hidden md:flex items-center space-x-8">

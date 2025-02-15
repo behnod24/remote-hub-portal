@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import { Button } from "@/components/ui/button"
@@ -15,20 +14,20 @@ import { useAuth } from "@/contexts/AuthContext"
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false)
-  const [logoUrl, setLogoUrl] = useState("/lovable-uploads/9a937071-e75a-4f6f-b7cb-36ba4eb120ca.png")
+  const [logoUrl, setLogoUrl] = useState("")
   const { user } = useAuth()
   const navigate = useNavigate()
 
   useEffect(() => {
     const fetchLogo = async () => {
       try {
-        const { data, error } = await supabase
-          .from('site_settings')
-          .select('logo_url')
-          .single()
-
-        if (data?.logo_url) {
-          setLogoUrl(data.logo_url)
+        const { data: { publicUrl } } = supabase
+          .storage
+          .from('site-assets')
+          .getPublicUrl('logo')
+        
+        if (publicUrl) {
+          setLogoUrl(publicUrl)
         }
       } catch (error) {
         console.error('Error fetching logo:', error)
@@ -62,11 +61,13 @@ const Header = () => {
               <Menu className="h-6 w-6" />
             </button>
             <Link to="/" className="flex items-center">
-              <img 
-                src={logoUrl} 
-                alt="PamirHub Logo" 
-                className="h-8 w-auto md:h-10 object-contain"
-              />
+              {logoUrl && (
+                <img 
+                  src={logoUrl} 
+                  alt="PamirHub Logo" 
+                  className="h-8 w-auto md:h-10 object-contain"
+                />
+              )}
             </Link>
             <nav className="hidden lg:flex items-center space-x-6">
               <Link to="/hire-employee" className="nav-link">Hire Employee</Link>
@@ -129,11 +130,13 @@ const Header = () => {
         <div className="flex flex-col h-full">
           <div className="flex items-center justify-between p-4 border-b">
             <Link to="/" className="flex items-center">
-              <img 
-                src={logoUrl} 
-                alt="PamirHub Logo" 
-                className="h-8 w-auto object-contain"
-              />
+              {logoUrl && (
+                <img 
+                  src={logoUrl} 
+                  alt="PamirHub Logo" 
+                  className="h-8 w-auto object-contain"
+                />
+              )}
             </Link>
             <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)}>
               <Menu className="h-6 w-6" />
