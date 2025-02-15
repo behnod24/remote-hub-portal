@@ -1,4 +1,3 @@
-
 "use client"
 
 import { useState } from "react"
@@ -26,11 +25,15 @@ interface ContactFormData {
   accepts_marketing: boolean
 }
 
+interface FormErrors extends Partial<ContactFormData> {
+  recaptcha?: string;
+}
+
 function ContactForm() {
   const { toast } = useToast()
   const [loading, setLoading] = useState(false)
   const [recaptchaToken, setRecaptchaToken] = useState<string>("")
-  const [errors, setErrors] = useState<Partial<ContactFormData>>({})
+  const [errors, setErrors] = useState<FormErrors>({})
   
   const [formData, setFormData] = useState<ContactFormData>({
     first_name: "",
@@ -45,7 +48,7 @@ function ContactForm() {
   })
 
   const validateForm = () => {
-    const newErrors: Partial<ContactFormData> = {}
+    const newErrors: FormErrors = {}
     
     if (!formData.first_name) newErrors.first_name = "First name is required"
     if (!formData.last_name) newErrors.last_name = "Last name is required"
@@ -57,7 +60,7 @@ function ContactForm() {
     if (!formData.phone) newErrors.phone = "Phone number is required"
     if (!formData.message) newErrors.message = "Message is required"
     if (!formData.accepts_privacy) newErrors.accepts_privacy = "You must accept the privacy policy"
-    if (recaptchaToken.length === 0) newErrors.message = "Please wait for reCAPTCHA verification"
+    if (recaptchaToken.length === 0) newErrors.recaptcha = "Please wait for reCAPTCHA verification"
 
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
@@ -177,6 +180,7 @@ function ContactForm() {
                 <div className="flex min-w-72 flex-col gap-3">
                   <h2 className="text-black text-4xl font-black leading-tight tracking-[-0.033em]">We'd love to help</h2>
                   <p className="text-neutral-500 text-base font-normal leading-normal">Reach out and we'll get in touch within 24 hours.</p>
+                  {errors.recaptcha && <p className="text-red-500 text-sm">{errors.recaptcha}</p>}
                 </div>
               </div>
               <div className="flex max-w-[480px] flex-wrap items-end gap-4 px-4">
