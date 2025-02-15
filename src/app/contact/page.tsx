@@ -108,6 +108,13 @@ const CITIES_BY_COUNTRY: { [key: string]: string[] } = {
     "Kobe", "Kyoto", "Kawasaki", "Saitama", "Hiroshima", "Sendai",
     "Kitakyushu", "Chiba", "Sakai", "Niigata", "Hamamatsu", "Kumamoto",
     "Sagamihara", "Shizuoka", "Okayama", "Kanazawa", "Utsunomiya", "Matsuyama"
+  ],
+  tr: [
+    "Istanbul", "Ankara", "Izmir", "Bursa", "Antalya", "Adana",
+    "Gaziantep", "Konya", "Mersin", "Diyarbakır", "Denizli", "Eskişehir",
+    "Samsun", "Urfa", "Malatya", "Erzurum", "Trabzon", "Ordu",
+    "Tekirdağ", "Edirne", "Kayseri", "Balıkesir", "Manisa", "Aydın",
+    "Van", "Muğla", "Sakarya", "Çanakkale", "Kütahya", "Rize"
   ]
 }
 
@@ -168,8 +175,10 @@ function ContactForm() {
   const handlePhoneChange = (value: string, country: any) => {
     setFormData(prev => ({ ...prev, phone: value }))
     if (country?.countryCode) {
-      setSelectedCountry(country.countryCode.toLowerCase())
-      const cities = CITIES_BY_COUNTRY[country.countryCode.toLowerCase()] || []
+      const countryCode = country.countryCode.toLowerCase()
+      setSelectedCountry(countryCode)
+      const cities = CITIES_BY_COUNTRY[countryCode] || []
+      console.log('Selected country:', countryCode, 'Available cities:', cities) // Debug log
       setAvailableCities(cities)
       // Reset location if the current location is not in the new cities list
       if (!cities.includes(formData.location)) {
