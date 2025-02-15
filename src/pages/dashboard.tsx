@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react'
 import { AlertCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -148,15 +149,17 @@ export default function Dashboard() {
         </div>
       ) : (
         <div className="flex h-full grow flex-col">
-          {/* Back to Site Button */}
-          <div className="absolute top-4 left-4 z-50">
+          <div className="flex items-center gap-4 absolute top-4 left-4 z-50">
             <Button
               variant="ghost"
               onClick={() => navigate('/')}
-              className="text-white hover:text-primary"
+              className="text-white hover:text-primary p-2"
             >
               Back to Site
             </Button>
+            <span className="text-white text-lg font-semibold">
+              PamirHub
+            </span>
           </div>
 
           <DashboardHeader
