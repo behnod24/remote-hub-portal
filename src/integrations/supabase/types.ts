@@ -131,6 +131,42 @@ export type Database = {
           },
         ]
       }
+      contact_submissions: {
+        Row: {
+          accepts_privacy: boolean
+          created_at: string | null
+          email: string
+          first_name: string
+          id: string
+          last_name: string
+          location: string | null
+          message: string
+          team_size: string | null
+        }
+        Insert: {
+          accepts_privacy?: boolean
+          created_at?: string | null
+          email: string
+          first_name: string
+          id?: string
+          last_name: string
+          location?: string | null
+          message: string
+          team_size?: string | null
+        }
+        Update: {
+          accepts_privacy?: boolean
+          created_at?: string | null
+          email?: string
+          first_name?: string
+          id?: string
+          last_name?: string
+          location?: string | null
+          message?: string
+          team_size?: string | null
+        }
+        Relationships: []
+      }
       files: {
         Row: {
           company_id: string | null
