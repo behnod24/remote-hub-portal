@@ -57,7 +57,7 @@ function ContactForm() {
     if (!formData.phone) newErrors.phone = "Phone number is required"
     if (!formData.message) newErrors.message = "Message is required"
     if (!formData.accepts_privacy) newErrors.accepts_privacy = "You must accept the privacy policy"
-    if (!recaptchaToken) newErrors.message = "Please wait for reCAPTCHA verification"
+    if (recaptchaToken.length === 0) newErrors.message = "Please wait for reCAPTCHA verification"
 
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
