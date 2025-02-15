@@ -1,7 +1,6 @@
-
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { Link } from "react-router-dom"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -10,7 +9,7 @@ import { useToast } from "@/components/ui/use-toast"
 import { ArrowLeft } from "lucide-react"
 import PhoneInput from 'react-phone-input-2'
 import 'react-phone-input-2/lib/style.css'
-import { GoogleReCaptchaProvider, useGoogleReCaptcha } from 'google-recaptcha-v3'
+import { GoogleReCaptchaProvider as ReCaptchaProvider, GoogleReCaptcha } from 'react-google-recaptcha-v3'
 
 const RECAPTCHA_SITE_KEY = "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" // Replace with your actual site key
 
@@ -29,7 +28,7 @@ interface ContactFormData {
 function ContactForm() {
   const { toast } = useToast()
   const [loading, setLoading] = useState(false)
-  const { executeRecaptcha } = useGoogleReCaptcha()
+  const [recaptchaToken, setRecaptchaToken] = useState("")
   const [errors, setErrors] = useState<Partial<ContactFormData>>({})
   
   const [formData, setFormData] = useState<ContactFormData>({
@@ -57,6 +56,7 @@ function ContactForm() {
     if (!formData.phone) newErrors.phone = "Phone number is required"
     if (!formData.message) newErrors.message = "Message is required"
     if (!formData.accepts_privacy) newErrors.accepts_privacy = "You must accept the privacy policy"
+    if (!recaptchaToken) newErrors.message = "Please wait for reCAPTCHA verification"
 
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
@@ -77,20 +77,10 @@ function ContactForm() {
     setLoading(true)
 
     try {
-      // Verify reCAPTCHA
-      if (!executeRecaptcha) {
-        throw new Error('reCAPTCHA not initialized')
-      }
-      const reCaptchaToken = await executeRecaptcha('contact_form')
-      
-      if (!reCaptchaToken) {
-        throw new Error('Failed to verify reCAPTCHA')
-      }
-
       // First save to database
       const { error: dbError } = await supabase
         .from('contact_submissions')
-        .insert([{ ...formData, recaptcha_token: reCaptchaToken }])
+        .insert([{ ...formData, recaptcha_token: recaptchaToken }])
 
       if (dbError) throw dbError
 
@@ -118,6 +108,7 @@ function ContactForm() {
         accepts_privacy: false,
         accepts_marketing: false
       })
+      setRecaptchaToken("")
     } catch (error) {
       console.error('Error submitting form:', error)
       toast({
@@ -198,7 +189,6 @@ function ContactForm() {
                     value={formData.first_name}
                     onChange={e => setFormData(prev => ({ ...prev, first_name: e.target.value }))}
                     className="rounded-xl h-14 border-[#E0E0E0] bg-[#FFFFFF] focus:border-[#E0E0E0]"
-                    required
                   />
                 </label>
                 <label className="flex flex-col min-w-40 flex-1">
@@ -211,7 +201,6 @@ function ContactForm() {
                     value={formData.last_name}
                     onChange={e => setFormData(prev => ({ ...prev, last_name: e.target.value }))}
                     className="rounded-xl h-14 border-[#E0E0E0] bg-[#FFFFFF] focus:border-[#E0E0E0]"
-                    required
                   />
                 </label>
               </div>
@@ -227,7 +216,6 @@ function ContactForm() {
                     value={formData.email}
                     onChange={e => setFormData(prev => ({ ...prev, email: e.target.value }))}
                     className="rounded-xl h-14 border-[#E0E0E0] bg-[#FFFFFF] focus:border-[#E0E0E0]"
-                    required
                   />
                 </label>
               </div>
@@ -244,7 +232,6 @@ function ContactForm() {
                     containerClass="!w-full"
                     inputClass="!w-full !h-14 !rounded-xl !border-[#E0E0E0] !bg-[#FFFFFF]"
                     buttonClass="!border-[#E0E0E0] !rounded-l-xl"
-                    required
                   />
                 </label>
               </div>
@@ -268,9 +255,7 @@ function ContactForm() {
                   />
                 </label>
               </div>
-              <div className="flex max
-
--w-[480px] flex-wrap items-end gap-4 px-4">
+              <div className="flex max-w-[480px] flex-wrap items-end gap-4 px-4">
                 <label className="flex flex-col min-w-40 flex-1">
                   <p className="text-black text-base font-medium leading-normal pb-2">
                     Message *
@@ -281,7 +266,6 @@ function ContactForm() {
                     value={formData.message}
                     onChange={e => setFormData(prev => ({ ...prev, message: e.target.value }))}
                     className="rounded-xl min-h-36 border-[#E0E0E0] bg-[#FFFFFF] focus:border-[#E0E0E0]"
-                    required
                   />
                 </label>
               </div>
@@ -292,7 +276,6 @@ function ContactForm() {
                     checked={formData.accepts_privacy}
                     onChange={e => setFormData(prev => ({ ...prev, accepts_privacy: e.target.checked }))}
                     className="mt-1 h-5 w-5 rounded border-[#E0E0E0] border-2 bg-transparent text-[#EA2831] checked:bg-[#EA2831] checked:border-[#EA2831] focus:ring-0 focus:ring-offset-0"
-                    required
                   />
                   <div className="flex flex-col">
                     <p className="text-black text-base font-normal leading-normal">
@@ -328,6 +311,7 @@ function ContactForm() {
           </div>
         </div>
       </div>
+      <GoogleReCaptcha onVerify={token => setRecaptchaToken(token)} />
     </div>
   )
 }
@@ -335,8 +319,8 @@ function ContactForm() {
 // Wrap the form with reCAPTCHA provider
 export default function ContactPage() {
   return (
-    <GoogleReCaptchaProvider reCaptchaKey={RECAPTCHA_SITE_KEY}>
+    <ReCaptchaProvider reCaptchaKey={RECAPTCHA_SITE_KEY}>
       <ContactForm />
-    </GoogleReCaptchaProvider>
+    </ReCaptchaProvider>
   )
 }
