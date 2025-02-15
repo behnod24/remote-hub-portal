@@ -28,11 +28,19 @@ export default function ContactPage() {
     setLoading(true)
 
     try {
-      const { error } = await supabase
+      // First save to database
+      const { error: dbError } = await supabase
         .from('contact_submissions')
         .insert([formData])
 
-      if (error) throw error
+      if (dbError) throw dbError
+
+      // Then send emails
+      const { error: emailError } = await supabase.functions.invoke('send-contact-email', {
+        body: formData
+      })
+
+      if (emailError) throw emailError
 
       toast({
         title: "Success",
