@@ -1,4 +1,3 @@
-
 "use client"
 
 import { useState, useEffect } from "react"
@@ -46,14 +45,70 @@ const COMPANY_SIZES = [
   "1000+ employees"
 ]
 
-// Major cities by country code
+// Expanded list of cities by country code
 const CITIES_BY_COUNTRY: { [key: string]: string[] } = {
-  us: ["New York", "Los Angeles", "Chicago", "Houston", "Phoenix", "Philadelphia"],
-  gb: ["London", "Manchester", "Birmingham", "Glasgow", "Liverpool", "Edinburgh"],
-  ca: ["Toronto", "Montreal", "Vancouver", "Calgary", "Ottawa", "Edmonton"],
-  au: ["Sydney", "Melbourne", "Brisbane", "Perth", "Adelaide", "Gold Coast"],
-  nz: ["Auckland", "Wellington", "Christchurch", "Hamilton", "Tauranga", "Dunedin"],
-  // Add more countries as needed
+  us: [
+    "New York", "Los Angeles", "Chicago", "Houston", "Phoenix", "Philadelphia",
+    "San Antonio", "San Diego", "Dallas", "San Jose", "Austin", "Jacksonville",
+    "Fort Worth", "Columbus", "San Francisco", "Charlotte", "Indianapolis",
+    "Seattle", "Denver", "Washington DC", "Boston", "Nashville", "Baltimore",
+    "Portland", "Las Vegas", "Milwaukee", "Albuquerque", "Atlanta", "Miami"
+  ],
+  gb: [
+    "London", "Manchester", "Birmingham", "Glasgow", "Liverpool", "Edinburgh",
+    "Leeds", "Sheffield", "Bristol", "Newcastle", "Nottingham", "Cardiff",
+    "Belfast", "Leicester", "Aberdeen", "Cambridge", "Oxford", "Plymouth",
+    "Southampton", "Portsmouth", "Brighton", "York", "Durham", "Bath",
+    "Coventry", "Swansea", "Norwich", "Exeter", "Chester"
+  ],
+  ca: [
+    "Toronto", "Montreal", "Vancouver", "Calgary", "Ottawa", "Edmonton",
+    "Mississauga", "Winnipeg", "Quebec City", "Hamilton", "Brampton", "Surrey",
+    "Halifax", "Victoria", "London", "St. John's", "Saskatoon", "Regina",
+    "Burnaby", "Richmond", "Windsor", "Kitchener", "Longueuil", "Waterloo"
+  ],
+  au: [
+    "Sydney", "Melbourne", "Brisbane", "Perth", "Adelaide", "Gold Coast",
+    "Newcastle", "Canberra", "Wollongong", "Hobart", "Geelong", "Townsville",
+    "Cairns", "Darwin", "Toowoomba", "Ballarat", "Bendigo", "Launceston",
+    "Mackay", "Rockhampton", "Bunbury", "Bundaberg", "Albury", "Wagga Wagga"
+  ],
+  nz: [
+    "Auckland", "Wellington", "Christchurch", "Hamilton", "Tauranga", "Dunedin",
+    "Palmerston North", "Napier", "Porirua", "New Plymouth", "Rotorua", "Whanganui",
+    "Nelson", "Invercargill", "Whanganui", "Gisborne", "Cambridge", "Timaru",
+    "Blenheim", "Pukekohe", "Queenstown", "Masterton", "Levin", "Papakura"
+  ],
+  de: [
+    "Berlin", "Hamburg", "Munich", "Cologne", "Frankfurt", "Stuttgart",
+    "Düsseldorf", "Leipzig", "Dortmund", "Essen", "Bremen", "Dresden",
+    "Hanover", "Nuremberg", "Duisburg", "Bochum", "Wuppertal", "Bielefeld",
+    "Bonn", "Münster", "Karlsruhe", "Mannheim", "Augsburg", "Wiesbaden"
+  ],
+  fr: [
+    "Paris", "Marseille", "Lyon", "Toulouse", "Nice", "Nantes",
+    "Strasbourg", "Montpellier", "Bordeaux", "Lille", "Rennes", "Reims",
+    "Le Havre", "Saint-Étienne", "Toulon", "Grenoble", "Dijon", "Angers",
+    "Nîmes", "Villeurbanne", "Le Mans", "Aix-en-Provence", "Brest", "Tours"
+  ],
+  es: [
+    "Madrid", "Barcelona", "Valencia", "Seville", "Zaragoza", "Málaga",
+    "Murcia", "Palma", "Las Palmas", "Bilbao", "Alicante", "Córdoba",
+    "Valladolid", "Vigo", "Gijón", "L'Hospitalet", "Vitoria", "Granada",
+    "Elche", "Oviedo", "Terrassa", "Badalona", "Cartagena", "Sabadell"
+  ],
+  it: [
+    "Rome", "Milan", "Naples", "Turin", "Palermo", "Genoa",
+    "Bologna", "Florence", "Bari", "Catania", "Venice", "Verona",
+    "Messina", "Padua", "Trieste", "Brescia", "Parma", "Taranto",
+    "Prato", "Modena", "Reggio Calabria", "Reggio Emilia", "Perugia", "Ravenna"
+  ],
+  jp: [
+    "Tokyo", "Yokohama", "Osaka", "Nagoya", "Sapporo", "Fukuoka",
+    "Kobe", "Kyoto", "Kawasaki", "Saitama", "Hiroshima", "Sendai",
+    "Kitakyushu", "Chiba", "Sakai", "Niigata", "Hamamatsu", "Kumamoto",
+    "Sagamihara", "Shizuoka", "Okayama", "Kanazawa", "Utsunomiya", "Matsuyama"
+  ]
 }
 
 function ContactForm() {
