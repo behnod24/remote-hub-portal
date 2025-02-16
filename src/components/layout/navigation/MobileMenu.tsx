@@ -31,18 +31,18 @@ const MobileMenu = ({ isOpen, setIsOpen, logoUrl, user }: MobileMenuProps) => {
 
   return (
     <div 
-      className={`lg:hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-[150] transition-opacity duration-300 ${
+      className={`lg:hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-[200] transition-opacity duration-300 ${
         isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
       }`}
       onClick={() => setIsOpen(false)}
     >
       <div 
-        className={`fixed inset-y-0 left-0 w-[280px] bg-white shadow-xl transform transition-transform duration-300 z-[151] ${
+        className={`fixed inset-y-0 left-0 w-[280px] bg-white/100 shadow-2xl transform transition-transform duration-300 z-[201] ${
           isOpen ? "translate-x-0" : "-translate-x-full"
         }`}
         onClick={e => e.stopPropagation()}
       >
-        <div className="flex h-16 items-center justify-between px-4 border-b">
+        <div className="flex h-16 items-center justify-between px-4 border-b bg-white">
           <Link to="/" className="flex items-center" onClick={() => setIsOpen(false)}>
             {logoUrl && (
               <img 
@@ -56,7 +56,7 @@ const MobileMenu = ({ isOpen, setIsOpen, logoUrl, user }: MobileMenuProps) => {
             <X className="h-6 w-6" />
           </Button>
         </div>
-        <nav className="flex flex-col p-4">
+        <nav className="flex flex-col p-4 bg-white">
           {menuItems.map((item) => (
             <Link
               key={item.path}
