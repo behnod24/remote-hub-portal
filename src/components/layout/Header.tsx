@@ -9,7 +9,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Menu, User, X } from "lucide-react"
+import { Menu, User, X, Briefcase, Users, Info, BookOpen, Mail } from "lucide-react"
 import { supabase } from "@/integrations/supabase/client"
 import { useAuth } from "@/contexts/AuthContext"
 
@@ -51,11 +51,11 @@ const Header = ({ isAuthPage, currentPage }: HeaderProps) => {
   }
 
   const menuItems = [
-    { label: 'Hire Employee', path: '/hire-employee' },
-    { label: 'Companies', path: '/companies' },
-    { label: 'How It Works', path: '/how-it-works' },
-    { label: 'Blog', path: '/blog' },
-    { label: 'Contact', path: '/contact' }
+    { label: 'Hire Employee', path: '/hire-employee', icon: Briefcase },
+    { label: 'Companies', path: '/companies', icon: Users },
+    { label: 'How It Works', path: '/how-it-works', icon: Info },
+    { label: 'Blog', path: '/blog', icon: BookOpen },
+    { label: 'Contact', path: '/contact', icon: Mail }
   ]
 
   const isActive = (path: string) => location.pathname === path
@@ -86,8 +86,13 @@ const Header = ({ isAuthPage, currentPage }: HeaderProps) => {
                 <Link 
                   key={item.path}
                   to={item.path} 
-                  className="nav-link text-base font-medium text-gray-700 hover:text-gray-900"
+                  className={`flex items-center gap-2 px-3 py-2 text-base font-medium transition-colors duration-200 ${
+                    isActive(item.path)
+                      ? 'text-primary border-b-2 border-primary'
+                      : 'text-gray-600 hover:text-gray-900 hover:border-b-2 hover:border-gray-200'
+                  }`}
                 >
+                  <item.icon className="h-4 w-4" />
                   {item.label}
                 </Link>
               ))}
@@ -126,7 +131,7 @@ const Header = ({ isAuthPage, currentPage }: HeaderProps) => {
                   <>
                     <Button 
                       variant="ghost" 
-                      className="text-base font-medium"
+                      className="text-base font-medium hover:bg-transparent hover:text-primary"
                       onClick={() => navigate('/auth/signin')}
                     >
                       Login
@@ -149,7 +154,7 @@ const Header = ({ isAuthPage, currentPage }: HeaderProps) => {
                   ) : (
                     <Button 
                       variant="ghost"
-                      className="text-base font-medium" 
+                      className="text-base font-medium hover:bg-transparent hover:text-primary" 
                       onClick={() => navigate('/auth/signin')}
                     >
                       Login
@@ -187,9 +192,14 @@ const Header = ({ isAuthPage, currentPage }: HeaderProps) => {
               <Link
                 key={item.path}
                 to={item.path}
-                className="px-4 py-3 text-base font-medium text-gray-700 hover:text-gray-900"
+                className={`flex items-center gap-2 px-4 py-3 text-base font-medium rounded-lg transition-colors ${
+                  isActive(item.path)
+                    ? 'text-primary bg-primary/5'
+                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                }`}
                 onClick={() => setIsOpen(false)}
               >
+                <item.icon className="h-5 w-5" />
                 {item.label}
               </Link>
             ))}
