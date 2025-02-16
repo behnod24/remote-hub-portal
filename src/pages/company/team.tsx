@@ -52,19 +52,21 @@ export default function CompanyTeam() {
 
     const fetchTeamData = async () => {
       try {
-        // Check if user is admin
-        const { data: memberData } = await supabase
+        // First get the user's company and role
+        const { data: companyMember, error: memberError } = await supabase
           .from('company_members')
           .select('company_id, role')
           .eq('user_id', user.id)
-          .single()
+          .maybeSingle()
 
-        if (memberData) {
-          setIsAdmin(memberData.role === 'admin')
-          setCompanyId(memberData.company_id)
+        if (memberError) throw memberError
 
-          // Fetch team members with user emails
-          const { data: teamData } = await supabase
+        if (companyMember) {
+          setIsAdmin(companyMember.role === 'admin')
+          setCompanyId(companyMember.company_id)
+
+          // Then fetch team members for this company
+          const { data: teamData, error: teamError } = await supabase
             .from('team_members')
             .select(`
               *,
@@ -72,7 +74,9 @@ export default function CompanyTeam() {
                 email
               )
             `)
-            .eq('company_id', memberData.company_id)
+            .eq('company_id', companyMember.company_id)
+
+          if (teamError) throw teamError
 
           if (teamData) {
             setTeamMembers(teamData.map(member => ({
@@ -83,24 +87,31 @@ export default function CompanyTeam() {
         }
       } catch (error) {
         console.error('Error fetching team data:', error)
+        toast({
+          title: "Error",
+          description: "Failed to load team data. Please try again.",
+          variant: "destructive",
+        })
       } finally {
         setLoading(false)
       }
     }
 
     fetchTeamData()
-  }, [user, navigate])
+  }, [user, navigate, toast])
 
   const handleAddMember = async () => {
     if (!companyId || !isAdmin) return
 
     try {
       // First check if user exists
-      const { data: userData } = await supabase
+      const { data: userData, error: userError } = await supabase
         .from('users')
         .select('id, email')
         .eq('email', newMember.email)
-        .single()
+        .maybeSingle()
+
+      if (userError) throw userError
 
       if (!userData) {
         toast({
@@ -111,7 +122,18 @@ export default function CompanyTeam() {
         return
       }
 
-      // Add team member
+      // First add company member
+      const { error: companyMemberError } = await supabase
+        .from('company_members')
+        .insert({
+          company_id: companyId,
+          user_id: userData.id,
+          role: newMember.role
+        })
+
+      if (companyMemberError) throw companyMemberError
+
+      // Then add team member
       const { data: newTeamMember, error: memberError } = await supabase
         .from('team_members')
         .insert({
