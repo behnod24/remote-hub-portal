@@ -103,7 +103,7 @@ export default function SectorsPage() {
                 </div>
 
                 <Button 
-                  className="w-full mt-4"
+                  className="w-full mt-4 bg-primary text-white hover:bg-primary/90"
                   onClick={() => setSelectedSector(sector.id)}
                 >
                   View {sector.title} Experts
@@ -120,7 +120,10 @@ export default function SectorsPage() {
             <p className="text-text-secondary">
               Connect with our team to discuss your specific needs and find the perfect expert for your project.
             </p>
-            <Button size="lg">
+            <Button 
+              size="lg"
+              className="bg-primary text-white hover:bg-primary/90"
+            >
               Contact Us Today
             </Button>
           </div>
