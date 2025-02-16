@@ -53,22 +53,25 @@ export default function CompanyLocations() {
 
     const fetchLocations = async () => {
       try {
-        // Check if user is admin
-        const { data: memberData } = await supabase
+        // Check if user is admin - Using the company_members table directly
+        const { data: memberData, error: memberError } = await supabase
           .from('company_members')
           .select('company_id, role')
-          .eq('user_id', user.id)
-          .single()
+          .maybeSingle()
+
+        if (memberError) throw memberError
 
         if (memberData) {
           setIsAdmin(memberData.role === 'admin')
           setCompanyId(memberData.company_id)
 
           // Fetch locations
-          const { data: locationData } = await supabase
+          const { data: locationData, error: locationError } = await supabase
             .from('company_locations')
             .select('*')
             .eq('company_id', memberData.company_id)
+
+          if (locationError) throw locationError
 
           if (locationData) {
             setLocations(locationData)
@@ -76,13 +79,18 @@ export default function CompanyLocations() {
         }
       } catch (error) {
         console.error('Error fetching locations:', error)
+        toast({
+          title: "Error",
+          description: "Failed to fetch locations. Please try again.",
+          variant: "destructive",
+        })
       } finally {
         setLoading(false)
       }
     }
 
     fetchLocations()
-  }, [user, navigate])
+  }, [user, navigate, toast])
 
   const handleAddLocation = async () => {
     if (!companyId || !isAdmin) return
