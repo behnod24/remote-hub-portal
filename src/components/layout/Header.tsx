@@ -51,8 +51,8 @@ const Header = ({ isAuthPage, currentPage }: HeaderProps) => {
   }
 
   const menuItems = [
-    { label: 'Hire Employee', path: '/hire-employee', icon: Briefcase },
-    { label: 'Companies', path: '/companies', icon: Users },
+    { label: 'Hire Talent', path: '/hire-talent', icon: Briefcase },
+    { label: 'Sectors', path: '/sectors', icon: Users },
     { label: 'How It Works', path: '/how-it-works', icon: Info },
     { label: 'Blog', path: '/blog', icon: BookOpen },
     { label: 'Contact', path: '/contact', icon: Mail }
