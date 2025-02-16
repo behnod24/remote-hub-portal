@@ -62,8 +62,20 @@ const Header = ({ isAuthPage, currentPage }: HeaderProps) => {
 
   const isActive = (path: string) => location.pathname === path
 
+  // Prevent body scrolling when mobile menu is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = 'unset'
+    }
+    return () => {
+      document.body.style.overflow = 'unset'
+    }
+  }, [isOpen])
+
   return (
-    <header className="border-b bg-white/80 backdrop-blur-md sticky top-0 z-50">
+    <header className="border-b bg-white/80 backdrop-blur-md sticky top-0 z-[100]">
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center gap-8">
@@ -170,11 +182,18 @@ const Header = ({ isAuthPage, currentPage }: HeaderProps) => {
       </div>
       
       {/* Mobile menu */}
-      <div className={`
-        lg:hidden fixed inset-0 z-50 bg-background/80 backdrop-blur-sm transform transition-transform duration-300
-        ${isOpen ? "translate-x-0" : "-translate-x-full"}
-      `}>
-        <div className="fixed inset-0 z-50 bg-white">
+      <div 
+        className={`lg:hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-[150] transition-opacity duration-300 ${
+          isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
+        }`}
+        onClick={() => setIsOpen(false)}
+      >
+        <div 
+          className={`fixed inset-y-0 left-0 w-[280px] bg-white shadow-xl transform transition-transform duration-300 z-[151] ${
+            isOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
+          onClick={e => e.stopPropagation()}
+        >
           <div className="flex h-16 items-center justify-between px-4 border-b">
             <Link to="/" className="flex items-center" onClick={() => setIsOpen(false)}>
               {logoUrl && (
