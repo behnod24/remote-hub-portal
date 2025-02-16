@@ -1,7 +1,20 @@
 
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { User, Users, LayoutDashboard, Linkedin, Presentation, FileText, MessageSquare, Settings, HelpCircle, ChevronDown, Menu, X } from 'lucide-react';
+import { 
+  User, 
+  Users, 
+  LayoutDashboard, 
+  Building2, 
+  Briefcase,
+  FileText, 
+  MessageSquare, 
+  Settings, 
+  HelpCircle, 
+  ChevronDown, 
+  Menu, 
+  X 
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface DashboardSidebarProps {
@@ -19,9 +32,9 @@ interface MenuItem {
 }
 
 const menuItems: MenuItem[] = [{
-  icon: User,
-  label: "Company Profile",
-  subMenus: ["Overview", "Company Details", "Branding", "Locations"]
+  icon: Building2,
+  label: "Company",
+  subMenus: ["Overview", "Profile", "Team Members", "Locations"]
 }, {
   icon: Users,
   label: "Employees",
@@ -31,28 +44,24 @@ const menuItems: MenuItem[] = [{
   label: "Projects",
   subMenus: ["Active Projects", "Completed", "Timeline", "Resources"]
 }, {
-  icon: Linkedin,
+  icon: Briefcase,
   label: "Jobs",
   subMenus: ["Job Listings", "Applications", "Interviews", "Offers"]
 }, {
-  icon: Presentation,
-  label: "Reports & Analytics",
-  subMenus: ["Dashboard", "Financial", "Performance", "Custom Reports"]
-}, {
   icon: FileText,
-  label: "File Management",
-  subMenus: ["Documents", "Images", "Videos", "Archives"]
+  label: "Documents",
+  subMenus: ["All Files", "Shared", "Templates", "Archives"]
 }, {
   icon: MessageSquare,
-  label: "Messaging",
-  subMenus: ["Inbox", "Sent", "Drafts", "Templates"]
+  label: "Messages",
+  subMenus: ["Inbox", "Sent", "Drafts", "Archive"]
 }, {
   icon: Settings,
-  label: "Settings & Security",
-  subMenus: ["General", "Security", "Notifications", "Integrations"]
+  label: "Settings",
+  subMenus: ["General", "Security", "Notifications", "Billing"]
 }, {
   icon: HelpCircle,
-  label: "Support & Help",
+  label: "Help & Support",
   subMenus: ["Documentation", "FAQs", "Contact Support", "Training"]
 }];
 
