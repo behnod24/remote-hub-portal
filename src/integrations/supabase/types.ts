@@ -48,6 +48,42 @@ export type Database = {
         }
         Relationships: []
       }
+      company_dashboard_preferences: {
+        Row: {
+          company_id: string | null
+          created_at: string
+          id: string
+          preferred_sectors: Database["public"]["Enums"]["sector_type"][] | null
+          updated_at: string
+        }
+        Insert: {
+          company_id?: string | null
+          created_at?: string
+          id?: string
+          preferred_sectors?:
+            | Database["public"]["Enums"]["sector_type"][]
+            | null
+          updated_at?: string
+        }
+        Update: {
+          company_id?: string | null
+          created_at?: string
+          id?: string
+          preferred_sectors?:
+            | Database["public"]["Enums"]["sector_type"][]
+            | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_dashboard_preferences_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: true
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       company_locations: {
         Row: {
           address: string
@@ -377,6 +413,39 @@ export type Database = {
         }
         Relationships: []
       }
+      talent_profiles: {
+        Row: {
+          availability_status: boolean | null
+          created_at: string
+          hourly_rate: number | null
+          id: string
+          sector: Database["public"]["Enums"]["sector_type"]
+          updated_at: string
+          user_id: string | null
+          years_of_experience: number | null
+        }
+        Insert: {
+          availability_status?: boolean | null
+          created_at?: string
+          hourly_rate?: number | null
+          id?: string
+          sector: Database["public"]["Enums"]["sector_type"]
+          updated_at?: string
+          user_id?: string | null
+          years_of_experience?: number | null
+        }
+        Update: {
+          availability_status?: boolean | null
+          created_at?: string
+          hourly_rate?: number | null
+          id?: string
+          sector?: Database["public"]["Enums"]["sector_type"]
+          updated_at?: string
+          user_id?: string | null
+          years_of_experience?: number | null
+        }
+        Relationships: []
+      }
       tasks: {
         Row: {
           assigned_to: string | null
@@ -570,6 +639,11 @@ export type Database = {
       }
     }
     Enums: {
+      sector_type:
+        | "engineering"
+        | "software_development"
+        | "design"
+        | "sales_marketing"
       user_role: "admin" | "user"
     }
     CompositeTypes: {

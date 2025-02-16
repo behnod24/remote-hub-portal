@@ -3,7 +3,7 @@ import { AlertCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/contexts/AuthContext'
 import { supabase } from '@/integrations/supabase/client'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import ProfileManager from '@/components/dashboard/ProfileManager'
 import { useToast } from '@/components/ui/use-toast'
 import DashboardHeader from '@/components/dashboard/DashboardHeader'
@@ -11,6 +11,8 @@ import DashboardSidebar from '@/components/dashboard/DashboardSidebar'
 import SentimentAnalysis from '@/components/dashboard/SentimentAnalysis'
 import TweetList from '@/components/dashboard/TweetList'
 import { useIsMobile } from '@/hooks/use-mobile'
+import CompanyDashboardLayout from '@/components/company/dashboard/CompanyDashboardLayout'
+import TalentSearch from '@/components/company/dashboard/TalentSearch'
 
 const sentimentData = [
   { name: 'Mon', value: 65 },
@@ -65,6 +67,8 @@ export default function Dashboard() {
   const { toast } = useToast()
   const isMobile = useIsMobile()
   const [isSidebarOpen, setIsSidebarOpen] = useState(!isMobile)
+  const location = useLocation();
+  const isCompanyDashboard = location.pathname.startsWith('/company/dashboard');
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -123,6 +127,28 @@ export default function Dashboard() {
       title: "Success",
       description: "Profile updated successfully",
     })
+  }
+
+  if (isCompanyDashboard) {
+    return (
+      <CompanyDashboardLayout currentPath={location.pathname}>
+        {location.pathname === '/company/dashboard/talent' ? (
+          <TalentSearch />
+        ) : (
+          <div className="text-white">
+            <h1 className="text-2xl font-bold mb-4">
+              {location.pathname === '/company/dashboard' && 'Dashboard Overview'}
+              {location.pathname === '/company/dashboard/jobs' && 'Job Listings'}
+              {location.pathname === '/company/dashboard/applications' && 'Applications'}
+              {location.pathname === '/company/dashboard/messages' && 'Messages'}
+              {location.pathname === '/company/dashboard/billing' && 'Billing'}
+              {location.pathname === '/company/dashboard/settings' && 'Settings'}
+            </h1>
+            <p className="text-white/60">This section is under development.</p>
+          </div>
+        )}
+      </CompanyDashboardLayout>
+    );
   }
 
   if (error) {
