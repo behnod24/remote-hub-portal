@@ -106,10 +106,9 @@ const Index = () => {
       </section>
 
       <section className="relative py-20" style={{
-        backgroundImage: backgroundUrl ? `url(${backgroundUrl})` : 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
+        background: 'linear-gradient(135deg, #FF0042 0%, #D946EF 100%)',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat'
       }}>
         <div className="relative z-10 container mx-auto px-4">
           <div className="text-center mb-16">
