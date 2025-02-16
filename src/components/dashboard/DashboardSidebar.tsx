@@ -13,7 +13,10 @@ import {
   HelpCircle, 
   ChevronDown, 
   Menu, 
-  X 
+  X,
+  Search,
+  Star,
+  GraduationCap 
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -34,7 +37,36 @@ interface MenuItem {
 const menuItems: MenuItem[] = [{
   icon: Building2,
   label: "Company",
-  subMenus: ["Overview", "Profile", "Team Members", "Locations"]
+  subMenus: [
+    "Overview", 
+    "Profile", 
+    "Team Members", 
+    "Locations",
+    "Talent Search",
+    "Talent Pool",
+    "Skills Database",
+    "Recruitment Analytics"
+  ]
+}, {
+  icon: GraduationCap,
+  label: "Talent Management",
+  subMenus: [
+    "Candidate Search",
+    "Applications",
+    "Assessments",
+    "Interview Schedule",
+    "Talent Pipeline",
+    "Onboarding"
+  ]
+}, {
+  icon: Star,
+  label: "Performance",
+  subMenus: [
+    "Reviews",
+    "Skills Matrix",
+    "Development Plans",
+    "Certifications"
+  ]
 }, {
   icon: Users,
   label: "Employees",
