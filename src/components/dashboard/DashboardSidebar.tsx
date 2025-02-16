@@ -31,70 +31,105 @@ interface DashboardSidebarProps {
 interface MenuItem {
   icon: any;
   label: string;
-  subMenus?: string[];
+  subMenus?: { name: string; path: string; }[];
 }
 
 const menuItems: MenuItem[] = [{
   icon: Building2,
   label: "Company",
   subMenus: [
-    "Overview", 
-    "Profile", 
-    "Team Members", 
-    "Locations",
-    "Talent Search",
-    "Talent Pool",
-    "Skills Database",
-    "Recruitment Analytics"
+    { name: "Overview", path: "/company/dashboard" },
+    { name: "Profile", path: "/company/dashboard/profile" },
+    { name: "Team Members", path: "/company/dashboard/team" },
+    { name: "Locations", path: "/company/dashboard/locations" }
   ]
 }, {
   icon: GraduationCap,
   label: "Talent Management",
   subMenus: [
-    "Candidate Search",
-    "Applications",
-    "Assessments",
-    "Interview Schedule",
-    "Talent Pipeline",
-    "Onboarding"
+    { name: "Talent Search", path: "/company/dashboard/talent/search" },
+    { name: "Talent Pool", path: "/company/dashboard/talent/pool" },
+    { name: "Skills Database", path: "/company/dashboard/talent/skills" },
+    { name: "Recruitment Analytics", path: "/company/dashboard/talent/analytics" },
+    { name: "Candidate Search", path: "/company/dashboard/talent/candidates" },
+    { name: "Applications", path: "/company/dashboard/talent/applications" },
+    { name: "Assessments", path: "/company/dashboard/talent/assessments" },
+    { name: "Interview Schedule", path: "/company/dashboard/talent/interviews" },
+    { name: "Talent Pipeline", path: "/company/dashboard/talent/pipeline" },
+    { name: "Onboarding", path: "/company/dashboard/talent/onboarding" }
   ]
 }, {
   icon: Star,
   label: "Performance",
   subMenus: [
-    "Reviews",
-    "Skills Matrix",
-    "Development Plans",
-    "Certifications"
+    { name: "Reviews", path: "/company/dashboard/performance/reviews" },
+    { name: "Skills Matrix", path: "/company/dashboard/performance/skills" },
+    { name: "Development Plans", path: "/company/dashboard/performance/development" },
+    { name: "Certifications", path: "/company/dashboard/performance/certifications" }
   ]
 }, {
   icon: Users,
   label: "Employees",
-  subMenus: ["All Employees", "Departments", "Roles", "Performance"]
+  subMenus: [
+    { name: "All Employees", path: "/company/dashboard/employees" },
+    { name: "Departments", path: "/company/dashboard/departments" },
+    { name: "Roles", path: "/company/dashboard/roles" },
+    { name: "Performance", path: "/company/dashboard/employee-performance" }
+  ]
 }, {
   icon: LayoutDashboard,
   label: "Projects",
-  subMenus: ["Active Projects", "Completed", "Timeline", "Resources"]
+  subMenus: [
+    { name: "Active Projects", path: "/company/dashboard/projects/active" },
+    { name: "Completed", path: "/company/dashboard/projects/completed" },
+    { name: "Timeline", path: "/company/dashboard/projects/timeline" },
+    { name: "Resources", path: "/company/dashboard/projects/resources" }
+  ]
 }, {
   icon: Briefcase,
   label: "Jobs",
-  subMenus: ["Job Listings", "Applications", "Interviews", "Offers"]
+  subMenus: [
+    { name: "Job Listings", path: "/company/dashboard/jobs" },
+    { name: "Applications", path: "/company/dashboard/applications" },
+    { name: "Interviews", path: "/company/dashboard/interviews" },
+    { name: "Offers", path: "/company/dashboard/offers" }
+  ]
 }, {
   icon: FileText,
   label: "Documents",
-  subMenus: ["All Files", "Shared", "Templates", "Archives"]
+  subMenus: [
+    { name: "All Files", path: "/company/dashboard/documents" },
+    { name: "Shared", path: "/company/dashboard/documents/shared" },
+    { name: "Templates", path: "/company/dashboard/documents/templates" },
+    { name: "Archives", path: "/company/dashboard/documents/archives" }
+  ]
 }, {
   icon: MessageSquare,
   label: "Messages",
-  subMenus: ["Inbox", "Sent", "Drafts", "Archive"]
+  subMenus: [
+    { name: "Inbox", path: "/company/dashboard/messages" },
+    { name: "Sent", path: "/company/dashboard/messages/sent" },
+    { name: "Drafts", path: "/company/dashboard/messages/drafts" },
+    { name: "Archive", path: "/company/dashboard/messages/archive" }
+  ]
 }, {
   icon: Settings,
   label: "Settings",
-  subMenus: ["General", "Security", "Notifications", "Billing"]
+  subMenus: [
+    { name: "General", path: "/company/dashboard/settings" },
+    { name: "Security", path: "/company/dashboard/settings/security" },
+    { name: "Notifications", path: "/company/dashboard/settings/notifications" },
+    { name: "Billing", path: "/company/dashboard/settings/billing" }
+  ]
 }, {
   icon: HelpCircle,
   label: "Help & Support",
-  subMenus: ["Documentation", "FAQs", "Contact Support", "Training"]
+  subMenus: [
+    { name: "Documentation", path: "/company/dashboard/help" },
+    { name: "FAQs", path: "/company/dashboard/help/faqs" },
+    { name: "Contact Support", path: "/company/dashboard/help/support" },
+    { name: "Training", path: "/company/dashboard/help/training" }
+  ]
 }];
 
 export default function DashboardSidebar({
@@ -202,10 +237,10 @@ export default function DashboardSidebar({
                     {item.subMenus?.map((subMenu, subIndex) => (
                       <Link
                         key={subIndex}
-                        to="#"
+                        to={subMenu.path}
                         className="px-3 py-2 text-sm text-[#ABABAB] hover:text-white transition-colors"
                       >
-                        {subMenu}
+                        {subMenu.name}
                       </Link>
                     ))}
                   </div>
