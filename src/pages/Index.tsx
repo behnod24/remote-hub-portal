@@ -105,19 +105,16 @@ const Index = () => {
         </div>
       </section>
 
-      <section className="relative py-20">
-        <div className="absolute inset-0 z-0" style={{
-          backgroundImage: backgroundUrl ? `url(${backgroundUrl})` : 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
-          opacity: 0.15
-        }} />
-        
+      <section className="relative py-20" style={{
+        backgroundImage: backgroundUrl ? `url(${backgroundUrl})` : 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat'
+      }}>
         <div className="relative z-10 container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Expert Talent Categories</h2>
-            <p className="text-text-secondary max-w-2xl mx-auto">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-white">Expert Talent Categories</h2>
+            <p className="text-white/90 max-w-2xl mx-auto">
               Access a diverse pool of skilled professionals across various domains
             </p>
           </div>
@@ -126,7 +123,7 @@ const Index = () => {
             {categories.map((category, index) => (
               <motion.div 
                 key={category.title} 
-                className="glass-card p-6 text-center backdrop-blur-sm bg-white/90" 
+                className="bg-white rounded-2xl shadow-lg p-6 text-center" 
                 initial={{
                   opacity: 0,
                   y: 20
