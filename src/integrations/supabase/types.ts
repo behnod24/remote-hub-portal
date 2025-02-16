@@ -639,11 +639,15 @@ export type Database = {
       }
       team_members: {
         Row: {
+          can_manage_projects: boolean | null
+          can_manage_talents: boolean | null
+          can_manage_team: boolean | null
           company_id: string | null
           created_at: string | null
           department: string | null
           id: string
           is_active: boolean | null
+          permissions: Json | null
           role: string
           start_date: string | null
           title: string | null
@@ -651,11 +655,15 @@ export type Database = {
           user_id: string | null
         }
         Insert: {
+          can_manage_projects?: boolean | null
+          can_manage_talents?: boolean | null
+          can_manage_team?: boolean | null
           company_id?: string | null
           created_at?: string | null
           department?: string | null
           id?: string
           is_active?: boolean | null
+          permissions?: Json | null
           role: string
           start_date?: string | null
           title?: string | null
@@ -663,11 +671,15 @@ export type Database = {
           user_id?: string | null
         }
         Update: {
+          can_manage_projects?: boolean | null
+          can_manage_talents?: boolean | null
+          can_manage_team?: boolean | null
           company_id?: string | null
           created_at?: string | null
           department?: string | null
           id?: string
           is_active?: boolean | null
+          permissions?: Json | null
           role?: string
           start_date?: string | null
           title?: string | null
@@ -818,6 +830,7 @@ export type Database = {
         | "software_development"
         | "design"
         | "sales_marketing"
+      team_member_role: "admin" | "manager" | "member"
       user_role: "admin" | "user"
     }
     CompositeTypes: {
