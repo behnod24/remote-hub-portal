@@ -26,11 +26,11 @@ interface Company {
   company_profiles: CompanyProfile[]
 }
 
-// Updated to match exact Supabase response structure
+// Type for the Supabase response
 type DisplayCompany = Omit<Company, 'company_profiles'> & CompanyProfile
 
-// Type for the Supabase response
-interface MemberDataResponse {
+// Updated to match exact Supabase response structure
+interface SupabaseResponse {
   company_id: string
   companies: {
     id: string
@@ -63,6 +63,7 @@ export default function CompanyOverview() {
 
     const fetchCompanyData = async () => {
       try {
+        // Use maybeSingle() instead of single() to handle the response better
         const { data: memberData, error } = await supabase
           .from('company_members')
           .select(`
@@ -79,22 +80,23 @@ export default function CompanyOverview() {
             )
           `)
           .eq('user_id', user.id)
-          .single()
+          .maybeSingle()
 
         if (error) throw error
 
         if (memberData) {
-          const companyData = memberData.companies as MemberDataResponse['companies']
-          const companyProfile = companyData.company_profiles?.[0] || {
+          // Explicitly type the response and access the first company profile
+          const companyData = memberData as SupabaseResponse
+          const companyProfile = companyData.companies.company_profiles?.[0] || {
             mission_statement: null,
             industry: null,
             company_size: null
           }
           
           const mergedData: DisplayCompany = {
-            id: companyData.id,
-            name: companyData.name,
-            description: companyData.description,
+            id: companyData.companies.id,
+            name: companyData.companies.name,
+            description: companyData.companies.description,
             ...companyProfile
           }
           
@@ -104,17 +106,17 @@ export default function CompanyOverview() {
           const { count: teamCount } = await supabase
             .from('team_members')
             .select('*', { count: 'exact', head: true })
-            .eq('company_id', companyData.id)
+            .eq('company_id', companyData.companies.id)
 
           const { count: locationCount } = await supabase
             .from('company_locations')
             .select('*', { count: 'exact', head: true })
-            .eq('company_id', companyData.id)
+            .eq('company_id', companyData.companies.id)
 
           const { count: projectCount } = await supabase
             .from('projects')
             .select('*', { count: 'exact', head: true })
-            .eq('company_id', companyData.id)
+            .eq('company_id', companyData.companies.id)
             .eq('status', 'active')
 
           setStats({
