@@ -1,125 +1,119 @@
 
-import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
-import { Button } from '@/components/ui/button';
-import { Code2, MonitorPlay, PenTool, MessageSquare } from 'lucide-react';
-
-type Sector = 'engineering' | 'software_development' | 'design' | 'sales_marketing';
-
-interface SectorInfo {
-  id: Sector;
-  icon: any;
-  label: string;
-  description: string;
-}
-
-const sectors: SectorInfo[] = [
-  {
-    id: 'engineering',
-    icon: Code2,
-    label: 'Engineering',
-    description: 'Find top engineering talent across various disciplines'
-  },
-  {
-    id: 'software_development',
-    icon: MonitorPlay,
-    label: 'Software Development',
-    description: 'Connect with skilled software developers and architects'
-  },
-  {
-    id: 'design',
-    icon: PenTool,
-    label: 'Design',
-    description: 'Discover creative designers for your projects'
-  },
-  {
-    id: 'sales_marketing',
-    icon: MessageSquare,
-    label: 'Sales & Marketing',
-    description: 'Hire experts in sales, marketing, and growth'
-  }
-];
+import { useState } from 'react'
+import { useAuth } from '@/contexts/AuthContext'
+import { supabase } from '@/integrations/supabase/client'
+import { useToast } from '@/components/ui/use-toast'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { Card } from '@/components/ui/card'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import TalentSelector from './TalentSelector'
+import ProjectRequirementsForm from './ProjectRequirementsForm'
+import { TalentProfile, ProjectRequirement } from '@/types/company'
 
 export default function TalentSearch() {
-  const [selectedSector, setSelectedSector] = useState<Sector | null>(null);
+  const [selectedSector, setSelectedSector] = useState<string>('engineering')
+  const [selectedTalent, setSelectedTalent] = useState<TalentProfile | null>(null)
+  const { user } = useAuth()
+  const { toast } = useToast()
 
-  // Fetch talent counts by sector
-  const { data: talentCounts, isLoading } = useQuery({
-    queryKey: ['talent-counts'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('talent_profiles')
-        .select('sector')
-        .eq('availability_status', true);
+  const handleTalentSelect = async (talent: TalentProfile) => {
+    try {
+      // First create a new project
+      const { data: project, error: projectError } = await supabase
+        .from('projects')
+        .insert([{
+          name: `Project with Talent ${talent.id}`,
+          status: 'pending'
+        }])
+        .select()
+        .single()
 
-      if (error) throw error;
+      if (projectError) throw projectError
 
-      const counts: Record<Sector, number> = {
-        engineering: 0,
-        software_development: 0,
-        design: 0,
-        sales_marketing: 0
-      };
+      // Then create the application
+      const { error: applicationError } = await supabase
+        .from('project_applications')
+        .insert([{
+          talent_id: talent.id,
+          company_id: user?.id, // Assuming the logged-in user represents the company
+          status: 'pending'
+        }])
 
-      data?.forEach(profile => {
-        if (profile.sector) {
-          counts[profile.sector as Sector]++;
-        }
-      });
+      if (applicationError) throw applicationError
 
-      return counts;
+      setSelectedTalent(talent)
+      toast({
+        title: 'Success',
+        description: 'Talent selected successfully. Please add project requirements.',
+      })
+    } catch (error: any) {
+      toast({
+        title: 'Error',
+        description: 'Failed to select talent. Please try again.',
+        variant: 'destructive',
+      })
     }
-  });
+  }
+
+  const handleRequirementSubmit = (requirement: ProjectRequirement) => {
+    // The form component handles the submission
+    setSelectedTalent(null) // Reset selection after submission
+  }
 
   return (
-    <div className="space-y-8">
-      <div>
-        <h2 className="text-2xl font-bold text-white mb-2">Find Top Talent</h2>
-        <p className="text-white/80">Browse experts by sector and connect with the perfect match for your needs</p>
+    <div className="space-y-6 p-6">
+      <div className="flex flex-col space-y-4">
+        <h1 className="text-2xl font-bold text-white">Talent Search</h1>
+        <Card className="p-4">
+          <Select value={selectedSector} onValueChange={setSelectedSector}>
+            <SelectTrigger className="w-[200px]">
+              <SelectValue placeholder="Select sector" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="engineering">Engineering</SelectItem>
+              <SelectItem value="software_development">Software Development</SelectItem>
+              <SelectItem value="design">Design</SelectItem>
+              <SelectItem value="sales_marketing">Sales & Marketing</SelectItem>
+            </SelectContent>
+          </Select>
+        </Card>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {sectors.map((sector) => (
-          <motion.div
-            key={sector.id}
-            className={`
-              p-6 rounded-lg border cursor-pointer transition-all
-              ${selectedSector === sector.id 
-                ? 'border-primary bg-primary/10' 
-                : 'border-white/10 hover:border-white/20 bg-white/5'
-              }
-            `}
-            onClick={() => setSelectedSector(sector.id)}
-            whileHover={{ scale: 1.02 }}
-            transition={{ duration: 0.2 }}
-          >
-            <div className="flex items-start justify-between">
-              <div className="flex items-center gap-4">
-                <div className="p-3 rounded-full bg-primary/20">
-                  <sector.icon className="w-6 h-6 text-primary" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-semibold text-white">{sector.label}</h3>
-                  <p className="text-white/60 text-sm mt-1">{sector.description}</p>
-                </div>
-              </div>
-              <div className="text-primary font-bold">
-                {isLoading ? '...' : talentCounts?.[sector.id] || 0}
-              </div>
+      <Tabs defaultValue="search" className="space-y-4">
+        <TabsList>
+          <TabsTrigger value="search">Search Talents</TabsTrigger>
+          <TabsTrigger value="requirements" disabled={!selectedTalent}>
+            Project Requirements
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="search" className="space-y-4">
+          <TalentSelector
+            sector={selectedSector}
+            onSelect={handleTalentSelect}
+          />
+        </TabsContent>
+
+        <TabsContent value="requirements">
+          {selectedTalent && (
+            <div className="space-y-4">
+              <Card className="p-6">
+                <h2 className="text-xl font-semibold mb-4">Add Project Requirements</h2>
+                <ProjectRequirementsForm
+                  projectId={selectedTalent.id}
+                  onSubmit={handleRequirementSubmit}
+                />
+              </Card>
             </div>
-          </motion.div>
-        ))}
-      </div>
-
-      {selectedSector && (
-        <div className="mt-8">
-          <Button className="bg-primary text-white hover:bg-primary/90">
-            View {sectors.find(s => s.id === selectedSector)?.label} Experts
-          </Button>
-        </div>
-      )}
+          )}
+        </TabsContent>
+      </Tabs>
     </div>
-  );
+  )
 }
