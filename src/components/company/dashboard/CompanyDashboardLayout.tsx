@@ -9,7 +9,8 @@ import {
   MessageSquare, 
   CreditCard, 
   Settings,
-  Menu
+  Menu,
+  ArrowLeft
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
@@ -66,6 +67,10 @@ export default function CompanyDashboardLayout({ children, currentPath }: Compan
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
+  const handleBackToDashboard = () => {
+    navigate('/dashboard');
+  };
+
   return (
     <div className="min-h-screen bg-black">
       {/* Header */}
@@ -79,6 +84,15 @@ export default function CompanyDashboardLayout({ children, currentPath }: Compan
               className="lg:hidden text-white"
             >
               <Menu className="h-6 w-6" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleBackToDashboard}
+              className="text-white flex items-center gap-2 hover:bg-white/5"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Back to Dashboard
             </Button>
             <span className="text-white font-semibold text-lg">Company Dashboard</span>
           </div>
