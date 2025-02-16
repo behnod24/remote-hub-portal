@@ -23,7 +23,7 @@ interface Company {
   id: string
   name: string
   description: string | null
-  company_profiles?: CompanyProfile[]
+  company_profiles: CompanyProfile[]
 }
 
 interface CompanyMemberData {
@@ -35,7 +35,7 @@ export default function CompanyOverview() {
   const { user } = useAuth()
   const navigate = useNavigate()
   const [loading, setLoading] = useState(true)
-  const [company, setCompany] = useState<(Company & CompanyProfile) | null>(null)
+  const [company, setCompany] = useState<(Omit<Company, 'company_profiles'> & CompanyProfile) | null>(null)
   const [stats, setStats] = useState<CompanyStats>({
     totalTeamMembers: 0,
     totalLocations: 0,
@@ -50,8 +50,7 @@ export default function CompanyOverview() {
 
     const fetchCompanyData = async () => {
       try {
-        // Get user's company
-        const { data: memberData } = await supabase
+        const { data: memberData, error } = await supabase
           .from('company_members')
           .select(`
             company_id,
@@ -69,18 +68,24 @@ export default function CompanyOverview() {
           .eq('user_id', user.id)
           .single()
 
+        if (error) throw error
+
         if (memberData?.companies) {
-          const companyProfile = memberData.companies.company_profiles?.[0] || {
+          const companyData = memberData.companies
+          const companyProfile = companyData.company_profiles?.[0] || {
             mission_statement: null,
             industry: null,
             company_size: null
           }
           
-          const companyData = {
-            ...memberData.companies,
+          const mergedData = {
+            id: companyData.id,
+            name: companyData.name,
+            description: companyData.description,
             ...companyProfile
           }
-          setCompany(companyData)
+          
+          setCompany(mergedData)
 
           // Fetch stats
           const { count: teamCount } = await supabase
