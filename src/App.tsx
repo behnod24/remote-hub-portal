@@ -9,10 +9,9 @@ import ResetPassword from '@/pages/auth/reset-password'
 import Dashboard from '@/pages/dashboard'
 import Blog from '@/pages/blog'
 import Contact from '@/app/contact/page'
-import HireTalent from '@/pages/hire-talent'
+import HireEmployee from '@/pages/hire-employee'
 import HowItWorks from '@/pages/how-it-works'
-import Sectors from '@/pages/sectors'
-import Pricing from '@/pages/pricing'
+import Companies from '@/pages/companies'
 import AboutUs from '@/pages/about'
 import { AuthProvider } from '@/contexts/AuthContext'
 
@@ -26,10 +25,9 @@ function App() {
           <Route path="/auth/signup" element={<SignUp />} />
           <Route path="/auth/reset-password" element={<ResetPassword />} />
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/hire-talent" element={<HireTalent />} />
+          <Route path="/hire-employee" element={<HireEmployee />} />
+          <Route path="/companies" element={<Companies />} />
           <Route path="/how-it-works" element={<HowItWorks />} />
-          <Route path="/sectors" element={<Sectors />} />
-          <Route path="/pricing" element={<Pricing />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/about" element={<AboutUs />} />
           <Route path="/contact" element={<Contact />} />
