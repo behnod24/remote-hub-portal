@@ -30,18 +30,20 @@ interface Company {
 type DisplayCompany = Omit<Company, 'company_profiles'> & CompanyProfile
 
 // Updated to match exact Supabase response structure
+interface SupabaseCompany {
+  id: string
+  name: string
+  description: string | null
+  company_profiles: Array<{
+    mission_statement: string | null
+    industry: string | null
+    company_size: string | null
+  }>
+}
+
 interface SupabaseResponse {
   company_id: string
-  companies: {
-    id: string
-    name: string
-    description: string | null
-    company_profiles: Array<{
-      mission_statement: string | null
-      industry: string | null
-      company_size: string | null
-    }>
-  }
+  companies: SupabaseCompany
 }
 
 export default function CompanyOverview() {
@@ -63,7 +65,6 @@ export default function CompanyOverview() {
 
     const fetchCompanyData = async () => {
       try {
-        // Use maybeSingle() instead of single() to handle the response better
         const { data: memberData, error } = await supabase
           .from('company_members')
           .select(`
@@ -85,18 +86,18 @@ export default function CompanyOverview() {
         if (error) throw error
 
         if (memberData) {
-          // Explicitly type the response and access the first company profile
-          const companyData = memberData as SupabaseResponse
-          const companyProfile = companyData.companies.company_profiles?.[0] || {
+          // First cast to unknown, then to our expected type
+          const typedData = memberData as unknown as SupabaseResponse
+          const companyProfile = typedData.companies.company_profiles?.[0] || {
             mission_statement: null,
             industry: null,
             company_size: null
           }
           
           const mergedData: DisplayCompany = {
-            id: companyData.companies.id,
-            name: companyData.companies.name,
-            description: companyData.companies.description,
+            id: typedData.companies.id,
+            name: typedData.companies.name,
+            description: typedData.companies.description,
             ...companyProfile
           }
           
@@ -106,17 +107,17 @@ export default function CompanyOverview() {
           const { count: teamCount } = await supabase
             .from('team_members')
             .select('*', { count: 'exact', head: true })
-            .eq('company_id', companyData.companies.id)
+            .eq('company_id', typedData.companies.id)
 
           const { count: locationCount } = await supabase
             .from('company_locations')
             .select('*', { count: 'exact', head: true })
-            .eq('company_id', companyData.companies.id)
+            .eq('company_id', typedData.companies.id)
 
           const { count: projectCount } = await supabase
             .from('projects')
             .select('*', { count: 'exact', head: true })
-            .eq('company_id', companyData.companies.id)
+            .eq('company_id', typedData.companies.id)
             .eq('status', 'active')
 
           setStats({
