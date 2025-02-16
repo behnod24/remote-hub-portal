@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from "react"
-import { Link, useNavigate } from "react-router-dom"
+import { Link, useNavigate, useLocation } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -23,6 +23,7 @@ const Header = ({ isAuthPage, currentPage }: HeaderProps) => {
   const [logoUrl, setLogoUrl] = useState("")
   const { user } = useAuth()
   const navigate = useNavigate()
+  const location = useLocation()
 
   useEffect(() => {
     const fetchLogo = async () => {
@@ -50,12 +51,16 @@ const Header = ({ isAuthPage, currentPage }: HeaderProps) => {
   }
 
   const menuItems = [
-    { label: 'Hire Employee', path: '/hire-employee' },
-    { label: 'Companies', path: '/companies' },
+    { label: 'Hire Talent', path: '/hire-talent' },
     { label: 'How It Works', path: '/how-it-works' },
+    { label: 'Sectors', path: '/sectors' },
+    { label: 'Pricing', path: '/pricing' },
     { label: 'Blog', path: '/blog' },
-    { label: 'Contact', path: '/contact' },
+    { label: 'About Us', path: '/about' },
+    { label: 'Contact Us', path: '/contact' }
   ]
+
+  const isActive = (path: string) => location.pathname === path
 
   return (
     <header className="border-b bg-white/80 backdrop-blur-md sticky top-0 z-50">
@@ -78,12 +83,16 @@ const Header = ({ isAuthPage, currentPage }: HeaderProps) => {
                 />
               )}
             </Link>
-            <nav className="hidden lg:flex items-center space-x-8">
+            <nav className="hidden lg:flex items-center space-x-6">
               {menuItems.map((item) => (
                 <Link 
                   key={item.path}
                   to={item.path} 
-                  className="text-base font-medium text-gray-700 hover:text-gray-900"
+                  className={`text-sm font-medium transition-colors ${
+                    isActive(item.path)
+                      ? 'text-primary'
+                      : 'text-gray-600 hover:text-gray-900'
+                  }`}
                 >
                   {item.label}
                 </Link>
@@ -97,7 +106,11 @@ const Header = ({ isAuthPage, currentPage }: HeaderProps) => {
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="gap-2">
                     <User className="h-5 w-5" />
-                    <span className="hidden sm:inline">{user.email}</span>
+                    <span className="hidden sm:inline">
+                      {user.email && user.email.length > 20 
+                        ? user.email.substring(0, 17) + '...' 
+                        : user.email}
+                    </span>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56">
@@ -119,33 +132,33 @@ const Header = ({ isAuthPage, currentPage }: HeaderProps) => {
                   <>
                     <Button 
                       variant="ghost" 
-                      className="text-base font-medium"
+                      className="text-sm font-medium"
                       onClick={() => navigate('/auth/signin')}
                     >
-                      Login
+                      Sign in
                     </Button>
                     <Button 
-                      className="bg-red-500 hover:bg-red-600 text-white rounded-lg px-6"
+                      className="bg-primary hover:bg-primary/90 text-white text-sm font-medium px-6"
                       onClick={() => navigate('/auth/signup')}
                     >
-                      Sign Up
+                      Sign up for free
                     </Button>
                   </>
                 ) : (
                   currentPage === 'signin' ? (
                     <Button 
-                      className="bg-red-500 hover:bg-red-600 text-white rounded-lg px-6"
+                      className="bg-primary hover:bg-primary/90 text-white text-sm font-medium px-6"
                       onClick={() => navigate('/auth/signup')}
                     >
-                      Sign Up
+                      Sign up for free
                     </Button>
                   ) : (
                     <Button 
                       variant="ghost"
-                      className="text-base font-medium" 
+                      className="text-sm font-medium" 
                       onClick={() => navigate('/auth/signin')}
                     >
-                      Login
+                      Sign in
                     </Button>
                   )
                 )}
@@ -180,7 +193,11 @@ const Header = ({ isAuthPage, currentPage }: HeaderProps) => {
               <Link
                 key={item.path}
                 to={item.path}
-                className="px-4 py-3 text-base font-medium text-gray-700 hover:text-gray-900"
+                className={`px-4 py-3 text-sm font-medium ${
+                  isActive(item.path)
+                    ? 'text-primary'
+                    : 'text-gray-600 hover:text-gray-900'
+                }`}
                 onClick={() => setIsOpen(false)}
               >
                 {item.label}
@@ -189,13 +206,13 @@ const Header = ({ isAuthPage, currentPage }: HeaderProps) => {
             {!user && (
               <div className="mt-4 space-y-2 px-4">
                 <Button 
-                  className="w-full bg-red-500 hover:bg-red-600 text-white" 
+                  className="w-full bg-primary hover:bg-primary/90 text-white" 
                   onClick={() => {
                     navigate('/auth/signup')
                     setIsOpen(false)
                   }}
                 >
-                  Sign Up
+                  Sign up for free
                 </Button>
                 <Button 
                   variant="outline" 
@@ -205,7 +222,7 @@ const Header = ({ isAuthPage, currentPage }: HeaderProps) => {
                     setIsOpen(false)
                   }}
                 >
-                  Login
+                  Sign in
                 </Button>
               </div>
             )}
