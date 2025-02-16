@@ -51,13 +51,11 @@ const Header = ({ isAuthPage, currentPage }: HeaderProps) => {
   }
 
   const menuItems = [
-    { label: 'Hire Talent', path: '/hire-talent' },
+    { label: 'Hire Employee', path: '/hire-employee' },
+    { label: 'Companies', path: '/companies' },
     { label: 'How It Works', path: '/how-it-works' },
-    { label: 'Sectors', path: '/sectors' },
-    { label: 'Pricing', path: '/pricing' },
     { label: 'Blog', path: '/blog' },
-    { label: 'About Us', path: '/about' },
-    { label: 'Contact Us', path: '/contact' }
+    { label: 'Contact', path: '/contact' }
   ]
 
   const isActive = (path: string) => location.pathname === path
@@ -83,16 +81,12 @@ const Header = ({ isAuthPage, currentPage }: HeaderProps) => {
                 />
               )}
             </Link>
-            <nav className="hidden lg:flex items-center space-x-6">
+            <nav className="hidden lg:flex items-center space-x-8">
               {menuItems.map((item) => (
                 <Link 
                   key={item.path}
                   to={item.path} 
-                  className={`text-sm font-medium transition-colors ${
-                    isActive(item.path)
-                      ? 'text-primary'
-                      : 'text-gray-600 hover:text-gray-900'
-                  }`}
+                  className="nav-link text-base font-medium text-gray-700 hover:text-gray-900"
                 >
                   {item.label}
                 </Link>
@@ -132,33 +126,33 @@ const Header = ({ isAuthPage, currentPage }: HeaderProps) => {
                   <>
                     <Button 
                       variant="ghost" 
-                      className="text-sm font-medium"
+                      className="text-base font-medium"
                       onClick={() => navigate('/auth/signin')}
                     >
-                      Sign in
+                      Login
                     </Button>
                     <Button 
-                      className="bg-primary hover:bg-primary/90 text-white text-sm font-medium px-6"
+                      className="bg-red-500 hover:bg-red-600 text-white rounded-lg px-6 py-2"
                       onClick={() => navigate('/auth/signup')}
                     >
-                      Sign up for free
+                      Sign Up
                     </Button>
                   </>
                 ) : (
                   currentPage === 'signin' ? (
                     <Button 
-                      className="bg-primary hover:bg-primary/90 text-white text-sm font-medium px-6"
+                      className="bg-red-500 hover:bg-red-600 text-white rounded-lg px-6 py-2"
                       onClick={() => navigate('/auth/signup')}
                     >
-                      Sign up for free
+                      Sign Up
                     </Button>
                   ) : (
                     <Button 
                       variant="ghost"
-                      className="text-sm font-medium" 
+                      className="text-base font-medium" 
                       onClick={() => navigate('/auth/signin')}
                     >
-                      Sign in
+                      Login
                     </Button>
                   )
                 )}
@@ -193,11 +187,7 @@ const Header = ({ isAuthPage, currentPage }: HeaderProps) => {
               <Link
                 key={item.path}
                 to={item.path}
-                className={`px-4 py-3 text-sm font-medium ${
-                  isActive(item.path)
-                    ? 'text-primary'
-                    : 'text-gray-600 hover:text-gray-900'
-                }`}
+                className="px-4 py-3 text-base font-medium text-gray-700 hover:text-gray-900"
                 onClick={() => setIsOpen(false)}
               >
                 {item.label}
@@ -206,13 +196,13 @@ const Header = ({ isAuthPage, currentPage }: HeaderProps) => {
             {!user && (
               <div className="mt-4 space-y-2 px-4">
                 <Button 
-                  className="w-full bg-primary hover:bg-primary/90 text-white" 
+                  className="w-full bg-red-500 hover:bg-red-600 text-white" 
                   onClick={() => {
                     navigate('/auth/signup')
                     setIsOpen(false)
                   }}
                 >
-                  Sign up for free
+                  Sign Up
                 </Button>
                 <Button 
                   variant="outline" 
@@ -222,7 +212,7 @@ const Header = ({ isAuthPage, currentPage }: HeaderProps) => {
                     setIsOpen(false)
                   }}
                 >
-                  Sign in
+                  Login
                 </Button>
               </div>
             )}
