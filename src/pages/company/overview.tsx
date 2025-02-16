@@ -29,16 +29,7 @@ interface Company {
 // Updated interface to match the exact Supabase response structure
 interface SupabaseCompanyResponse {
   company_id: string
-  companies: {
-    id: string
-    name: string
-    description: string | null
-    company_profiles: {
-      mission_statement: string | null
-      industry: string | null
-      company_size: string | null
-    }[]
-  }
+  companies: Company
 }
 
 export default function CompanyOverview() {
@@ -81,7 +72,6 @@ export default function CompanyOverview() {
         if (error) throw error
 
         if (memberData) {
-          // Type assertion after validating the data structure
           const companyData = memberData.companies
           const companyProfile = companyData.company_profiles?.[0] || {
             mission_statement: null,
