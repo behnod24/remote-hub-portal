@@ -44,14 +44,29 @@ export default function CompanyOverview() {
         // Get user's company
         const { data: memberData } = await supabase
           .from('company_members')
-          .select('company_id, companies(*, company_profiles(*))')
+          .select(`
+            company_id,
+            companies (
+              id,
+              name,
+              description
+            ),
+            companies!inner (
+              company_profiles (
+                mission_statement,
+                industry,
+                company_size
+              )
+            )
+          `)
           .eq('user_id', user.id)
           .single()
 
         if (memberData?.companies) {
+          const companyProfile = memberData.companies.company_profiles?.[0] || {}
           const companyData = {
             ...memberData.companies,
-            ...memberData.companies.company_profiles?.[0]
+            ...companyProfile
           }
           setCompany(companyData)
 

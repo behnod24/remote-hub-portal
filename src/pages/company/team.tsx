@@ -25,7 +25,7 @@ interface TeamMember {
   department?: string
   start_date?: string
   is_active: boolean
-  user_email?: string
+  email?: string
 }
 
 export default function CompanyTeam() {
@@ -63,21 +63,23 @@ export default function CompanyTeam() {
           setIsAdmin(memberData.role === 'admin')
           setCompanyId(memberData.company_id)
 
-          // Fetch team members
-          const { data: teamData, error } = await supabase
+          // Fetch team members with user emails
+          const { data: teamData } = await supabase
             .from('team_members')
             .select(`
               *,
-              auth.users(email)
+              users:user_id (
+                email
+              )
             `)
             .eq('company_id', memberData.company_id)
 
-          if (error) throw error
-
-          setTeamMembers(teamData.map(member => ({
-            ...member,
-            user_email: member.users?.email
-          })))
+          if (teamData) {
+            setTeamMembers(teamData.map(member => ({
+              ...member,
+              email: member.users?.email
+            })))
+          }
         }
       } catch (error) {
         console.error('Error fetching team data:', error)
@@ -94,13 +96,13 @@ export default function CompanyTeam() {
 
     try {
       // First check if user exists
-      const { data: userData, error: userError } = await supabase
+      const { data: userData } = await supabase
         .from('users')
-        .select('id')
+        .select('id, email')
         .eq('email', newMember.email)
         .single()
 
-      if (userError) {
+      if (!userData) {
         toast({
           title: "Error",
           description: "User not found. Please ensure the email is correct.",
@@ -110,7 +112,7 @@ export default function CompanyTeam() {
       }
 
       // Add team member
-      const { error: memberError } = await supabase
+      const { data: newTeamMember, error: memberError } = await supabase
         .from('team_members')
         .insert({
           company_id: companyId,
@@ -119,6 +121,13 @@ export default function CompanyTeam() {
           title: newMember.title,
           department: newMember.department
         })
+        .select(`
+          *,
+          users:user_id (
+            email
+          )
+        `)
+        .single()
 
       if (memberError) throw memberError
 
@@ -126,6 +135,14 @@ export default function CompanyTeam() {
         title: "Success",
         description: "Team member added successfully",
       })
+
+      // Add new member to state
+      if (newTeamMember) {
+        setTeamMembers(prev => [...prev, {
+          ...newTeamMember,
+          email: userData.email
+        }])
+      }
 
       // Reset form and close dialog
       setNewMember({
@@ -135,22 +152,6 @@ export default function CompanyTeam() {
         department: ''
       })
       setIsDialogOpen(false)
-
-      // Refresh team members list
-      const { data: refreshedData } = await supabase
-        .from('team_members')
-        .select(`
-          *,
-          auth.users(email)
-        `)
-        .eq('company_id', companyId)
-
-      if (refreshedData) {
-        setTeamMembers(refreshedData.map(member => ({
-          ...member,
-          user_email: member.users?.email
-        })))
-      }
     } catch (error) {
       console.error('Error adding team member:', error)
       toast({
@@ -235,7 +236,7 @@ export default function CompanyTeam() {
                     <User className="h-5 w-5 text-primary" />
                   </div>
                   <div>
-                    <h3 className="font-medium text-white">{member.user_email}</h3>
+                    <h3 className="font-medium text-white">{member.email}</h3>
                     <p className="text-sm text-gray-400">{member.role}</p>
                   </div>
                 </div>
