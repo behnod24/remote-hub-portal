@@ -9,7 +9,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Menu, User, X, UserPlus, Grid, Info, BookOpen, Mail } from "lucide-react"
+import { Menu, User, X, UserPlus, Grid, Info, DollarSign, BookOpen, Users, Mail } from "lucide-react"
 import { supabase } from "@/integrations/supabase/client"
 import { useAuth } from "@/contexts/AuthContext"
 
@@ -54,7 +54,9 @@ const Header = ({ isAuthPage, currentPage }: HeaderProps) => {
     { label: 'Hire Talent', path: '/hire-talent', icon: UserPlus },
     { label: 'Sectors', path: '/sectors', icon: Grid },
     { label: 'How It Works', path: '/how-it-works', icon: Info },
+    { label: 'Pricing', path: '/pricing', icon: DollarSign },
     { label: 'Blog', path: '/blog', icon: BookOpen },
+    { label: 'About Us', path: '/about', icon: Users },
     { label: 'Contact', path: '/contact', icon: Mail }
   ]
 

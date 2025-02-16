@@ -13,6 +13,7 @@ import HireTalent from '@/pages/hire-talent'
 import HowItWorks from '@/pages/how-it-works'
 import Sectors from '@/pages/sectors'
 import AboutUs from '@/pages/about'
+import Pricing from '@/pages/pricing'
 import { AuthProvider } from '@/contexts/AuthContext'
 
 function App() {
@@ -28,6 +29,7 @@ function App() {
           <Route path="/hire-talent" element={<HireTalent />} />
           <Route path="/sectors" element={<Sectors />} />
           <Route path="/how-it-works" element={<HowItWorks />} />
+          <Route path="/pricing" element={<Pricing />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/about" element={<AboutUs />} />
           <Route path="/contact" element={<Contact />} />
