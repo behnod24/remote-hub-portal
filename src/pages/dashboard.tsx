@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react'
 import { AlertCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -68,11 +69,13 @@ export default function Dashboard() {
   const isMobile = useIsMobile()
   const [isSidebarOpen, setIsSidebarOpen] = useState(!isMobile)
   const location = useLocation();
-  const isCompanyDashboard = location.pathname.startsWith('/company/dashboard');
 
   useEffect(() => {
     const fetchUserProfile = async () => {
-      if (!user?.id) return
+      if (!user?.id) {
+        setIsLoading(false)
+        return
+      }
 
       try {
         setIsLoading(true)
@@ -120,16 +123,7 @@ export default function Dashboard() {
     fetchUserProfile()
   }, [user, toast])
 
-  const handleProfileUpdate = (updatedProfile: UserProfile) => {
-    setUserProfile(updatedProfile)
-    setShowProfileManager(false)
-    toast({
-      title: "Success",
-      description: "Profile updated successfully",
-    })
-  }
-
-  if (isCompanyDashboard) {
+  if (location.pathname.startsWith('/company/dashboard')) {
     return (
       <CompanyDashboardLayout currentPath={location.pathname}>
         {location.pathname === '/company/dashboard/talent' ? (
@@ -149,6 +143,14 @@ export default function Dashboard() {
         )}
       </CompanyDashboardLayout>
     );
+  }
+
+  if (isLoading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-black">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+      </div>
+    )
   }
 
   if (error) {
@@ -171,90 +173,84 @@ export default function Dashboard() {
 
   return (
     <div className="relative flex min-h-screen flex-col bg-black">
-      {isLoading ? (
-        <div className="flex min-h-screen items-center justify-center">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+      <div className="flex h-full grow flex-col">
+        <div className="absolute top-4 left-4 z-50 flex items-center space-x-6">
+          <Button
+            variant="ghost"
+            onClick={() => navigate('/')}
+            className="text-white hover:text-primary px-4 py-2 h-10 text-sm md:text-base"
+          >
+            Back to Site
+          </Button>
+          <span className="text-white text-base md:text-lg font-semibold whitespace-nowrap">
+            PamirHub
+          </span>
         </div>
-      ) : (
-        <div className="flex h-full grow flex-col">
-          <div className="absolute top-4 left-4 z-50 flex items-center space-x-6">
-            <Button
-              variant="ghost"
-              onClick={() => navigate('/')}
-              className="text-white hover:text-primary px-4 py-2 h-10 text-sm md:text-base"
-            >
-              Back to Site
-            </Button>
-            <span className="text-white text-base md:text-lg font-semibold whitespace-nowrap">
-              PamirHub
-            </span>
-          </div>
 
-          <DashboardHeader
-            companyName={userProfile?.company_name}
-            searchQuery={searchQuery}
-            onSearchChange={setSearchQuery}
-            onSettingsClick={() => setShowProfileManager(true)}
-          />
+        <DashboardHeader
+          companyName={userProfile?.company_name}
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
+          onSettingsClick={() => setShowProfileManager(true)}
+        />
 
-          <div className="flex flex-1 flex-col lg:flex-row gap-1 px-2 md:px-6 py-5">
-            {(isSidebarOpen || !isMobile) && (
-              <div className={`${isMobile ? 'fixed inset-0 z-50 bg-black/50' : ''}`} onClick={() => isMobile && setIsSidebarOpen(false)}>
-                <div className={`${isMobile ? 'w-64 h-full' : ''}`} onClick={e => e.stopPropagation()}>
-                  <DashboardSidebar
-                    userEmail={user?.email || ''}
-                    userRole={userProfile?.role || 'user'}
-                    avatarUrl={userProfile?.avatar_url}
-                    onClose={() => setIsSidebarOpen(false)}
-                    isMobile={isMobile}
-                  />
-                </div>
-              </div>
-            )}
-
-            <div className="flex flex-1 flex-col max-w-full lg:max-w-[960px]">
-              {showProfileManager && userProfile ? (
-                <ProfileManager
-                  userId={user?.id || ''}
-                  initialProfile={userProfile}
-                  onProfileUpdate={handleProfileUpdate}
-                  isAdmin={userProfile.role === 'admin'}
+        <div className="flex flex-1 flex-col lg:flex-row gap-1 px-2 md:px-6 py-5">
+          {(isSidebarOpen || !isMobile) && (
+            <div className={`${isMobile ? 'fixed inset-0 z-50 bg-black/50' : ''}`} onClick={() => isMobile && setIsSidebarOpen(false)}>
+              <div className={`${isMobile ? 'w-64 h-full' : ''}`} onClick={e => e.stopPropagation()}>
+                <DashboardSidebar
+                  userEmail={user?.email || ''}
+                  userRole={userProfile?.role || 'user'}
+                  avatarUrl={userProfile?.avatar_url}
+                  onClose={() => setIsSidebarOpen(false)}
+                  isMobile={isMobile}
                 />
-              ) : (
-                <>
-                  <div className="flex items-center justify-between px-4 pb-3 pt-6">
-                    <h1 className="text-2xl md:text-[32px] font-bold leading-tight text-white">
-                      Sentiment analysis
-                    </h1>
-                    {isMobile && (
-                      <Button
-                        variant="ghost"
-                        onClick={() => setIsSidebarOpen(true)}
-                        className="lg:hidden text-white"
-                      >
-                        Menu
-                      </Button>
-                    )}
-                  </div>
-
-                  <div className="flex flex-wrap gap-4 px-4 py-6">
-                    <div className="w-full md:w-auto">
-                      <SentimentAnalysis data={sentimentData} />
-                    </div>
-                    <div className="w-full md:w-auto">
-                      <SentimentAnalysis data={sentimentData} />
-                    </div>
-                  </div>
-
-                  <div className="px-4">
-                    <TweetList tweets={tweets} />
-                  </div>
-                </>
-              )}
+              </div>
             </div>
+          )}
+
+          <div className="flex flex-1 flex-col max-w-full lg:max-w-[960px]">
+            {showProfileManager && userProfile ? (
+              <ProfileManager
+                userId={user?.id || ''}
+                initialProfile={userProfile}
+                onProfileUpdate={handleProfileUpdate}
+                isAdmin={userProfile.role === 'admin'}
+              />
+            ) : (
+              <>
+                <div className="flex items-center justify-between px-4 pb-3 pt-6">
+                  <h1 className="text-2xl md:text-[32px] font-bold leading-tight text-white">
+                    Sentiment analysis
+                  </h1>
+                  {isMobile && (
+                    <Button
+                      variant="ghost"
+                      onClick={() => setIsSidebarOpen(true)}
+                      className="lg:hidden text-white"
+                    >
+                      Menu
+                    </Button>
+                  )}
+                </div>
+
+                <div className="flex flex-wrap gap-4 px-4 py-6">
+                  <div className="w-full md:w-auto">
+                    <SentimentAnalysis data={sentimentData} />
+                  </div>
+                  <div className="w-full md:w-auto">
+                    <SentimentAnalysis data={sentimentData} />
+                  </div>
+                </div>
+
+                <div className="px-4">
+                  <TweetList tweets={tweets} />
+                </div>
+              </>
+            )}
           </div>
         </div>
-      )}
+      </div>
     </div>
   )
 }
