@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react'
 import { AlertCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -69,6 +68,15 @@ export default function Dashboard() {
   const isMobile = useIsMobile()
   const [isSidebarOpen, setIsSidebarOpen] = useState(!isMobile)
   const location = useLocation();
+
+  const handleProfileUpdate = (updatedProfile: UserProfile) => {
+    setUserProfile(updatedProfile);
+    toast({
+      title: "Success",
+      description: "Profile updated successfully",
+    });
+    setShowProfileManager(false);
+  };
 
   useEffect(() => {
     const fetchUserProfile = async () => {
