@@ -26,9 +26,15 @@ interface Company {
   company_profiles: CompanyProfile[]
 }
 
-interface CompanyMemberData {
+// Define the exact structure we expect from the Supabase query
+interface CompanyMemberResponse {
   company_id: string
-  companies: Company
+  companies: {
+    id: string
+    name: string
+    description: string | null
+    company_profiles: CompanyProfile[]
+  }
 }
 
 export default function CompanyOverview() {
@@ -70,8 +76,11 @@ export default function CompanyOverview() {
 
         if (error) throw error
 
-        if (memberData?.companies) {
-          const companyData = memberData.companies
+        // Type assertion to help TypeScript understand the structure
+        const companyMemberData = memberData as CompanyMemberResponse
+
+        if (companyMemberData?.companies) {
+          const companyData = companyMemberData.companies
           const companyProfile = companyData.company_profiles?.[0] || {
             mission_statement: null,
             industry: null,
