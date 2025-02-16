@@ -26,17 +26,14 @@ interface Company {
   company_profiles: CompanyProfile[]
 }
 
-// Updated interface to match the exact Supabase response structure
-interface SupabaseCompanyResponse {
-  company_id: string
-  companies: Company
-}
+// Updated to match exact Supabase response structure
+type DisplayCompany = Omit<Company, 'company_profiles'> & CompanyProfile
 
 export default function CompanyOverview() {
   const { user } = useAuth()
   const navigate = useNavigate()
   const [loading, setLoading] = useState(true)
-  const [company, setCompany] = useState<(Omit<Company, 'company_profiles'> & CompanyProfile) | null>(null)
+  const [company, setCompany] = useState<DisplayCompany | null>(null)
   const [stats, setStats] = useState<CompanyStats>({
     totalTeamMembers: 0,
     totalLocations: 0,
@@ -55,7 +52,7 @@ export default function CompanyOverview() {
           .from('company_members')
           .select(`
             company_id,
-            companies (
+            companies:company_id (
               id,
               name,
               description,
@@ -71,15 +68,15 @@ export default function CompanyOverview() {
 
         if (error) throw error
 
-        if (memberData) {
-          const companyData = memberData.companies
+        if (memberData && memberData.companies) {
+          const companyData = memberData.companies as Company
           const companyProfile = companyData.company_profiles?.[0] || {
             mission_statement: null,
             industry: null,
             company_size: null
           }
           
-          const mergedData = {
+          const mergedData: DisplayCompany = {
             id: companyData.id,
             name: companyData.name,
             description: companyData.description,
