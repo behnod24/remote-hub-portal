@@ -819,6 +819,13 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      check_company_member: {
+        Args: {
+          user_id: string
+          company_id: string
+        }
+        Returns: boolean
+      }
       set_recaptcha_secret: {
         Args: Record<PropertyKey, never>
         Returns: undefined
