@@ -29,7 +29,10 @@ export default function TalentSearchPage() {
   return (
     <ContentLayout 
       title="Talent Search"
-      breadcrumbs={[{ label: "Dashboard" }, { label: "Talent Search" }]}
+      breadcrumbs={[
+        { label: "Dashboard", href: "/company/dashboard" }, 
+        { label: "Talent Search" }
+      ]}
     >
       <div className="space-y-6">
         <TalentFilters 

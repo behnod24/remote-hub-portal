@@ -2,6 +2,7 @@
 "use client"
 
 import { ReactNode } from "react"
+import { useNavigate } from "react-router-dom"
 import { ChevronRight } from "lucide-react"
 import {
   Breadcrumb,
@@ -22,6 +23,14 @@ interface ContentLayoutProps {
 }
 
 const ContentLayout = ({ children, title, breadcrumbs }: ContentLayoutProps) => {
+  const navigate = useNavigate()
+
+  const handleNavigate = (href: string | undefined) => {
+    if (href) {
+      navigate(href)
+    }
+  }
+
   return (
     <div className="min-h-screen">
       <div className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -29,7 +38,12 @@ const ContentLayout = ({ children, title, breadcrumbs }: ContentLayoutProps) => 
           <Breadcrumb>
             <BreadcrumbList>
               <BreadcrumbItem>
-                <BreadcrumbLink href="/">Home</BreadcrumbLink>
+                <BreadcrumbLink 
+                  className="cursor-pointer"
+                  onClick={() => handleNavigate("/")}
+                >
+                  Home
+                </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator>
                 <ChevronRight className="h-4 w-4" />
@@ -40,7 +54,12 @@ const ContentLayout = ({ children, title, breadcrumbs }: ContentLayoutProps) => 
                     <BreadcrumbPage>{crumb.label}</BreadcrumbPage>
                   ) : (
                     <>
-                      <BreadcrumbLink href={crumb.href}>{crumb.label}</BreadcrumbLink>
+                      <BreadcrumbLink 
+                        className="cursor-pointer"
+                        onClick={() => handleNavigate(crumb.href)}
+                      >
+                        {crumb.label}
+                      </BreadcrumbLink>
                       <BreadcrumbSeparator>
                         <ChevronRight className="h-4 w-4" />
                       </BreadcrumbSeparator>
