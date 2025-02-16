@@ -16,6 +16,10 @@ import AboutUs from '@/pages/about'
 import Pricing from '@/pages/pricing'
 import { AuthProvider } from '@/contexts/AuthContext'
 import TalentSearchPage from '@/pages/talent/TalentSearchPage'
+import CompanyOverview from '@/pages/company/overview'
+import CompanyProfile from '@/pages/company/profile'
+import CompanyTeam from '@/pages/company/team'
+import CompanyLocations from '@/pages/company/locations'
 
 function App() {
   return (
@@ -27,7 +31,10 @@ function App() {
           <Route path="/auth/signup" element={<SignUp />} />
           <Route path="/auth/reset-password" element={<ResetPassword />} />
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/company/dashboard" element={<Dashboard />} />
+          <Route path="/company/dashboard" element={<CompanyOverview />} />
+          <Route path="/company/dashboard/profile" element={<CompanyProfile />} />
+          <Route path="/company/dashboard/team" element={<CompanyTeam />} />
+          <Route path="/company/dashboard/locations" element={<CompanyLocations />} />
           <Route path="/company/dashboard/talent" element={<TalentSearchPage />} />
           <Route path="/company/dashboard/jobs" element={<Dashboard />} />
           <Route path="/company/dashboard/applications" element={<Dashboard />} />

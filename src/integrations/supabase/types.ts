@@ -167,6 +167,47 @@ export type Database = {
           },
         ]
       }
+      company_profiles: {
+        Row: {
+          company_id: string | null
+          company_size: string | null
+          created_at: string | null
+          founding_year: number | null
+          id: string
+          industry: string | null
+          mission_statement: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          company_id?: string | null
+          company_size?: string | null
+          created_at?: string | null
+          founding_year?: number | null
+          id?: string
+          industry?: string | null
+          mission_statement?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          company_id?: string | null
+          company_size?: string | null
+          created_at?: string | null
+          founding_year?: number | null
+          id?: string
+          industry?: string | null
+          mission_statement?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_profiles_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       contact_submissions: {
         Row: {
           accepts_marketing: boolean | null
@@ -592,6 +633,53 @@ export type Database = {
             columns: ["project_id"]
             isOneToOne: false
             referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      team_members: {
+        Row: {
+          company_id: string | null
+          created_at: string | null
+          department: string | null
+          id: string
+          is_active: boolean | null
+          role: string
+          start_date: string | null
+          title: string | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          company_id?: string | null
+          created_at?: string | null
+          department?: string | null
+          id?: string
+          is_active?: boolean | null
+          role: string
+          start_date?: string | null
+          title?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          company_id?: string | null
+          created_at?: string | null
+          department?: string | null
+          id?: string
+          is_active?: boolean | null
+          role?: string
+          start_date?: string | null
+          title?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "team_members_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
             referencedColumns: ["id"]
           },
         ]
