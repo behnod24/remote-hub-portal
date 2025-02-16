@@ -26,6 +26,13 @@ function App() {
           <Route path="/auth/signup" element={<SignUp />} />
           <Route path="/auth/reset-password" element={<ResetPassword />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/company/dashboard" element={<Dashboard />} />
+          <Route path="/company/dashboard/talent" element={<Dashboard />} />
+          <Route path="/company/dashboard/jobs" element={<Dashboard />} />
+          <Route path="/company/dashboard/applications" element={<Dashboard />} />
+          <Route path="/company/dashboard/messages" element={<Dashboard />} />
+          <Route path="/company/dashboard/billing" element={<Dashboard />} />
+          <Route path="/company/dashboard/settings" element={<Dashboard />} />
           <Route path="/hire-talent" element={<HireTalent />} />
           <Route path="/sectors" element={<Sectors />} />
           <Route path="/how-it-works" element={<HowItWorks />} />
