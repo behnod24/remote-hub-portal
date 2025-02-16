@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -6,18 +7,16 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import Header from "@/components/layout/Header";
 import { Button } from "@/components/ui/button";
+
 const Index = () => {
   const [backgroundUrl, setBackgroundUrl] = useState("");
-  const {
-    user
-  } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
+
   useEffect(() => {
     const fetchAssets = async () => {
       try {
-        const {
-          data: bgData
-        } = supabase.storage.from('site-assets').getPublicUrl('background.png');
+        const { data: bgData } = supabase.storage.from('site-assets').getPublicUrl('background.png');
         if (bgData.publicUrl) {
           console.log('Background URL:', bgData.publicUrl);
           setBackgroundUrl(bgData.publicUrl);
@@ -28,6 +27,7 @@ const Index = () => {
     };
     fetchAssets();
   }, []);
+
   const categories = [{
     icon: Code,
     title: "Engineering",
@@ -45,6 +45,7 @@ const Index = () => {
     title: "Marketing",
     count: "250+"
   }];
+
   return <div className="min-h-screen bg-gradient-to-b from-white to-gray-50">
       <Header />
       
@@ -58,7 +59,6 @@ const Index = () => {
       }} />
         
         <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-transparent z-1" />
-        
         
         <div className="container mx-auto px-4 pt-20 md:pt-32 pb-12 md:pb-20 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
@@ -105,8 +105,16 @@ const Index = () => {
         </div>
       </section>
 
-      <section className="py-20 bg-secondary/30">
-        <div className="container mx-auto px-4">
+      <section className="relative py-20">
+        <div className="absolute inset-0 z-0" style={{
+          backgroundImage: backgroundUrl ? `url(${backgroundUrl})` : 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          opacity: 0.15
+        }} />
+        
+        <div className="relative z-10 container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Expert Talent Categories</h2>
             <p className="text-text-secondary max-w-2xl mx-auto">
@@ -115,20 +123,28 @@ const Index = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {categories.map((category, index) => <motion.div key={category.title} className="glass-card p-6 text-center" initial={{
-            opacity: 0,
-            y: 20
-          }} animate={{
-            opacity: 1,
-            y: 0
-          }} transition={{
-            duration: 0.5,
-            delay: index * 0.1
-          }}>
+            {categories.map((category, index) => (
+              <motion.div 
+                key={category.title} 
+                className="glass-card p-6 text-center backdrop-blur-sm bg-white/90" 
+                initial={{
+                  opacity: 0,
+                  y: 20
+                }} 
+                animate={{
+                  opacity: 1,
+                  y: 0
+                }} 
+                transition={{
+                  duration: 0.5,
+                  delay: index * 0.1
+                }}
+              >
                 <category.icon className="w-12 h-12 text-primary mx-auto mb-4" />
                 <h3 className="text-xl font-bold mb-2">{category.title}</h3>
                 <p className="text-text-secondary">{category.count} Experts</p>
-              </motion.div>)}
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
@@ -150,4 +166,5 @@ const Index = () => {
       </section>
     </div>;
 };
+
 export default Index;
