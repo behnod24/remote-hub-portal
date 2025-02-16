@@ -13,20 +13,29 @@ interface CompanyStats {
   activeProjects: number
 }
 
-interface CompanyData {
+interface CompanyProfile {
+  mission_statement: string | null
+  industry: string | null
+  company_size: string | null
+}
+
+interface Company {
   id: string
   name: string
-  description: string
-  mission_statement?: string
-  industry?: string
-  company_size?: string
+  description: string | null
+  company_profiles?: CompanyProfile[]
+}
+
+interface CompanyMemberData {
+  company_id: string
+  companies: Company
 }
 
 export default function CompanyOverview() {
   const { user } = useAuth()
   const navigate = useNavigate()
   const [loading, setLoading] = useState(true)
-  const [company, setCompany] = useState<CompanyData | null>(null)
+  const [company, setCompany] = useState<(Company & CompanyProfile) | null>(null)
   const [stats, setStats] = useState<CompanyStats>({
     totalTeamMembers: 0,
     totalLocations: 0,
@@ -49,9 +58,7 @@ export default function CompanyOverview() {
             companies (
               id,
               name,
-              description
-            ),
-            companies!inner (
+              description,
               company_profiles (
                 mission_statement,
                 industry,
@@ -63,7 +70,12 @@ export default function CompanyOverview() {
           .single()
 
         if (memberData?.companies) {
-          const companyProfile = memberData.companies.company_profiles?.[0] || {}
+          const companyProfile = memberData.companies.company_profiles?.[0] || {
+            mission_statement: null,
+            industry: null,
+            company_size: null
+          }
+          
           const companyData = {
             ...memberData.companies,
             ...companyProfile
