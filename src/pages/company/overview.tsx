@@ -29,6 +29,21 @@ interface Company {
 // Updated to match exact Supabase response structure
 type DisplayCompany = Omit<Company, 'company_profiles'> & CompanyProfile
 
+// Type for the Supabase response
+interface MemberDataResponse {
+  company_id: string
+  companies: {
+    id: string
+    name: string
+    description: string | null
+    company_profiles: Array<{
+      mission_statement: string | null
+      industry: string | null
+      company_size: string | null
+    }>
+  }
+}
+
 export default function CompanyOverview() {
   const { user } = useAuth()
   const navigate = useNavigate()
@@ -68,8 +83,8 @@ export default function CompanyOverview() {
 
         if (error) throw error
 
-        if (memberData && memberData.companies) {
-          const companyData = memberData.companies as Company
+        if (memberData) {
+          const companyData = memberData.companies as MemberDataResponse['companies']
           const companyProfile = companyData.company_profiles?.[0] || {
             mission_statement: null,
             industry: null,
