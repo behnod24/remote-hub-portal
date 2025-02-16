@@ -51,9 +51,8 @@ export default function TalentSearch() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('talent_profiles')
-        .select('sector, count')
         .select('sector')
-        .filter('availability_status', 'eq', true);
+        .eq('availability_status', true);
 
       if (error) throw error;
 
@@ -64,8 +63,10 @@ export default function TalentSearch() {
         sales_marketing: 0
       };
 
-      data.forEach(profile => {
-        counts[profile.sector as Sector]++;
+      data?.forEach(profile => {
+        if (profile.sector) {
+          counts[profile.sector as Sector]++;
+        }
       });
 
       return counts;
