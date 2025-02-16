@@ -9,7 +9,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Search, Bell, Menu, User } from "lucide-react"
+import { Search, Bell, Menu, User, X } from "lucide-react"
 import { supabase } from "@/integrations/supabase/client"
 import { useAuth } from "@/contexts/AuthContext"
 
@@ -56,6 +56,16 @@ const Header = ({ isAuthPage, currentPage }: HeaderProps) => {
     return email
   }
 
+  const menuItems = [
+    { label: 'Hire Talent', path: '/hire-talent' },
+    { label: 'How It Works', path: '/how-it-works' },
+    { label: 'Sectors', path: '/sectors' },
+    { label: 'Pricing', path: '/pricing' },
+    { label: 'Blog', path: '/blog' },
+    { label: 'About Us', path: '/about' },
+    { label: 'Contact Us', path: '/contact' },
+  ]
+
   return (
     <header className="border-b bg-white/80 backdrop-blur-md sticky top-0 z-50">
       <div className="container mx-auto px-4">
@@ -78,11 +88,15 @@ const Header = ({ isAuthPage, currentPage }: HeaderProps) => {
               )}
             </Link>
             <nav className="hidden lg:flex items-center space-x-6">
-              <Link to="/hire-employee" className="nav-link">Hire Employee</Link>
-              <Link to="/companies" className="nav-link">Companies</Link>
-              <Link to="/how-it-works" className="nav-link">How It Works</Link>
-              <Link to="/blog" className="nav-link">Blog</Link>
-              <Link to="/contact" className="nav-link">Contact</Link>
+              {menuItems.map((item) => (
+                <Link 
+                  key={item.path}
+                  to={item.path} 
+                  className="nav-link text-sm font-medium text-gray-600 hover:text-gray-900"
+                >
+                  {item.label}
+                </Link>
+              ))}
             </nav>
           </div>
           
@@ -103,11 +117,11 @@ const Header = ({ isAuthPage, currentPage }: HeaderProps) => {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-56">
-                    <DropdownMenuItem>
-                      Profile Settings
+                    <DropdownMenuItem onClick={() => navigate('/dashboard')}>
+                      Dashboard
                     </DropdownMenuItem>
                     <DropdownMenuItem>
-                      Dashboard
+                      Profile Settings
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={handleSignOut}>
@@ -120,20 +134,20 @@ const Header = ({ isAuthPage, currentPage }: HeaderProps) => {
               <div className="flex items-center gap-2">
                 {!isAuthPage ? (
                   <>
-                    <Button variant="ghost" onClick={() => navigate('/auth/signin')} className="text-white">
+                    <Button variant="ghost" onClick={() => navigate('/auth/signin')}>
                       Sign in
                     </Button>
-                    <Button onClick={() => navigate('/auth/signup')} className="text-white">
+                    <Button onClick={() => navigate('/auth/signup')}>
                       Create account
                     </Button>
                   </>
                 ) : (
                   currentPage === 'signin' ? (
-                    <Button onClick={() => navigate('/auth/signup')} className="text-white">
+                    <Button onClick={() => navigate('/auth/signup')}>
                       Create account
                     </Button>
                   ) : (
-                    <Button variant="ghost" onClick={() => navigate('/auth/signin')} className="text-white">
+                    <Button variant="ghost" onClick={() => navigate('/auth/signin')}>
                       Sign in
                     </Button>
                   )
@@ -146,44 +160,59 @@ const Header = ({ isAuthPage, currentPage }: HeaderProps) => {
       
       {/* Mobile menu */}
       <div className={`
-        lg:hidden fixed inset-0 z-50 bg-background transform transition-transform duration-300
+        lg:hidden fixed inset-0 z-50 bg-background/80 backdrop-blur-sm transform transition-transform duration-300
         ${isOpen ? "translate-x-0" : "-translate-x-full"}
       `}>
-        <div className="flex flex-col h-full">
-          <div className="flex items-center justify-between p-4 border-b">
-            <Link to="/" className="flex items-center">
+        <div className="fixed inset-0 z-50 bg-white">
+          <div className="flex h-16 items-center justify-between px-4 border-b">
+            <Link to="/" className="flex items-center" onClick={() => setIsOpen(false)}>
               {logoUrl && (
                 <img 
                   src={logoUrl} 
                   alt="PamirHub Logo" 
                   className="h-8 w-auto object-contain"
-                  onError={(e) => console.error('Error loading image:', e)} // Debug handler
                 />
               )}
             </Link>
             <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)}>
-              <Menu className="h-6 w-6" />
+              <X className="h-6 w-6" />
             </Button>
           </div>
-          <nav className="flex-1 p-4 space-y-4">
-            <Link to="/hire-employee" className="block py-2 text-lg">Hire Employee</Link>
-            <Link to="/companies" className="block py-2 text-lg">Companies</Link>
-            <Link to="/how-it-works" className="block py-2 text-lg">How It Works</Link>
-            <Link to="/blog" className="block py-2 text-lg">Blog</Link>
-            <Link to="/contact" className="block py-2 text-lg">Contact</Link>
-          </nav>
-          <div className="p-4 border-t space-y-4">
+          <nav className="flex flex-col p-4">
+            {menuItems.map((item) => (
+              <Link
+                key={item.path}
+                to={item.path}
+                className="px-4 py-3 text-sm font-medium text-gray-600 hover:text-gray-900"
+                onClick={() => setIsOpen(false)}
+              >
+                {item.label}
+              </Link>
+            ))}
             {!user && (
-              <>
-                <Button className="w-full" onClick={() => navigate('/auth/signup')}>
+              <div className="mt-4 space-y-2 px-4">
+                <Button 
+                  className="w-full" 
+                  onClick={() => {
+                    navigate('/auth/signup')
+                    setIsOpen(false)
+                  }}
+                >
                   Create account
                 </Button>
-                <Button variant="outline" className="w-full" onClick={() => navigate('/auth/signin')}>
+                <Button 
+                  variant="outline" 
+                  className="w-full"
+                  onClick={() => {
+                    navigate('/auth/signin')
+                    setIsOpen(false)
+                  }}
+                >
                   Sign in
                 </Button>
-              </>
+              </div>
             )}
-          </div>
+          </nav>
         </div>
       </div>
     </header>
