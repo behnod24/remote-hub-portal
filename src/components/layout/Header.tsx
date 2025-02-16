@@ -9,7 +9,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Search, Bell, Menu, User, X } from "lucide-react"
+import { Menu, User, X } from "lucide-react"
 import { supabase } from "@/integrations/supabase/client"
 import { useAuth } from "@/contexts/AuthContext"
 
@@ -49,21 +49,12 @@ const Header = ({ isAuthPage, currentPage }: HeaderProps) => {
     navigate('/')
   }
 
-  const truncateEmail = (email: string) => {
-    if (email.length > 20) {
-      return email.substring(0, 17) + '...'
-    }
-    return email
-  }
-
   const menuItems = [
-    { label: 'Hire Talent', path: '/hire-talent' },
+    { label: 'Hire Employee', path: '/hire-employee' },
+    { label: 'Companies', path: '/companies' },
     { label: 'How It Works', path: '/how-it-works' },
-    { label: 'Sectors', path: '/sectors' },
-    { label: 'Pricing', path: '/pricing' },
     { label: 'Blog', path: '/blog' },
-    { label: 'About Us', path: '/about' },
-    { label: 'Contact Us', path: '/contact' },
+    { label: 'Contact', path: '/contact' },
   ]
 
   return (
@@ -87,12 +78,12 @@ const Header = ({ isAuthPage, currentPage }: HeaderProps) => {
                 />
               )}
             </Link>
-            <nav className="hidden lg:flex items-center space-x-6">
+            <nav className="hidden lg:flex items-center space-x-8">
               {menuItems.map((item) => (
                 <Link 
                   key={item.path}
                   to={item.path} 
-                  className="nav-link text-sm font-medium text-gray-600 hover:text-gray-900"
+                  className="text-base font-medium text-gray-700 hover:text-gray-900"
                 >
                   {item.label}
                 </Link>
@@ -102,53 +93,59 @@ const Header = ({ isAuthPage, currentPage }: HeaderProps) => {
           
           <div className="flex items-center gap-4">
             {user ? (
-              <>
-                <Button variant="ghost" size="icon">
-                  <Search className="h-5 w-5" />
-                </Button>
-                <Button variant="ghost" size="icon">
-                  <Bell className="h-5 w-5" />
-                </Button>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="gap-2">
-                      <User className="h-5 w-5" />
-                      <span className="hidden sm:inline">{truncateEmail(user.email || '')}</span>
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-56">
-                    <DropdownMenuItem onClick={() => navigate('/dashboard')}>
-                      Dashboard
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      Profile Settings
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={handleSignOut}>
-                      Sign Out
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="gap-2">
+                    <User className="h-5 w-5" />
+                    <span className="hidden sm:inline">{user.email}</span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuItem onClick={() => navigate('/dashboard')}>
+                    Dashboard
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    Profile Settings
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleSignOut}>
+                    Sign Out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             ) : (
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-4">
                 {!isAuthPage ? (
                   <>
-                    <Button variant="ghost" onClick={() => navigate('/auth/signin')}>
-                      Sign in
+                    <Button 
+                      variant="ghost" 
+                      className="text-base font-medium"
+                      onClick={() => navigate('/auth/signin')}
+                    >
+                      Login
                     </Button>
-                    <Button onClick={() => navigate('/auth/signup')}>
-                      Create account
+                    <Button 
+                      className="bg-red-500 hover:bg-red-600 text-white rounded-lg px-6"
+                      onClick={() => navigate('/auth/signup')}
+                    >
+                      Sign Up
                     </Button>
                   </>
                 ) : (
                   currentPage === 'signin' ? (
-                    <Button onClick={() => navigate('/auth/signup')}>
-                      Create account
+                    <Button 
+                      className="bg-red-500 hover:bg-red-600 text-white rounded-lg px-6"
+                      onClick={() => navigate('/auth/signup')}
+                    >
+                      Sign Up
                     </Button>
                   ) : (
-                    <Button variant="ghost" onClick={() => navigate('/auth/signin')}>
-                      Sign in
+                    <Button 
+                      variant="ghost"
+                      className="text-base font-medium" 
+                      onClick={() => navigate('/auth/signin')}
+                    >
+                      Login
                     </Button>
                   )
                 )}
@@ -183,7 +180,7 @@ const Header = ({ isAuthPage, currentPage }: HeaderProps) => {
               <Link
                 key={item.path}
                 to={item.path}
-                className="px-4 py-3 text-sm font-medium text-gray-600 hover:text-gray-900"
+                className="px-4 py-3 text-base font-medium text-gray-700 hover:text-gray-900"
                 onClick={() => setIsOpen(false)}
               >
                 {item.label}
@@ -192,13 +189,13 @@ const Header = ({ isAuthPage, currentPage }: HeaderProps) => {
             {!user && (
               <div className="mt-4 space-y-2 px-4">
                 <Button 
-                  className="w-full" 
+                  className="w-full bg-red-500 hover:bg-red-600 text-white" 
                   onClick={() => {
                     navigate('/auth/signup')
                     setIsOpen(false)
                   }}
                 >
-                  Create account
+                  Sign Up
                 </Button>
                 <Button 
                   variant="outline" 
@@ -208,7 +205,7 @@ const Header = ({ isAuthPage, currentPage }: HeaderProps) => {
                     setIsOpen(false)
                   }}
                 >
-                  Sign in
+                  Login
                 </Button>
               </div>
             )}
