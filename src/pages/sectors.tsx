@@ -82,7 +82,7 @@ export default function SectorsPage() {
                       <p className="text-sm text-text-secondary">{sector.expertCount} Experts Available</p>
                     </div>
                   </div>
-                  <Badge variant="secondary" className="text-sm">
+                  <Badge variant="secondary" className="text-sm font-bold text-primary">
                     {sector.expertCount}
                   </Badge>
                 </div>
