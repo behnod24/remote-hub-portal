@@ -14,7 +14,7 @@ const Footer = () => {
             </p>
             {/* Social Links */}
             <div className="flex space-x-4 pt-4">
-              <a href="#" className="p-2 bg-red-700/50 rounded-lg hover:bg-red-500/50 transition-colors duration-300" aria-label="Twitter">
+              <a href="#" aria-label="Twitter" className="p-2 bg-black-700/50 rounded-lg hover:bg-red-500/50 transition-colors duration-300">
                 <Twitter className="h-5 w-5 text-white hover:text-white" />
               </a>
               <a href="#" className="p-2 bg-red-700/50 rounded-lg hover:bg-red-500/50 transition-colors duration-300" aria-label="LinkedIn">
