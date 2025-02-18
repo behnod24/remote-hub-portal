@@ -1,38 +1,19 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { 
-  CheckCircle, 
-  Wallet, 
-  ChevronDown,
-  ClipboardList,
-  UsersRound,
-  Building2,
-  CircleCheck,
-  ChartLine,
-  Send,
-  Twitter,
-  Linkedin,
-  Instagram
-} from "lucide-react";
+import { CheckCircle, Wallet, ChevronDown, ClipboardList, UsersRound, Building2, CircleCheck, ChartLine, Send, Twitter, Linkedin, Instagram } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
-
 const Index = () => {
-  return (
-    <div className="flex flex-col min-h-screen">
+  return <div className="flex flex-col min-h-screen">
       <Header />
       <main className="flex-grow">
         {/* Hero Section */}
         <section className="relative h-[800px]">
           <div className="absolute inset-0 bg-gradient-to-r from-[#E50914]/90 to-[#C2185B]/90">
-            <img
-              src="https://storage.googleapis.com/uxpilot-auth.appspot.com/188712bd96-3c2b0183a9e372a1a6c2.png"
-              alt="professionals working in modern office space"
-              className="w-full h-full object-cover mix-blend-overlay"
-            />
+            <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/188712bd96-3c2b0183a9e372a1a6c2.png" alt="professionals working in modern office space" className="w-full h-full object-cover mix-blend-overlay" />
           </div>
           <div className="relative container mx-auto px-6 h-full flex items-center">
             <div className="max-w-2xl text-white">
@@ -42,7 +23,7 @@ const Index = () => {
                 <Button size="lg" variant="secondary" className="px-8 text-[#E50914]">
                   Hire Talent
                 </Button>
-                <Button size="lg" variant="outline" className="px-8 border-white text-white hover:bg-white/10">
+                <Button size="lg" variant="outline" className="px-8 border-white hover:bg-white/10 text-neutral-50">
                   Learn More
                 </Button>
               </div>
@@ -92,42 +73,19 @@ const Index = () => {
               {/* Timeline items */}
               <div className="space-y-12">
                 {/* Timeline item 1 */}
-                <TimelineItem
-                  icon={<ClipboardList className="text-white" />}
-                  title="Companies Submit Project Requirements"
-                  description="Businesses provide their project details, workforce needs, and operational goals to PamirHub."
-                  isLeft
-                />
+                <TimelineItem icon={<ClipboardList className="text-white" />} title="Companies Submit Project Requirements" description="Businesses provide their project details, workforce needs, and operational goals to PamirHub." isLeft />
 
                 {/* Timeline item 2 */}
-                <TimelineItem
-                  icon={<UsersRound className="text-white" />}
-                  title="PamirHub Assigns Top Talent"
-                  description="PamirHub selects the best-suited professionals from its expert workforce based on skillset and role requirements."
-                />
+                <TimelineItem icon={<UsersRound className="text-white" />} title="PamirHub Assigns Top Talent" description="PamirHub selects the best-suited professionals from its expert workforce based on skillset and role requirements." />
 
                 {/* Timeline item 3 */}
-                <TimelineItem
-                  icon={<Building2 className="text-white" />}
-                  title="PamirHub Manages All Work & Operations"
-                  description="Employees are officially hired and managed by PamirHub, which oversees all work activities and quality control."
-                  isLeft
-                />
+                <TimelineItem icon={<Building2 className="text-white" />} title="PamirHub Manages All Work & Operations" description="Employees are officially hired and managed by PamirHub, which oversees all work activities and quality control." isLeft />
 
                 {/* Timeline item 4 */}
-                <TimelineItem
-                  icon={<CircleCheck className="text-white" />}
-                  title="PamirHub Delivers Results & Solutions"
-                  description="All tasks, projects, and deliverables meet high-quality standards before final presentation to the company."
-                />
+                <TimelineItem icon={<CircleCheck className="text-white" />} title="PamirHub Delivers Results & Solutions" description="All tasks, projects, and deliverables meet high-quality standards before final presentation to the company." />
 
                 {/* Timeline item 5 */}
-                <TimelineItem
-                  icon={<ChartLine className="text-white" />}
-                  title="Continuous Monitoring & Performance"
-                  description="Real-time reporting and feedback loops ensure efficiency, productivity, and client satisfaction."
-                  isLeft
-                />
+                <TimelineItem icon={<ChartLine className="text-white" />} title="Continuous Monitoring & Performance" description="Real-time reporting and feedback loops ensure efficiency, productivity, and client satisfaction." isLeft />
               </div>
             </div>
 
@@ -150,33 +108,24 @@ const Index = () => {
           <div className="container mx-auto px-6">
             <h2 className="text-3xl font-bold text-center mb-16">What Our Clients Say</h2>
             <div className="grid md:grid-cols-3 gap-8">
-              {[
-                {
-                  name: "Sarah Johnson",
-                  role: "CEO, TechStart",
-                  image: "https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-1.jpg",
-                  text: "PamirHub transformed our hiring process. We found exceptional talent quickly and efficiently."
-                },
-                {
-                  name: "Michael Chen",
-                  role: "CTO, DataFlow",
-                  image: "https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg",
-                  text: "The quality of talent we've accessed through PamirHub has exceeded our expectations."
-                },
-                {
-                  name: "Emma Davis",
-                  role: "HR Director, GlobalTech",
-                  image: "https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-3.jpg",
-                  text: "Seamless experience from posting jobs to onboarding remote talent. Highly recommended!"
-                }
-              ].map((testimonial, i) => (
-                <div key={i} className="bg-white p-8 rounded-xl shadow-lg">
+              {[{
+              name: "Sarah Johnson",
+              role: "CEO, TechStart",
+              image: "https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-1.jpg",
+              text: "PamirHub transformed our hiring process. We found exceptional talent quickly and efficiently."
+            }, {
+              name: "Michael Chen",
+              role: "CTO, DataFlow",
+              image: "https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg",
+              text: "The quality of talent we've accessed through PamirHub has exceeded our expectations."
+            }, {
+              name: "Emma Davis",
+              role: "HR Director, GlobalTech",
+              image: "https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-3.jpg",
+              text: "Seamless experience from posting jobs to onboarding remote talent. Highly recommended!"
+            }].map((testimonial, i) => <div key={i} className="bg-white p-8 rounded-xl shadow-lg">
                   <div className="flex items-center mb-6">
-                    <img
-                      src={testimonial.image}
-                      alt={testimonial.name}
-                      className="w-12 h-12 rounded-full object-cover"
-                    />
+                    <img src={testimonial.image} alt={testimonial.name} className="w-12 h-12 rounded-full object-cover" />
                     <div className="ml-4">
                       <h4 className="font-bold">{testimonial.name}</h4>
                       <p className="text-gray-600">{testimonial.role}</p>
@@ -184,8 +133,7 @@ const Index = () => {
                   </div>
                   <div className="text-yellow-400 mb-4">★★★★★</div>
                   <p className="text-gray-600">{testimonial.text}</p>
-                </div>
-              ))}
+                </div>)}
             </div>
           </div>
         </section>
@@ -199,11 +147,7 @@ const Index = () => {
                   <h2 className="text-4xl font-bold mb-4">Join 10,000+ Business Leaders</h2>
                   <p className="text-xl mb-8 text-white/80">Get weekly insights on remote hiring and workforce management.</p>
                   <form className="flex flex-col md:flex-row gap-4 max-w-md mx-auto">
-                    <Input
-                      type="email"
-                      placeholder="Enter your email"
-                      className="flex-1 px-6 py-4 bg-white/20 border-white/30 text-white placeholder:text-white/60 focus:ring-white/50"
-                    />
+                    <Input type="email" placeholder="Enter your email" className="flex-1 px-6 py-4 bg-white/20 border-white/30 text-white placeholder:text-white/60 focus:ring-white/50" />
                     <Button size="lg" variant="secondary" className="gap-2">
                       Subscribe <Send className="h-4 w-4" />
                     </Button>
@@ -223,11 +167,7 @@ const Index = () => {
               <Button size="lg" className="px-8 bg-[#E50914] hover:bg-[#C2185B]">
                 I Want to Hire Talent
               </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="px-8 border-[#E50914] text-[#E50914] hover:bg-[#E50914] hover:text-white"
-              >
+              <Button size="lg" variant="outline" className="px-8 border-[#E50914] text-[#E50914] hover:bg-[#E50914] hover:text-white">
                 I Am a Remote Worker
               </Button>
             </div>
@@ -235,16 +175,18 @@ const Index = () => {
         </section>
       </main>
       <Footer />
-    </div>
-  );
+    </div>;
 };
 
 // Timeline Item Component
-const TimelineItem = ({ icon, title, description, isLeft = false }) => {
-  return (
-    <div className="relative flex items-center gap-8 group">
-      {isLeft ? (
-        <>
+const TimelineItem = ({
+  icon,
+  title,
+  description,
+  isLeft = false
+}) => {
+  return <div className="relative flex items-center gap-8 group">
+      {isLeft ? <>
           <div className="w-1/2 pr-12 text-right">
             <div className="mb-4 p-6 bg-white rounded-xl shadow-lg shadow-[#E50914]/5 hover:shadow-xl transition duration-300">
               <h3 className="text-xl font-bold mb-2 text-[#E50914]">{title}</h3>
@@ -255,9 +197,7 @@ const TimelineItem = ({ icon, title, description, isLeft = false }) => {
             {icon}
           </div>
           <div className="w-1/2" />
-        </>
-      ) : (
-        <>
+        </> : <>
           <div className="w-1/2" />
           <div className="absolute left-1/2 -translate-x-1/2 w-12 h-12 bg-gradient-to-br from-[#E50914] to-[#C2185B] rounded-full border-4 border-white flex items-center justify-center shadow-lg group-hover:scale-110 transition duration-300">
             {icon}
@@ -268,10 +208,7 @@ const TimelineItem = ({ icon, title, description, isLeft = false }) => {
               <p className="text-gray-600">{description}</p>
             </div>
           </div>
-        </>
-      )}
-    </div>
-  );
+        </>}
+    </div>;
 };
-
 export default Index;
