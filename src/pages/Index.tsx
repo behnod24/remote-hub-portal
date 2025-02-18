@@ -139,20 +139,20 @@ const Index = () => {
         </section>
 
         {/* Newsletter Section */}
-        <section className="py-20 bg-gradient-to-br from-[#E50914] to-[#C2185B] relative overflow-hidden bg-zinc-50">
-          <div className="container mx-auto px-6">
+        <section className="py-20 bg-gradient-to-br from-[#E50914] to-[#C2185B] relative overflow-hidden bg-zinc-500 hover:bg-zinc-400">
+          <div className="container mx-auto px-6 bg-slate-300 hover:bg-slate-200">
             <div className="max-w-4xl mx-auto">
-              <div className="bg-white/10 backdrop-blur-md rounded-2xl p-12 border border-white/20 shadow-xl">
+              <div className="backdrop-blur-md rounded-2xl p-12 border border-white/20 shadow-xl bg-slate-100">
                 <div className="text-center text-white">
-                  <h2 className="text-4xl font-bold mb-4">Join 10,000+ Business Leaders</h2>
-                  <p className="text-xl mb-8 text-white/80">Get weekly insights on remote hiring and workforce management.</p>
+                  <h2 className="text-4xl font-bold mb-4 text-neutral-900">Join 10,000+ Business Leaders</h2>
+                  <p className="text-xl mb-8 text-gray-700">Get weekly insights on remote hiring and workforce management.</p>
                   <form className="flex flex-col md:flex-row gap-4 max-w-md mx-auto">
-                    <Input type="email" placeholder="Enter your email" className="flex-1 px-6 py-4 bg-white/20 border-white/30 text-white placeholder:text-white/60 focus:ring-white/50" />
-                    <Button size="lg" variant="secondary" className="gap-2">
+                    <Input type="email" placeholder="Enter your email" className="flex-1 px-6 py-4 border-white/30 text-white placeholder:text-white/60 focus:ring-white/50 bg-zinc-500 hover:bg-zinc-400" />
+                    <Button size="lg" variant="secondary" className="gap-2 text-zinc-900">
                       Subscribe <Send className="h-4 w-4" />
                     </Button>
                   </form>
-                  <p className="mt-4 text-sm text-white/60">Join our newsletter and get 20% off your first remote hire</p>
+                  <p className="mt-4 text-sm text-gray-950">Join our newsletter and get 20% off your first remote hire</p>
                 </div>
               </div>
             </div>
