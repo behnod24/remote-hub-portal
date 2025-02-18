@@ -39,9 +39,9 @@ const Header = ({ isAuthPage, currentPage }: HeaderProps) => {
   }, [])
 
   return (
-    <header className="fixed w-full bg-gradient-to-r from-white/95 to-gray-50/95 backdrop-blur-sm shadow-sm z-50">
-      <div className="container mx-auto px-6 py-4">
-        <div className="flex items-center justify-between">
+    <header className="fixed w-full bg-gradient-to-r from-white/95 to-gray-50/95 backdrop-blur-sm shadow-sm z-50 h-[72px] md:h-[80px]"> {/* Added fixed height */}
+      <div className="container mx-auto h-full flex items-center px-6">
+        <div className="flex items-center justify-between w-full">
           <Link to="/" className="text-2xl font-bold text-[#E50914]">
             {logoUrl ? (
               <img src={logoUrl} alt="PamirHub Logo" className="h-8 w-auto md:h-10" />

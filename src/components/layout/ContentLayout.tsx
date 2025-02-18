@@ -32,9 +32,9 @@ const ContentLayout = ({ children, title, breadcrumbs }: ContentLayoutProps) => 
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen pt-[72px] md:pt-[80px]"> {/* Added padding-top to account for fixed header */}
       <div className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container py-4">
+        <div className="container py-6 md:py-8"> {/* Increased vertical padding */}
           <Breadcrumb>
             <BreadcrumbList>
               <BreadcrumbItem>
@@ -69,10 +69,10 @@ const ContentLayout = ({ children, title, breadcrumbs }: ContentLayoutProps) => 
               ))}
             </BreadcrumbList>
           </Breadcrumb>
-          <h1 className="text-3xl font-bold mt-4">{title}</h1>
+          <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold mt-4 md:mt-6">{title}</h1>
         </div>
       </div>
-      <div className="container py-8">
+      <div className="container py-6 md:py-8 lg:py-10">
         {children}
       </div>
     </div>
