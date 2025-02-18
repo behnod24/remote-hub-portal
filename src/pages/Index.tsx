@@ -23,7 +23,7 @@ const Index = () => {
                 <Button size="lg" variant="secondary" className="px-8 text-gray-50 text-justify">
                   Hire Talent
                 </Button>
-                <Button size="lg" variant="outline" className="px-8 border-white hover:bg-white/10 text-neutral-50">
+                <Button size="lg" variant="outline" className="px-8 border-white font-normal bg-red-500 hover:bg-red-400 text-neutral-50">
                   Learn More
                 </Button>
               </div>
