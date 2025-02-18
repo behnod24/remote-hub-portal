@@ -48,7 +48,7 @@ const ContentLayout = ({
                 </BreadcrumbItem>)}
             </BreadcrumbList>
           </Breadcrumb>
-          <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold mt-4 md:mt-6">{title}</h1>
+          <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold mt-4 md:mt-6 py-[3px] my-0">{title}</h1>
         </div>
       </div>
       <div className="container md:py-8 lg:py-10 py-0">
