@@ -123,7 +123,7 @@ const Index = () => {
               role: "HR Director, GlobalTech",
               image: "https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-3.jpg",
               text: "Seamless experience from posting jobs to onboarding remote talent. Highly recommended!"
-            }].map((testimonial, i) => <div key={i} className="p-8 rounded-xl shadow-lg bg-red-800 hover:bg-red-700">
+            }].map((testimonial, i) => <div key={i} className="p-8 rounded-xl shadow-lg bg-red-600 hover:bg-red-500">
                   <div className="flex items-center mb-6">
                     <img src={testimonial.image} alt={testimonial.name} className="w-12 h-12 rounded-full object-cover" />
                     <div className="ml-4">
