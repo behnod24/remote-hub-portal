@@ -58,19 +58,33 @@ const MobileMenu = ({ isOpen, setIsOpen, logoUrl, user }: MobileMenuProps) => {
         </div>
         <nav className="flex flex-col p-4 bg-white">
           {menuItems.map((item) => (
-            <Link
-              key={item.path}
-              to={item.path}
-              className={`flex items-center gap-2 px-4 py-3 text-base font-medium rounded-lg transition-colors ${
-                isActive(item.path)
-                  ? 'text-primary bg-primary/5'
-                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
-              }`}
-              onClick={() => setIsOpen(false)}
-            >
-              <item.icon className="h-5 w-5" />
-              {item.label}
-            </Link>
+            <div key={item.path} className="flex flex-col">
+              <Link
+                to={item.path}
+                className={`flex items-center gap-2 px-4 py-3 text-base font-medium rounded-lg transition-colors ${
+                  isActive(item.path)
+                    ? 'text-[#E50914] bg-red-50'
+                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                }`}
+                onClick={() => setIsOpen(false)}
+              >
+                {item.label}
+              </Link>
+              {item.submenu && (
+                <div className="ml-4 space-y-1">
+                  {item.submenu.map((subItem) => (
+                    <Link
+                      key={subItem.path}
+                      to={subItem.path}
+                      className="block px-4 py-2 text-sm text-gray-600 hover:text-[#E50914] hover:bg-gray-50 rounded-lg"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      {subItem.label}
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
           ))}
           {!user && (
             <div className="mt-4 space-y-2 px-4">
