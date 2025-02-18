@@ -1,41 +1,26 @@
-
-import { Link } from "react-router-dom"
-import { Twitter, Linkedin, Instagram } from "lucide-react"
-
+import { Link } from "react-router-dom";
+import { Twitter, Linkedin, Instagram } from "lucide-react";
 const Footer = () => {
-  return (
-    <footer className="bg-red-900/90 backdrop-blur-sm text-white py-16">
+  return <footer className="backdrop-blur-sm text-white py-16 bg-white">
       <div className="container mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 md:gap-8">
           {/* Company Info */}
           <div className="space-y-4">
-            <h3 className="text-2xl font-bold bg-gradient-to-r from-red-300 to-red-100 bg-clip-text text-transparent">
+            <h3 className="text-2xl font-bold bg-gradient-to-r from-red-300 to-red-100 bg-clip-text text-red-500">
               PamirHub
             </h3>
-            <p className="text-red-100/90 max-w-sm">
+            <p className="max-w-sm text-red-600">
               Connecting global talent with innovative companies through our comprehensive remote workforce solutions.
             </p>
             {/* Social Links */}
             <div className="flex space-x-4 pt-4">
-              <a 
-                href="#" 
-                className="p-2 bg-red-800/50 rounded-lg hover:bg-red-700/50 transition-colors duration-300"
-                aria-label="Twitter"
-              >
+              <a href="#" className="p-2 bg-red-800/50 rounded-lg hover:bg-red-700/50 transition-colors duration-300" aria-label="Twitter">
                 <Twitter className="h-5 w-5 text-red-100 hover:text-white" />
               </a>
-              <a 
-                href="#" 
-                className="p-2 bg-red-800/50 rounded-lg hover:bg-red-700/50 transition-colors duration-300"
-                aria-label="LinkedIn"
-              >
+              <a href="#" className="p-2 bg-red-800/50 rounded-lg hover:bg-red-700/50 transition-colors duration-300" aria-label="LinkedIn">
                 <Linkedin className="h-5 w-5 text-red-100 hover:text-white" />
               </a>
-              <a 
-                href="#" 
-                className="p-2 bg-red-800/50 rounded-lg hover:bg-red-700/50 transition-colors duration-300"
-                aria-label="Instagram"
-              >
+              <a href="#" className="p-2 bg-red-800/50 rounded-lg hover:bg-red-700/50 transition-colors duration-300" aria-label="Instagram">
                 <Instagram className="h-5 w-5 text-red-100 hover:text-white" />
               </a>
             </div>
@@ -43,7 +28,7 @@ const Footer = () => {
 
           {/* Company Links */}
           <div>
-            <h4 className="text-lg font-semibold mb-6 text-red-100">Company</h4>
+            <h4 className="text-lg font-semibold mb-6 text-red-500">Company</h4>
             <ul className="space-y-4">
               <li>
                 <Link to="/about" className="text-red-200/80 hover:text-white transition-colors duration-300">
@@ -127,8 +112,6 @@ const Footer = () => {
           </div>
         </div>
       </div>
-    </footer>
-  )
-}
-
-export default Footer
+    </footer>;
+};
+export default Footer;
