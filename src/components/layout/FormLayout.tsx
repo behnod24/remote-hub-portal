@@ -22,8 +22,8 @@ const FormLayout = ({
   isLastStep
 }: FormLayoutProps) => {
   return <div className="min-h-screen">
-      <div className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container py-0 my-[76px]">
+      <div className="my-[3px] py-0">
+        <div className="">
           <div className="flex items-center justify-between">
             {title}
           </div>
