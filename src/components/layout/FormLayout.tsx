@@ -21,25 +21,25 @@ const FormLayout = ({
   onPrev,
   isLastStep
 }: FormLayoutProps) => {
-  return <div className="min-h-screen">
+  return <div className="min-h-screen my-[91px]">
       <div className="my-[3px] py-0">
         <div className="">
           <div className="flex items-center justify-between">
             {title}
           </div>
-          {totalSteps && <div className="mt-4 flex items-center gap-2 my-[14px]">
+          {totalSteps && <div className="mt-4 flex items-center gap-2 my-[14px] mx-[13px]">
               <div className="flex-1 h-2 bg-secondary/30 rounded-full overflow-hidden">
                 <div className="h-full bg-[#EA2831] transition-all duration-300" style={{
               width: `${currentStep! / totalSteps * 100}%`
             }} />
               </div>
-              <span className="text-sm text-text-secondary">
+              <span className="text-sm text-text-secondary px-0 mx-[35px]">
                 Step {currentStep} of {totalSteps}
               </span>
             </div>}
         </div>
       </div>
-      <div className="container py-0">
+      <div className="container my-0 py-[10px]">
         <div className="max-w-2xl mx-auto">
           {children}
           
