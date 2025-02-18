@@ -1,14 +1,12 @@
-
 import { Link } from "react-router-dom";
 import { Twitter, Linkedin, Instagram } from "lucide-react";
-
 const Footer = () => {
-  return <footer className="backdrop-blur-sm text-white py-16 bg-red-600">
+  return <footer className="backdrop-blur-sm text-white py-16 bg-red-700 hover:bg-red-600">
       <div className="container mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 md:gap-8">
           {/* Company Info */}
           <div className="space-y-4">
-            <h3 className="text-2xl font-bold bg-gradient-to-r from-white to-gray-100 bg-clip-text text-transparent">
+            <h3 className="text-2xl font-bold bg-gradient-to-r from-white to-gray-100 bg-clip-text text-slate-50">
               PamirHub
             </h3>
             <p className="max-w-sm text-white/90">
@@ -30,7 +28,7 @@ const Footer = () => {
 
           {/* Company Links */}
           <div>
-            <h4 className="text-lg font-semibold mb-6 text-white">Company</h4>
+            <h4 className="text-lg font-semibold mb-6 text-gray-50">Company</h4>
             <ul className="space-y-4">
               <li>
                 <Link to="/about" className="text-white/80 hover:text-white transition-colors duration-300">
@@ -116,5 +114,4 @@ const Footer = () => {
       </div>
     </footer>;
 };
-
 export default Footer;
