@@ -22,7 +22,7 @@ import Footer from "@/components/layout/Footer";
 
 const Index = () => {
   return (
-    <div>
+    <>
       <Header />
       {/* Hero Section */}
       <section className="relative h-[800px]">
@@ -232,7 +232,7 @@ const Index = () => {
           </div>
         </div>
       </section>
-    </div>
+    </>
   );
 };
 
