@@ -33,15 +33,12 @@ const teamMembers: TeamMember[] = [{
 }];
 
 export default function AboutPage() {
-  const [emblaRef] = useEmblaCarousel({
+  const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: true,
     align: "start",
     slidesToScroll: 1,
-    draggable: true,
-    speed: 20,
     startIndex: 0,
-    direction: 'ltr',
-    dragFree: true,
+    containScroll: 'trimSnaps',
     breakpoints: {
       '(min-width: 640px)': { slidesToScroll: 2 },
       '(min-width: 1024px)': { slidesToScroll: 3 },
@@ -49,33 +46,17 @@ export default function AboutPage() {
     }
   });
 
-  const autoplayRef = useRef<NodeJS.Timeout>();
-
   useEffect(() => {
-    const startAutoplay = () => {
-      if (autoplayRef.current) {
-        clearInterval(autoplayRef.current);
-      }
+    if (!emblaApi) return;
 
-      autoplayRef.current = setInterval(() => {
-        const emblaNode = emblaRef.current;
-        if (emblaNode) {
-          const api = emblaNode.emblaApi;
-          if (api) {
-            api.scrollNext();
-          }
-        }
-      }, 3000); // Scroll every 3 seconds
-    };
-
-    startAutoplay();
+    const autoplay = setInterval(() => {
+      emblaApi.scrollNext();
+    }, 3000);
 
     return () => {
-      if (autoplayRef.current) {
-        clearInterval(autoplayRef.current);
-      }
+      clearInterval(autoplay);
     };
-  }, [emblaRef]);
+  }, [emblaApi]);
 
   return (
     <ContentLayout 
