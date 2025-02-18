@@ -139,7 +139,7 @@ const Index = () => {
         </section>
 
         {/* Newsletter Section */}
-        <section className="py-20 bg-gradient-to-br from-[#E50914] to-[#C2185B] relative overflow-hidden">
+        <section className="py-20 bg-gradient-to-br from-[#E50914] to-[#C2185B] relative overflow-hidden bg-zinc-50">
           <div className="container mx-auto px-6">
             <div className="max-w-4xl mx-auto">
               <div className="bg-white/10 backdrop-blur-md rounded-2xl p-12 border border-white/20 shadow-xl">
