@@ -1,15 +1,21 @@
 
 import { Link, useLocation } from "react-router-dom"
-import { UserPlus, Grid, Info, DollarSign, BookOpen, Users, Mail } from "lucide-react"
+import { ChevronDown } from "lucide-react"
 
 export const menuItems = [
-  { label: 'Hire Talent', path: '/hire-talent', icon: UserPlus },
-  { label: 'Sectors', path: '/sectors', icon: Grid },
-  { label: 'How It Works', path: '/how-it-works', icon: Info },
-  { label: 'Pricing', path: '/pricing', icon: DollarSign },
-  { label: 'Blog', path: '/blog', icon: BookOpen },
-  { label: 'About Us', path: '/about', icon: Users },
-  { label: 'Contact', path: '/contact', icon: Mail }
+  {
+    label: 'Hire Talent',
+    path: '/hire-talent',
+    submenu: [
+      { label: 'Find Talent', path: '/hire-talent/find' },
+      { label: 'Post a Job', path: '/hire-talent/post' }
+    ]
+  },
+  { label: 'Sectors', path: '/sectors' },
+  { label: 'How It Works', path: '/how-it-works' },
+  { label: 'Pricing', path: '/pricing' },
+  { label: 'About Us', path: '/about' },
+  { label: 'Contact', path: '/contact' }
 ]
 
 const MainNavigation = () => {
@@ -17,20 +23,33 @@ const MainNavigation = () => {
   const isActive = (path: string) => location.pathname === path
 
   return (
-    <nav className="hidden lg:flex items-center space-x-8">
+    <nav className="hidden lg:flex items-center space-x-6">
       {menuItems.map((item) => (
-        <Link 
-          key={item.path}
-          to={item.path} 
-          className={`flex items-center gap-2 px-3 py-2 text-base font-medium transition-colors duration-200 ${
-            isActive(item.path)
-              ? 'text-primary border-b-2 border-primary'
-              : 'text-gray-600 hover:text-gray-900 hover:border-b-2 hover:border-gray-200'
-          }`}
-        >
-          <item.icon className="h-4 w-4" />
-          {item.label}
-        </Link>
+        <div key={item.path} className="group relative">
+          <Link 
+            to={item.path}
+            className={`flex items-center space-x-1 py-2 text-gray-700 hover:text-[#E50914] transition-colors ${
+              isActive(item.path) ? 'text-[#E50914]' : ''
+            }`}
+          >
+            <span>{item.label}</span>
+            {item.submenu && <ChevronDown className="h-4 w-4" />}
+          </Link>
+          
+          {item.submenu && (
+            <div className="absolute top-full left-0 hidden group-hover:block bg-white rounded-lg shadow-lg py-2 w-48">
+              {item.submenu.map((subItem) => (
+                <Link
+                  key={subItem.path}
+                  to={subItem.path}
+                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#E50914]"
+                >
+                  {subItem.label}
+                </Link>
+              ))}
+            </div>
+          )}
+        </div>
       ))}
     </nav>
   )

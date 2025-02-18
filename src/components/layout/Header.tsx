@@ -39,33 +39,28 @@ const Header = ({ isAuthPage, currentPage }: HeaderProps) => {
   }, [])
 
   return (
-    <header className="border-b bg-white/80 backdrop-blur-md sticky top-0 z-[100]">
-      <div className="container mx-auto px-4">
-        <div className="flex h-16 items-center justify-between">
-          <div className="flex items-center gap-8">
-            <button
-              className="lg:hidden"
+    <header className="fixed w-full bg-gradient-to-r from-white/95 to-gray-50/95 backdrop-blur-sm shadow-sm z-50">
+      <div className="container mx-auto px-6 py-4">
+        <div className="flex items-center justify-between">
+          <Link to="/" className="text-2xl font-bold text-[#E50914]">
+            {logoUrl ? (
+              <img src={logoUrl} alt="PamirHub Logo" className="h-8 w-auto md:h-10" />
+            ) : (
+              "PamirHub"
+            )}
+          </Link>
+          <MainNavigation />
+          <div className="flex items-center space-x-4">
+            <UserMenu user={user} isAuthPage={isAuthPage} currentPage={currentPage} />
+            <button 
+              className="lg:hidden text-gray-700 hover:text-[#E50914]"
               onClick={() => setIsOpen(!isOpen)}
             >
               <Menu className="h-6 w-6" />
             </button>
-            <Link to="/" className="flex items-center">
-              {logoUrl && (
-                <img 
-                  src={logoUrl} 
-                  alt="PamirHub Logo" 
-                  className="h-8 w-auto md:h-10 object-contain"
-                  onError={(e) => console.error('Error loading image:', e)}
-                />
-              )}
-            </Link>
-            <MainNavigation />
           </div>
-          
-          <UserMenu user={user} isAuthPage={isAuthPage} currentPage={currentPage} />
         </div>
       </div>
-      
       <MobileMenu 
         isOpen={isOpen}
         setIsOpen={setIsOpen}
