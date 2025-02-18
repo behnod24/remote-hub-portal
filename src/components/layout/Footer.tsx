@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { Twitter, Linkedin, Instagram } from "lucide-react";
 const Footer = () => {
-  return <footer className="backdrop-blur-sm text-white py-16 bg-red-700 hover:bg-red-600">
+  return <footer className="backdrop-blur-sm text-white py-16 bg-slate-800 hover:bg-slate-700">
       <div className="container mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 md:gap-8">
           {/* Company Info */}
