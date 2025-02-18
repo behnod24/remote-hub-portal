@@ -123,41 +123,23 @@ const Index = () => {
               role: "HR Director, GlobalTech",
               image: "https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-3.jpg",
               text: "Seamless experience from posting jobs to onboarding remote talent. Highly recommended!"
-            }].map((testimonial, i) => <div key={i} className="bg-white p-8 rounded-xl shadow-lg">
+            }].map((testimonial, i) => <div key={i} className="p-8 rounded-xl shadow-lg bg-red-800 hover:bg-red-700">
                   <div className="flex items-center mb-6">
                     <img src={testimonial.image} alt={testimonial.name} className="w-12 h-12 rounded-full object-cover" />
                     <div className="ml-4">
-                      <h4 className="font-bold">{testimonial.name}</h4>
-                      <p className="text-gray-600">{testimonial.role}</p>
+                      <h4 className="font-bold text-slate-50">{testimonial.name}</h4>
+                      <p className="text-slate-100">{testimonial.role}</p>
                     </div>
                   </div>
                   <div className="text-yellow-400 mb-4">★★★★★</div>
-                  <p className="text-gray-600">{testimonial.text}</p>
+                  <p className="text-slate-200">{testimonial.text}</p>
                 </div>)}
             </div>
           </div>
         </section>
 
         {/* Newsletter Section */}
-        <section className="py-20 bg-gradient-to-br from-[#E50914] to-[#C2185B] relative overflow-hidden bg-zinc-500 hover:bg-zinc-400">
-          <div className="container mx-auto px-6 bg-slate-300 hover:bg-slate-200">
-            <div className="max-w-4xl mx-auto">
-              <div className="backdrop-blur-md rounded-2xl p-12 border border-white/20 shadow-xl bg-slate-100">
-                <div className="text-center text-white">
-                  <h2 className="text-4xl font-bold mb-4 text-neutral-900">Join 10,000+ Business Leaders</h2>
-                  <p className="text-xl mb-8 text-gray-700">Get weekly insights on remote hiring and workforce management.</p>
-                  <form className="flex flex-col md:flex-row gap-4 max-w-md mx-auto">
-                    <Input type="email" placeholder="Enter your email" className="flex-1 px-6 py-4 border-white/30 text-white placeholder:text-white/60 focus:ring-white/50 bg-zinc-500 hover:bg-zinc-400" />
-                    <Button size="lg" variant="secondary" className="gap-2 text-zinc-900">
-                      Subscribe <Send className="h-4 w-4" />
-                    </Button>
-                  </form>
-                  <p className="mt-4 text-sm text-gray-950">Join our newsletter and get 20% off your first remote hire</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
+        
 
         {/* CTA Section */}
         
