@@ -15,6 +15,12 @@ export default {
     },
     extend: {
       colors: {
+        background: "var(--background)",
+        foreground: "var(--foreground)",
+        text: {
+          DEFAULT: "var(--foreground)",
+          secondary: "var(--muted-foreground)",
+        },
         base: {
           50: "#f9fafb",
           100: "#f3f4f6",
