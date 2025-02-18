@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useState, useEffect } from "react"
@@ -588,10 +589,10 @@ function ContactForm() {
         }}
       />
 
-      <div className="relative z-[1]"> {/* Adjusted z-index to be explicit and lower than dropdowns */}
+      <div className="relative z-[1]">
         <FormLayout
           title={
-            <div className="flex items-center gap-4">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full">
               <img 
                 src={logoUrl}
                 alt="PamirHub Logo" 
@@ -600,7 +601,7 @@ function ContactForm() {
               />
               <Link 
                 to="/" 
-                className="flex items-center gap-2 px-4 py-2 text-sm font-medium bg-gray-100 hover:bg-gray-200 rounded-full transition-colors"
+                className="flex items-center gap-2 px-4 py-2 text-sm font-medium bg-gray-100 hover:bg-gray-200 rounded-full transition-colors whitespace-nowrap"
               >
                 <ArrowLeft className="h-4 w-4" />
                 Back to Site
@@ -613,10 +614,10 @@ function ContactForm() {
           onPrev={currentStep > 1 ? handlePrev : undefined}
           isLastStep={currentStep === STEPS.length}
         >
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-6 max-w-3xl mx-auto w-full">
             <div className="flex flex-wrap justify-between gap-3">
               <div className="flex w-full flex-col gap-3">
-                <h2 className="text-3xl md:text-4xl font-black leading-tight tracking-[-0.033em]">
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-black leading-tight tracking-[-0.033em]">
                   We'd love to help
                 </h2>
                 <p className="text-neutral-500 text-base font-normal leading-normal">
@@ -626,18 +627,20 @@ function ContactForm() {
             </div>
 
             {showSuccess && (
-              <div className="absolute inset-0 flex items-center justify-center bg-white/80 backdrop-blur-sm animate-fade-in z-50">
-                <div className="text-center space-y-4 animate-scale-in">
-                  <h3 className="text-2xl font-bold text-green-600">Message Sent Successfully!</h3>
+              <div className="fixed inset-0 flex items-center justify-center bg-white/80 backdrop-blur-sm animate-fade-in z-50">
+                <div className="text-center space-y-4 animate-scale-in p-6 bg-white rounded-lg shadow-xl mx-4">
+                  <h3 className="text-xl sm:text-2xl font-bold text-green-600">Message Sent Successfully!</h3>
                   <p className="text-gray-600">Thank you for reaching out. We'll be in touch soon!</p>
                 </div>
               </div>
             )}
 
-            {renderStepContent()}
+            <div className="px-4 sm:px-6 py-6 bg-white/50 backdrop-blur-sm rounded-xl shadow-sm">
+              {renderStepContent()}
+            </div>
 
             {currentStep === STEPS.length && (
-              <div className="flex justify-center py-3">
+              <div className="flex justify-center py-3 px-4">
                 <button
                   type="submit"
                   disabled={loading}
