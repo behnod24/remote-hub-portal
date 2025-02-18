@@ -20,7 +20,7 @@ const Index = () => {
               <h1 className="text-5xl font-bold leading-tight mb-6">Hire Top Remote Talent, Scale Your Business</h1>
               <p className="text-xl mb-8">Connect with exceptional global talent and transform your business with PamirHub's remote workforce solutions.</p>
               <div className="flex space-x-4">
-                <Button size="lg" variant="secondary" className="px-8 text-[#E50914]">
+                <Button size="lg" variant="secondary" className="px-8 text-gray-50 text-justify">
                   Hire Talent
                 </Button>
                 <Button size="lg" variant="outline" className="px-8 border-white hover:bg-white/10 text-neutral-50">
