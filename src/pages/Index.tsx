@@ -92,7 +92,7 @@ const Index = () => {
             <div className="text-center mt-16">
               <h3 className="text-2xl font-bold mb-6">Transform Your Workforce with PamirHub Today!</h3>
               <div className="flex justify-center gap-4">
-                <Button size="lg" className="px-8 bg-gradient-to-r from-[#E50914] to-[#C2185B] hover:from-[#C2185B] hover:to-[#E50914]">
+                <Button size="lg" className="px-8 bg-gradient-to-r from-[#E50914] to-[#C2185B] hover:from-[#C2185B] hover:to-[#E50914] text-neutral-50">
                   Hire Remote Workforce
                 </Button>
                 <Button size="lg" variant="outline" className="px-8 border-[#E50914] text-[#E50914] hover:bg-gradient-to-r hover:from-[#E50914] hover:to-[#C2185B] hover:text-white">
