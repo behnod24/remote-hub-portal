@@ -1,9 +1,26 @@
+
 import { useState, useEffect } from 'react'
 import { supabase } from '@/integrations/supabase/client'
 import { useAuth } from '@/contexts/AuthContext'
 import { useToast } from '@/components/ui/use-toast'
-import { TalentProfile, ProjectApplication } from '@/types/company'
+import { TalentProfile, ProjectApplication, ProjectRequirement } from '@/types/company'
 import { typeHelper, ProjectApplicationWithDetails } from '@/types/supabase'
+import { Card } from '@/components/ui/card'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from '@/components/ui/tabs'
+import TalentSelector from './TalentSelector'
+import ProjectRequirementsForm from './ProjectRequirementsForm'
 
 export default function TalentSearch() {
   const { user } = useAuth()
@@ -11,6 +28,8 @@ export default function TalentSearch() {
   const [loading, setLoading] = useState(true)
   const [applications, setApplications] = useState<ProjectApplicationWithDetails[]>([])
   const [companyId, setCompanyId] = useState<string | null>(null)
+  const [selectedTalent, setSelectedTalent] = useState<TalentProfile | null>(null)
+  const [selectedSector, setSelectedSector] = useState<string | null>(null)
 
   useEffect(() => {
     const fetchCompanyAndApplications = async () => {
@@ -62,13 +81,18 @@ export default function TalentSearch() {
 
   const handleTalentSelect = async (talent: TalentProfile) => {
     try {
+      if (!companyId) {
+        throw new Error("Company ID is required");
+      }
+      
       // First create a new project
       const { data: project, error: projectError } = await supabase
         .from('projects')
-        .insert([{
+        .insert({
           name: `Project with Talent ${talent.id}`,
-          status: 'pending'
-        }])
+          status: 'pending',
+          company_id: companyId
+        })
         .select()
         .single()
 
@@ -77,11 +101,11 @@ export default function TalentSearch() {
       // Then create the application
       const { error: applicationError } = await supabase
         .from('project_applications')
-        .insert([{
+        .insert({
           talent_id: talent.id,
-          company_id: user?.id, // Assuming the logged-in user represents the company
+          company_id: companyId,
           status: 'pending'
-        }])
+        })
 
       if (applicationError) throw applicationError
 

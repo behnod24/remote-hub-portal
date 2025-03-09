@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
 import { supabase } from '@/integrations/supabase/client'
@@ -5,7 +6,7 @@ import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
-import { Avatar } from '@/components/ui/avatar'
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
 import { useToast } from '@/components/ui/use-toast'
 import { Loader2, Upload, Save } from 'lucide-react'
 import { typeHelper, UserProfile } from '@/types/supabase'
@@ -152,7 +153,10 @@ export default function ProfileManager() {
       ) : (
         <div className="space-y-4">
           <div className="flex items-center space-x-4">
-            <Avatar src={profile.avatar_url || undefined} className="h-16 w-16" />
+            <Avatar className="h-16 w-16">
+              <AvatarImage src={profile.avatar_url || undefined} />
+              <AvatarFallback>User</AvatarFallback>
+            </Avatar>
             <div>
               <Button variant="secondary" asChild disabled={uploading}>
                 <label htmlFor="avatar-upload" className="cursor-pointer">

@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
 import { supabase } from '@/integrations/supabase/client'
@@ -78,8 +79,10 @@ export default function TeamPage() {
     }
 
     fetchCompany()
-    fetchTeamMembers()
-  }, [user, toast])
+    if (companyId) {
+      fetchTeamMembers()
+    }
+  }, [user, toast, companyId])
 
   const handleInviteUser = async () => {
     try {
@@ -94,6 +97,12 @@ export default function TeamPage() {
           email: newMember.email,
           position: newMember.position,
           department: newMember.department,
+          role: 'member', // Default role
+          is_active: true,
+          can_manage_team: false,
+          can_manage_projects: false,
+          can_manage_talents: false,
+          permissions: []
         })
 
       if (error) throw error

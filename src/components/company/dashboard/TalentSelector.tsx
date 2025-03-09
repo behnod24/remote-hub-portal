@@ -1,15 +1,20 @@
+
 import { useEffect, useState } from 'react'
 import { supabase } from '@/integrations/supabase/client'
 import { TalentProfile } from '@/types/company'
 import { typeHelper } from '@/types/supabase'
 import { useToast } from '@/components/ui/use-toast'
+import { Card } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
 
 // Define the props interface
 interface TalentSelectorProps {
-  // Add any props you need
+  sector: string | null;
+  onSelect: (talent: TalentProfile) => void;
+  // Add any other props you need
 }
 
-export default function TalentSelector(props: TalentSelectorProps) {
+export default function TalentSelector({ sector, onSelect }: TalentSelectorProps) {
   const [talents, setTalents] = useState<TalentProfile[]>([])
   const [loading, setLoading] = useState(true)
   const { toast } = useToast()
@@ -20,9 +25,15 @@ export default function TalentSelector(props: TalentSelectorProps) {
         setLoading(true)
         
         // Use any for non-schema tables
-        const { data, error } = await (supabase
+        let query = supabase
           .from('talent_profiles')
-          .select('*') as any)
+          .select('*') as any
+        
+        if (sector) {
+          query = query.eq('sector', sector)
+        }
+        
+        const { data, error } = await query
         
         if (error) {
           throw error
@@ -44,20 +55,33 @@ export default function TalentSelector(props: TalentSelectorProps) {
     }
 
     fetchTalents()
-  }, [toast])
+  }, [sector, toast])
 
   return (
-    <div>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
       {loading ? (
         <p>Loading talents...</p>
+      ) : talents.length > 0 ? (
+        talents.map(talent => (
+          <Card key={talent.id} className="p-4">
+            <div className="flex flex-col space-y-2">
+              <h3 className="font-medium">Talent ID: {talent.id}</h3>
+              <p>Sector: {talent.sector}</p>
+              <p>Experience: {talent.years_of_experience} years</p>
+              <p>Hourly Rate: ${talent.hourly_rate}/hr</p>
+              <p>Availability: {talent.availability_status ? 'Available' : 'Unavailable'}</p>
+              <Button 
+                variant="outline" 
+                onClick={() => onSelect(talent)}
+                className="mt-2"
+              >
+                Select Talent
+              </Button>
+            </div>
+          </Card>
+        ))
       ) : (
-        <ul>
-          {talents.map(talent => (
-            <li key={talent.id}>
-              {talent.id} - {talent.sector}
-            </li>
-          ))}
-        </ul>
+        <p>No talents found{sector ? ` in ${sector} sector` : ''}.</p>
       )}
     </div>
   )
