@@ -15,14 +15,20 @@ import {
   Send,
   Twitter,
   Linkedin,
-  Instagram
+  Instagram,
+  Cpu,
+  CircuitBoard,
+  Construction,
+  Compass,
+  Ruler,
+  DraftingCompass
 } from "lucide-react"
 
 export default function Home() {
   return (
     <div>
       {/* Hero Section */}
-      <section className="relative h-[800px]">
+      <section className="relative h-[800px]" id="hero">
         <div className="absolute inset-0 bg-gradient-to-r from-[#E50914]/90 to-[#C2185B]/90">
           <Image
             src="https://storage.googleapis.com/uxpilot-auth.appspot.com/188712bd96-3c2b0183a9e372a1a6c2.png"
@@ -33,12 +39,15 @@ export default function Home() {
         </div>
         <div className="relative container mx-auto px-6 h-full flex items-center">
           <div className="max-w-2xl text-white">
-            <h1 className="text-5xl font-bold leading-tight mb-6">Hire Top Remote Talent, Scale Your Business</h1>
-            <p className="text-xl mb-8">Connect with exceptional global talent and transform your business with PamirHub's remote workforce solutions.</p>
+            <h1 className="text-5xl font-bold leading-tight mb-6">PamirHub: We Build, Design, and Innovate—All Remotely.</h1>
+            <p className="text-xl mb-4">Connecting companies with elite remote talent for all your technical and creative needs</p>
+            <p className="text-lg mb-8">Professional services delivered remotely and on time, every time</p>
             <div className="flex space-x-4">
-              <Button size="lg" variant="secondary" className="px-8 text-[#E50914]">
-                Hire Talent
-              </Button>
+              <Link href="/front-pages/landing-page#contact">
+                <Button size="lg" variant="secondary" className="px-8 text-[#E50914]">
+                  Find Your Solution
+                </Button>
+              </Link>
               <Button size="lg" variant="outline" className="px-8 border-white text-white hover:bg-white/10">
                 Learn More
               </Button>
@@ -47,39 +56,64 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Why Choose Us Section */}
-      <section className="py-20 bg-gray-50">
+      {/* Our Services Section */}
+      <section className="py-20 bg-gray-50" id="services">
         <div className="container mx-auto px-6">
-          <h2 className="text-3xl font-bold text-center mb-16">Why Choose PamirHub</h2>
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition duration-300">
-              <CheckCircle className="h-10 w-10 text-[#E50914] mb-4" />
-              <h3 className="text-xl font-bold mb-4">Verified Global Talent</h3>
-              <p className="text-gray-600">Access pre-vetted professionals from around the world, ensuring top-quality expertise for your projects.</p>
-            </div>
-            <div className="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition duration-300">
-              <Wallet className="h-10 w-10 text-[#E50914] mb-4" />
-              <h3 className="text-xl font-bold mb-4">Cost-Effective Solutions</h3>
-              <p className="text-gray-600">Optimize your budget with flexible hiring options and competitive rates for global talent.</p>
-            </div>
-            <div className="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition duration-300">
-              <ChartLine className="h-10 w-10 text-[#E50914] mb-4" />
-              <h3 className="text-xl font-bold mb-4">Scalable Workforce</h3>
-              <p className="text-gray-600">Easily scale your team up or down based on your business needs and project requirements.</p>
-            </div>
+          <h2 className="text-3xl font-bold text-center mb-16">Our Services</h2>
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <ServiceCard 
+              icon={<CheckCircle className="h-10 w-10 text-[#E50914] mb-4" />}
+              title="Web & Software Development"
+              description="Complete development solutions from requirements to deployment, all managed by our remote talent teams"
+            />
+            <ServiceCard 
+              icon={<Wallet className="h-10 w-10 text-[#E50914] mb-4" />}
+              title="Design & Creative Services"
+              description="Professional design services including UX/UI, graphic design, and branding, delivered by our remote creative experts"
+            />
+            <ServiceCard 
+              icon={<ChartLine className="h-10 w-10 text-[#E50914] mb-4" />}
+              title="Sales & Marketing"
+              description="Strategic marketing services to grow your business, handled remotely by our specialized marketing teams"
+            />
+            <ServiceCard 
+              icon={<Send className="h-10 w-10 text-[#E50914] mb-4" />}
+              title="Social Media Management"
+              description="Comprehensive social media presence building and management by dedicated remote specialists"
+            />
+            <ServiceCard 
+              icon={<Construction className="h-10 w-10 text-[#E50914] mb-4" />}
+              title="Mechanical Engineering"
+              description="Our expert engineering teams deliver professional mechanical designs, analyses, and solutions remotely"
+            />
+            <ServiceCard 
+              icon={<CircuitBoard className="h-10 w-10 text-[#E50914] mb-4" />}
+              title="Electrical Engineering"
+              description="Remote electrical engineering services including circuit design, system architecture, and implementation"
+            />
+            <ServiceCard 
+              icon={<DraftingCompass className="h-10 w-10 text-[#E50914] mb-4" />}
+              title="Product Design"
+              description="End-to-end product design services from concept to detailed specifications, all delivered by remote experts"
+            />
+            <ServiceCard 
+              icon={<Ruler className="h-10 w-10 text-[#E50914] mb-4" />}
+              title="Civil Engineering & Architecture"
+              description="Comprehensive civil engineering and architectural services delivered remotely by qualified professionals"
+            />
           </div>
         </div>
       </section>
 
-      {/* How It Works Section */}
+      {/* How PamirHub Works Section */}
       <section className="py-20 relative overflow-hidden bg-gradient-to-br from-[#E50914]/5 to-[#C2185B]/5">
         <div className="container mx-auto px-6 relative">
           <div className="text-center max-w-3xl mx-auto mb-16">
             <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-[#E50914] to-[#C2185B] text-transparent bg-clip-text">
-              Seamless Remote Workforce Management
+              How PamirHub Works
             </h2>
             <p className="text-xl text-gray-600">
-              We handle your entire workforce, from hiring to execution, ensuring efficiency and top-tier results.
+              PamirHub handles all talent management - you only deal with results, not individual contractors
             </p>
           </div>
 
@@ -91,7 +125,7 @@ export default function Home() {
               {/* Timeline item 1 */}
               <TimelineItem
                 icon={<ClipboardList />}
-                title="Companies Submit Project Requirements"
+                title="Submit your project requirements"
                 description="Businesses provide their project details, workforce needs, and operational goals to PamirHub."
                 isLeft
               />
@@ -99,14 +133,14 @@ export default function Home() {
               {/* Timeline item 2 */}
               <TimelineItem
                 icon={<UsersRound />}
-                title="PamirHub Assigns Top Talent"
+                title="PamirHub reviews and provides a tailored solution with the right talent team"
                 description="PamirHub selects the best-suited professionals from its expert workforce based on skillset and role requirements."
               />
 
               {/* Timeline item 3 */}
               <TimelineItem
                 icon={<Building2 />}
-                title="PamirHub Manages All Work & Operations"
+                title="Our skilled specialists deliver quality work remotely"
                 description="Employees are officially hired and managed by PamirHub, which oversees all work activities and quality control."
                 isLeft
               />
@@ -114,16 +148,8 @@ export default function Home() {
               {/* Timeline item 4 */}
               <TimelineItem
                 icon={<CircleCheck />}
-                title="PamirHub Delivers Results & Solutions"
+                title="Receive completed projects on time, every time"
                 description="All tasks, projects, and deliverables meet high-quality standards before final presentation to the company."
-              />
-
-              {/* Timeline item 5 */}
-              <TimelineItem
-                icon={<ChartLine />}
-                title="Continuous Monitoring & Performance"
-                description="Real-time reporting and feedback loops ensure efficiency, productivity, and client satisfaction."
-                isLeft
               />
             </div>
           </div>
@@ -145,26 +171,26 @@ export default function Home() {
       {/* Testimonials Section */}
       <section className="py-20 bg-gray-50">
         <div className="container mx-auto px-6">
-          <h2 className="text-3xl font-bold text-center mb-16">What Our Clients Say</h2>
+          <h2 className="text-3xl font-bold text-center mb-16">Why Companies Choose PamirHub</h2>
           <div className="grid md:grid-cols-3 gap-8">
             {[
               {
                 name: "Sarah Johnson",
-                role: "CEO, TechStart",
+                role: "CTO, TechInnovate",
                 image: "https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-1.jpg",
-                text: "PamirHub transformed our hiring process. We found exceptional talent quickly and efficiently."
+                text: "PamirHub's engineering team delivered exceptional quality mechanical designs that integrated perfectly with our existing systems. All done remotely and on schedule."
               },
               {
                 name: "Michael Chen",
-                role: "CTO, DataFlow",
+                role: "CEO, GlobalTech Solutions",
                 image: "https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg",
-                text: "The quality of talent we've accessed through PamirHub has exceeded our expectations."
+                text: "The comprehensive software development services from PamirHub saved us months of recruitment efforts. Their remote team delivers enterprise-grade solutions consistently."
               },
               {
                 name: "Emma Davis",
-                role: "HR Director, GlobalTech",
+                role: "Product Director, InnovateCorp",
                 image: "https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-3.jpg",
-                text: "Seamless experience from posting jobs to onboarding remote talent. Highly recommended!"
+                text: "PamirHub's remote electrical engineering team managed our complex project with exceptional precision. Their all-in-one service model eliminates the hassle of coordinating multiple contractors."
               }
             ].map((testimonial, i) => (
               <div key={i} className="bg-white p-8 rounded-xl shadow-lg">
@@ -216,7 +242,7 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20">
+      <section className="py-20" id="contact">
         <div className="container mx-auto px-6 text-center">
           <h2 className="text-3xl font-bold mb-8">Ready to Transform Your Workforce?</h2>
           <div className="flex justify-center gap-6">
@@ -233,6 +259,17 @@ export default function Home() {
           </div>
         </div>
       </section>
+    </div>
+  )
+}
+
+// Service Card Component
+function ServiceCard({ icon, title, description }) {
+  return (
+    <div className="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition duration-300">
+      {icon}
+      <h3 className="text-xl font-bold mb-4">{title}</h3>
+      <p className="text-gray-600">{description}</p>
     </div>
   )
 }
