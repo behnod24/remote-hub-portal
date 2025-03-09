@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/contexts/AuthContext'
@@ -10,6 +9,8 @@ import { Card } from '@/components/ui/card'
 import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
 import { useToast } from '@/components/ui/use-toast'
+import { typeHelper } from '@/types/supabase'
+import { TeamMember } from '@/types/company'
 import {
   Dialog,
   DialogContent,
@@ -24,21 +25,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { User, UserPlus, Mail, Building, MoreVertical } from 'lucide-react'
-
-interface TeamMember {
-  id: string
-  user_id: string
-  role: 'admin' | 'manager' | 'member'
-  title?: string
-  department?: string
-  start_date?: string
-  is_active: boolean
-  email?: string
-  can_manage_team: boolean
-  can_manage_projects: boolean
-  can_manage_talents: boolean
-  permissions: string[]
-}
 
 export default function CompanyTeam() {
   const { user } = useAuth()
@@ -79,23 +65,35 @@ export default function CompanyTeam() {
           setIsAdmin(companyMember.role === 'admin')
           setCompanyId(companyMember.company_id)
 
-          const { data: teamData, error: teamError } = await supabase
+          const { data: teamData, error: teamError } = await (supabase
             .from('team_members')
             .select(`
               *,
               users:user_id (
                 email
               )
-            `)
+            `) as any)
             .eq('company_id', companyMember.company_id)
 
           if (teamError) throw teamError
 
           if (teamData) {
-            setTeamMembers(teamData.map(member => ({
-              ...member,
-              email: member.users?.email
-            })))
+            const formattedTeamMembers: TeamMember[] = teamData.map((member: any) => ({
+              id: member.id,
+              user_id: member.user_id || '',
+              role: member.role || 'member',
+              title: member.position,
+              department: member.department,
+              start_date: member.start_date,
+              is_active: true,
+              email: member.email || member.users?.email,
+              can_manage_team: member.can_manage_team || false,
+              can_manage_projects: member.can_manage_projects || false,
+              can_manage_talents: member.can_manage_talents || false,
+              permissions: []
+            }))
+            
+            setTeamMembers(formattedTeamMembers)
           }
         }
       } catch (error) {
@@ -117,11 +115,11 @@ export default function CompanyTeam() {
     if (!companyId || !isAdmin) return
 
     try {
-      const { data: userData, error: userError } = await supabase
+      const { data: userData, error: userError } = await (supabase
         .from('users')
         .select('id, email')
         .eq('email', newMember.email)
-        .maybeSingle()
+        .maybeSingle() as any)
 
       if (userError) throw userError
 
@@ -134,20 +132,8 @@ export default function CompanyTeam() {
         return
       }
 
-      // First add company member
-      const { error: companyMemberError } = await supabase
+      const { error: companyMemberError } = await (supabase
         .from('company_members')
-        .insert({
-          company_id: companyId,
-          user_id: userData.id,
-          role: newMember.role
-        })
-
-      if (companyMemberError) throw companyMemberError
-
-      // Then add team member
-      const { data: newTeamMember, error: memberError } = await supabase
-        .from('team_members')
         .insert({
           company_id: companyId,
           user_id: userData.id,
@@ -157,13 +143,21 @@ export default function CompanyTeam() {
           can_manage_team: newMember.can_manage_team,
           can_manage_projects: newMember.can_manage_projects,
           can_manage_talents: newMember.can_manage_talents
+        }) as any)
+
+      if (companyMemberError) throw companyMemberError
+
+      const { data: newTeamMember, error: memberError } = await supabase
+        .from('team_members')
+        .insert({
+          company_id: companyId,
+          first_name: userData.email.split('@')[0],
+          last_name: '',
+          email: userData.email,
+          position: newMember.title,
+          department: newMember.department,
         })
-        .select(`
-          *,
-          users:user_id (
-            email
-          )
-        `)
+        .select()
         .single()
 
       if (memberError) throw memberError
@@ -174,10 +168,21 @@ export default function CompanyTeam() {
       })
 
       if (newTeamMember) {
-        setTeamMembers(prev => [...prev, {
-          ...newTeamMember,
-          email: userData.email
-        }])
+        const formattedMember: TeamMember = {
+          id: newTeamMember.id,
+          user_id: userData.id,
+          role: newMember.role as 'admin' | 'manager' | 'member',
+          title: newMember.title,
+          department: newMember.department,
+          is_active: true,
+          email: userData.email,
+          can_manage_team: newMember.can_manage_team,
+          can_manage_projects: newMember.can_manage_projects,
+          can_manage_talents: newMember.can_manage_talents,
+          permissions: []
+        }
+        
+        setTeamMembers(prev => [...prev, formattedMember])
       }
 
       setNewMember({
@@ -202,10 +207,10 @@ export default function CompanyTeam() {
 
   const handleUpdateMember = async (memberId: string, updates: Partial<TeamMember>) => {
     try {
-      const { error: updateError } = await supabase
-        .from('team_members')
+      const { error: updateError } = await (supabase
+        .from('company_members')
         .update(updates)
-        .eq('id', memberId)
+        .eq('id', memberId) as any)
 
       if (updateError) throw updateError
 
@@ -233,7 +238,6 @@ export default function CompanyTeam() {
 
   const handleRemoveMember = async (memberId: string, userId: string) => {
     try {
-      // Remove from team_members
       const { error: teamError } = await supabase
         .from('team_members')
         .delete()
@@ -241,12 +245,11 @@ export default function CompanyTeam() {
 
       if (teamError) throw teamError
 
-      // Remove from company_members
-      const { error: companyError } = await supabase
+      const { error: companyError } = await (supabase
         .from('company_members')
         .delete()
         .eq('user_id', userId)
-        .eq('company_id', companyId)
+        .eq('company_id', companyId) as any)
 
       if (companyError) throw companyError
 

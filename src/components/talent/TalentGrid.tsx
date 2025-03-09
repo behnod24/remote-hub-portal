@@ -7,6 +7,7 @@ import { Loader2, Check } from 'lucide-react'
 import { useToast } from '@/components/ui/use-toast'
 import { supabase } from '@/integrations/supabase/client'
 import { TalentProfile } from '@/types/company'
+import { typeHelper } from '@/types/supabase'
 
 interface TalentGridProps {
   sector: string | null
@@ -23,8 +24,9 @@ export default function TalentGrid({ sector, onSelect, selectedTalents }: Talent
     const fetchTalents = async () => {
       setLoading(true)
       try {
-        let query = supabase.from('talent_profiles').select('*')
-          .eq('availability_status', true)
+        // Use a type assertion for tables not in the schema
+        let query = supabase.from('talent_profiles').select('*') as any
+        query = query.eq('availability_status', true)
 
         if (sector) {
           query = query.eq('sector', sector)
@@ -34,7 +36,8 @@ export default function TalentGrid({ sector, onSelect, selectedTalents }: Talent
 
         if (error) throw error
 
-        setTalents(data || [])
+        // Use the type helper to convert the data
+        setTalents(data ? typeHelper<TalentProfile[]>()(data) : [])
       } catch (error: any) {
         toast({
           title: 'Error',

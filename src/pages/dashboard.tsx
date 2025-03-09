@@ -17,16 +17,7 @@ import { useToast } from '@/components/ui/use-toast'
 import { Avatar } from '@/components/ui/avatar'
 import { Card } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
-
-interface UserProfile {
-  avatar_url: string | null
-  bio: string | null
-  phone: string | null
-  company: string | null
-  company_name: string | null
-  position: string | null
-  role: 'admin' | 'user'
-}
+import { UserProfile, typeHelper } from '@/types/supabase'
 
 export default function Dashboard() {
   const { user } = useAuth()
@@ -48,16 +39,16 @@ export default function Dashboard() {
         setIsLoading(true)
         setError(null)
 
-        const { data, error } = await supabase
+        const { data, error } = await (supabase
           .from('user_profiles')
           .select('*')
           .eq('user_id', user.id)
-          .maybeSingle()
+          .maybeSingle() as any)
 
         if (error) throw error
 
         if (data) {
-          setUserProfile(data)
+          setUserProfile(typeHelper<UserProfile>()(data))
         }
       } catch (err: any) {
         const errorMessage = err.message || 'Failed to load profile'

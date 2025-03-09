@@ -14,7 +14,7 @@ export interface ProjectRequirement {
   title: string
   description?: string
   required_skills: string[]
-  priority: 'low' | 'medium' | 'high'
+  priority: 'low' | 'medium' | 'high' // Strictly typed to match database constraints
   status: 'open' | 'in-progress' | 'completed'
   created_at: string
   updated_at: string
@@ -27,4 +27,20 @@ export interface TalentProfile {
   years_of_experience: number
   hourly_rate: number
   availability_status: boolean
+}
+
+// Used for the team.tsx page
+export interface TeamMember {
+  id: string
+  user_id: string
+  role: 'admin' | 'manager' | 'member'
+  title?: string
+  department?: string
+  start_date?: string
+  is_active: boolean
+  email?: string
+  can_manage_team: boolean
+  can_manage_projects: boolean
+  can_manage_talents: boolean
+  permissions: string[]
 }
