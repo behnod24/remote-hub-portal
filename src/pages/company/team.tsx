@@ -1,462 +1,208 @@
-import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useState, useEffect } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
 import { supabase } from '@/integrations/supabase/client'
-import CompanyDashboardLayout from '@/components/company/dashboard/CompanyDashboardLayout'
+import { TeamMember } from '@/types/company'
+import { typeHelper } from '@/types/supabase'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Card } from '@/components/ui/card'
-import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { useToast } from '@/components/ui/use-toast'
-import { typeHelper } from '@/types/supabase'
-import { TeamMember } from '@/types/company'
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { User, UserPlus, Mail, Building, MoreVertical } from 'lucide-react'
 
-export default function CompanyTeam() {
+export default function TeamPage() {
   const { user } = useAuth()
-  const navigate = useNavigate()
   const { toast } = useToast()
   const [loading, setLoading] = useState(true)
-  const [isAdmin, setIsAdmin] = useState(false)
-  const [companyId, setCompanyId] = useState<string | null>(null)
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([])
+  const [isAddingMember, setIsAddingMember] = useState(false)
   const [newMember, setNewMember] = useState({
+    first_name: '',
+    last_name: '',
     email: '',
-    role: 'member',
-    title: '',
+    position: '',
     department: '',
-    can_manage_team: false,
-    can_manage_projects: false,
-    can_manage_talents: false
   })
-  const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [companyId, setCompanyId] = useState<string>('')
+
+  const fetchCompany = async () => {
+    if (!user) return
+
+    try {
+      const { data, error } = await supabase
+        .from('company_members')
+        .select('company_id')
+        .eq('user_id', user.id)
+        .single()
+
+      if (error) throw error
+
+      if (data) {
+        setCompanyId(data.company_id)
+      }
+    } catch (error) {
+      console.error('Error fetching company:', error)
+      toast({
+        title: 'Error',
+        description: 'Could not load company. Please try again.',
+        variant: 'destructive',
+      })
+    }
+  }
 
   useEffect(() => {
-    if (!user) {
-      navigate('/auth/signin')
-      return
-    }
-
-    const fetchTeamData = async () => {
+    const fetchTeamMembers = async () => {
+      if (!companyId) return
+      
       try {
-        const { data: companyMember, error: memberError } = await supabase
-          .from('company_members')
-          .select('company_id, role')
-          .eq('user_id', user.id)
-          .maybeSingle()
-
-        if (memberError) throw memberError
-
-        if (companyMember) {
-          setIsAdmin(companyMember.role === 'admin')
-          setCompanyId(companyMember.company_id)
-
-          const { data: teamData, error: teamError } = await (supabase
-            .from('team_members')
-            .select(`
-              *,
-              users:user_id (
-                email
-              )
-            `) as any)
-            .eq('company_id', companyMember.company_id)
-
-          if (teamError) throw teamError
-
-          if (teamData) {
-            const formattedTeamMembers: TeamMember[] = teamData.map((member: any) => ({
-              id: member.id,
-              user_id: member.user_id || '',
-              role: member.role || 'member',
-              title: member.position,
-              department: member.department,
-              start_date: member.start_date,
-              is_active: true,
-              email: member.email || member.users?.email,
-              can_manage_team: member.can_manage_team || false,
-              can_manage_projects: member.can_manage_projects || false,
-              can_manage_talents: member.can_manage_talents || false,
-              permissions: []
-            }))
-            
-            setTeamMembers(formattedTeamMembers)
-          }
-        }
+        // Fetch team members
+        const { data, error } = await supabase
+          .from('team_members')
+          .select('*')
+          .eq('company_id', companyId)
+        
+        if (error) throw error
+        
+        // Convert to TeamMember type
+        const typedTeamMembers = typeHelper<TeamMember[]>()(data || [])
+        setTeamMembers(typedTeamMembers)
       } catch (error) {
-        console.error('Error fetching team data:', error)
+        console.error('Error fetching team members:', error)
         toast({
-          title: "Error",
-          description: "Failed to load team data. Please try again.",
-          variant: "destructive",
+          title: 'Error',
+          description: 'Could not load team members. Please try again.',
+          variant: 'destructive',
         })
       } finally {
         setLoading(false)
       }
     }
 
-    fetchTeamData()
-  }, [user, navigate, toast])
+    fetchCompany()
+    fetchTeamMembers()
+  }, [user, toast])
 
-  const handleAddMember = async () => {
-    if (!companyId || !isAdmin) return
-
+  const handleInviteUser = async () => {
     try {
-      const { data: userData, error: userError } = await (supabase
-        .from('users')
-        .select('id, email')
-        .eq('email', newMember.email)
-        .maybeSingle() as any)
-
-      if (userError) throw userError
-
-      if (!userData) {
-        toast({
-          title: "Error",
-          description: "User not found. Please ensure the email is correct.",
-          variant: "destructive",
-        })
-        return
-      }
-
-      const { error: companyMemberError } = await (supabase
-        .from('company_members')
-        .insert({
-          company_id: companyId,
-          user_id: userData.id,
-          role: newMember.role,
-          title: newMember.title,
-          department: newMember.department,
-          can_manage_team: newMember.can_manage_team,
-          can_manage_projects: newMember.can_manage_projects,
-          can_manage_talents: newMember.can_manage_talents
-        }) as any)
-
-      if (companyMemberError) throw companyMemberError
-
-      const { data: newTeamMember, error: memberError } = await supabase
+      // In a real app, we would check if the user exists in the 'users' table
+      // For now, we'll just add them to team_members
+      const { error } = await supabase
         .from('team_members')
         .insert({
           company_id: companyId,
-          first_name: userData.email.split('@')[0],
-          last_name: '',
-          email: userData.email,
-          position: newMember.title,
+          first_name: newMember.first_name,
+          last_name: newMember.last_name,
+          email: newMember.email,
+          position: newMember.position,
           department: newMember.department,
         })
-        .select()
+
+      if (error) throw error
+
+      // Fetch the newly created team member
+      const { data: newData } = await supabase
+        .from('team_members')
+        .select('*')
+        .eq('email', newMember.email)
         .single()
 
-      if (memberError) throw memberError
-
-      toast({
-        title: "Success",
-        description: "Team member added successfully",
-      })
-
-      if (newTeamMember) {
-        const formattedMember: TeamMember = {
-          id: newTeamMember.id,
-          user_id: userData.id,
-          role: newMember.role as 'admin' | 'manager' | 'member',
-          title: newMember.title,
-          department: newMember.department,
-          is_active: true,
-          email: userData.email,
-          can_manage_team: newMember.can_manage_team,
-          can_manage_projects: newMember.can_manage_projects,
-          can_manage_talents: newMember.can_manage_talents,
-          permissions: []
-        }
-        
-        setTeamMembers(prev => [...prev, formattedMember])
-      }
-
+      // Update the local state
+      setTeamMembers(prev => [...prev, typeHelper<TeamMember>()(newData)])
+      setIsAddingMember(false)
       setNewMember({
+        first_name: '',
+        last_name: '',
         email: '',
-        role: 'member',
-        title: '',
+        position: '',
         department: '',
-        can_manage_team: false,
-        can_manage_projects: false,
-        can_manage_talents: false
       })
-      setIsDialogOpen(false)
-    } catch (error) {
-      console.error('Error adding team member:', error)
+
       toast({
-        title: "Error",
-        description: "Failed to add team member",
-        variant: "destructive",
+        title: 'Success',
+        description: 'Team member added successfully!',
+      })
+    } catch (error) {
+      console.error('Error inviting user:', error)
+      toast({
+        title: 'Error',
+        description: 'Could not invite user. Please try again.',
+        variant: 'destructive',
       })
     }
   }
-
-  const handleUpdateMember = async (memberId: string, updates: Partial<TeamMember>) => {
-    try {
-      const { error: updateError } = await (supabase
-        .from('company_members')
-        .update(updates)
-        .eq('id', memberId) as any)
-
-      if (updateError) throw updateError
-
-      setTeamMembers(prev =>
-        prev.map(member =>
-          member.id === memberId
-            ? { ...member, ...updates }
-            : member
-        )
-      )
-
-      toast({
-        title: "Success",
-        description: "Team member updated successfully",
-      })
-    } catch (error) {
-      console.error('Error updating team member:', error)
-      toast({
-        title: "Error",
-        description: "Failed to update team member",
-        variant: "destructive",
-      })
-    }
-  }
-
-  const handleRemoveMember = async (memberId: string, userId: string) => {
-    try {
-      const { error: teamError } = await supabase
-        .from('team_members')
-        .delete()
-        .eq('id', memberId)
-
-      if (teamError) throw teamError
-
-      const { error: companyError } = await (supabase
-        .from('company_members')
-        .delete()
-        .eq('user_id', userId)
-        .eq('company_id', companyId) as any)
-
-      if (companyError) throw companyError
-
-      setTeamMembers(prev => prev.filter(member => member.id !== memberId))
-
-      toast({
-        title: "Success",
-        description: "Team member removed successfully",
-      })
-    } catch (error) {
-      console.error('Error removing team member:', error)
-      toast({
-        title: "Error",
-        description: "Failed to remove team member",
-        variant: "destructive",
-      })
-    }
-  }
-
-  if (!user) return null
 
   return (
-    <CompanyDashboardLayout currentPath="/company/dashboard/team">
-      <div className="space-y-6">
-        <div className="flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-white">Team Members</h1>
-          {isAdmin && (
-            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-              <DialogTrigger asChild>
-                <Button>
-                  <UserPlus className="mr-2 h-4 w-4" />
-                  Add Member
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="bg-[#1c1c1c] border-0">
-                <DialogHeader>
-                  <DialogTitle className="text-white">Add Team Member</DialogTitle>
-                </DialogHeader>
-                <div className="space-y-4">
-                  <div>
-                    <label className="text-sm text-gray-400">Email</label>
-                    <Input
-                      value={newMember.email}
-                      onChange={(e) => setNewMember(prev => ({ ...prev, email: e.target.value }))}
-                      className="mt-1 bg-[#292929] border-0"
-                      type="email"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-sm text-gray-400">Role</label>
-                    <select
-                      value={newMember.role}
-                      onChange={(e) => setNewMember(prev => ({ ...prev, role: e.target.value }))}
-                      className="mt-1 w-full bg-[#292929] border-0 rounded-md text-white"
-                    >
-                      <option value="member">Member</option>
-                      <option value="manager">Manager</option>
-                      <option value="admin">Admin</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="text-sm text-gray-400">Title</label>
-                    <Input
-                      value={newMember.title}
-                      onChange={(e) => setNewMember(prev => ({ ...prev, title: e.target.value }))}
-                      className="mt-1 bg-[#292929] border-0"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-sm text-gray-400">Department</label>
-                    <Input
-                      value={newMember.department}
-                      onChange={(e) => setNewMember(prev => ({ ...prev, department: e.target.value }))}
-                      className="mt-1 bg-[#292929] border-0"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <Label htmlFor="manage-team">Can Manage Team</Label>
-                      <Switch
-                        id="manage-team"
-                        checked={newMember.can_manage_team}
-                        onCheckedChange={(checked) => 
-                          setNewMember(prev => ({ ...prev, can_manage_team: checked }))
-                        }
-                      />
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <Label htmlFor="manage-projects">Can Manage Projects</Label>
-                      <Switch
-                        id="manage-projects"
-                        checked={newMember.can_manage_projects}
-                        onCheckedChange={(checked) => 
-                          setNewMember(prev => ({ ...prev, can_manage_projects: checked }))
-                        }
-                      />
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <Label htmlFor="manage-talents">Can Manage Talents</Label>
-                      <Switch
-                        id="manage-talents"
-                        checked={newMember.can_manage_talents}
-                        onCheckedChange={(checked) => 
-                          setNewMember(prev => ({ ...prev, can_manage_talents: checked }))
-                        }
-                      />
-                    </div>
-                  </div>
-                  <Button onClick={handleAddMember} className="w-full">
-                    Add Member
-                  </Button>
+    <div className="container mx-auto py-8">
+      <Card>
+        <CardHeader>
+          <CardTitle>Team Members</CardTitle>
+          <CardDescription>Manage your team members here.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          {loading ? (
+            <p>Loading team members...</p>
+          ) : (
+            <div className="grid gap-4">
+              {teamMembers.map(member => (
+                <div key={member.id} className="border rounded-md p-4">
+                  <p>
+                    {member.first_name} {member.last_name}
+                  </p>
+                  <p>Email: {member.email}</p>
+                  <p>Position: {member.position}</p>
+                  <p>Department: {member.department}</p>
                 </div>
-              </DialogContent>
-            </Dialog>
+              ))}
+              {isAddingMember ? (
+                <div className="border rounded-md p-4">
+                  <Label>First Name</Label>
+                  <Input
+                    type="text"
+                    value={newMember.first_name}
+                    onChange={e =>
+                      setNewMember({ ...newMember, first_name: e.target.value })
+                    }
+                  />
+                  <Label>Last Name</Label>
+                  <Input
+                    type="text"
+                    value={newMember.last_name}
+                    onChange={e =>
+                      setNewMember({ ...newMember, last_name: e.target.value })
+                    }
+                  />
+                  <Label>Email</Label>
+                  <Input
+                    type="email"
+                    value={newMember.email}
+                    onChange={e =>
+                      setNewMember({ ...newMember, email: e.target.value })
+                    }
+                  />
+                  <Label>Position</Label>
+                  <Input
+                    type="text"
+                    value={newMember.position}
+                    onChange={e =>
+                      setNewMember({ ...newMember, position: e.target.value })
+                    }
+                  />
+                  <Label>Department</Label>
+                  <Input
+                    type="text"
+                    value={newMember.department}
+                    onChange={e =>
+                      setNewMember({ ...newMember, department: e.target.value })
+                    }
+                  />
+                  <Button onClick={handleInviteUser}>Invite User</Button>
+                </div>
+              ) : (
+                <Button onClick={() => setIsAddingMember(true)}>Add Team Member</Button>
+              )}
+            </div>
           )}
-        </div>
-
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {teamMembers.map((member) => (
-            <Card key={member.id} className="p-4 bg-[#1c1c1c] border-0">
-              <div className="flex items-start justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-                    <User className="h-5 w-5 text-primary" />
-                  </div>
-                  <div>
-                    <h3 className="font-medium text-white">{member.email}</h3>
-                    <p className="text-sm text-gray-400 capitalize">{member.role}</p>
-                  </div>
-                </div>
-                {isAdmin && (
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" className="h-8 w-8 p-0">
-                        <MoreVertical className="h-4 w-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="bg-[#292929] border-0">
-                      <DropdownMenuItem
-                        onClick={() => handleUpdateMember(member.id, {
-                          can_manage_team: !member.can_manage_team
-                        })}
-                        className="text-white"
-                      >
-                        {member.can_manage_team ? 'Remove' : 'Add'} Team Management
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
-                        onClick={() => handleUpdateMember(member.id, {
-                          can_manage_projects: !member.can_manage_projects
-                        })}
-                        className="text-white"
-                      >
-                        {member.can_manage_projects ? 'Remove' : 'Add'} Project Management
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
-                        onClick={() => handleUpdateMember(member.id, {
-                          can_manage_talents: !member.can_manage_talents
-                        })}
-                        className="text-white"
-                      >
-                        {member.can_manage_talents ? 'Remove' : 'Add'} Talent Management
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
-                        onClick={() => handleRemoveMember(member.id, member.user_id)}
-                        className="text-red-500"
-                      >
-                        Remove Member
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                )}
-              </div>
-              {(member.title || member.department) && (
-                <div className="mt-4 space-y-2">
-                  {member.title && (
-                    <div className="flex items-center gap-2 text-sm text-gray-400">
-                      <Building className="h-4 w-4" />
-                      {member.title}
-                    </div>
-                  )}
-                  {member.department && (
-                    <div className="flex items-center gap-2 text-sm text-gray-400">
-                      <Mail className="h-4 w-4" />
-                      {member.department}
-                    </div>
-                  )}
-                </div>
-              )}
-              {isAdmin && (
-                <div className="mt-4 pt-4 border-t border-gray-800">
-                  <div className="grid grid-cols-2 gap-2 text-xs text-gray-400">
-                    <div>Team: {member.can_manage_team ? '✓' : '×'}</div>
-                    <div>Projects: {member.can_manage_projects ? '✓' : '×'}</div>
-                    <div>Talents: {member.can_manage_talents ? '✓' : '×'}</div>
-                  </div>
-                </div>
-              )}
-            </Card>
-          ))}
-        </div>
-
-        {teamMembers.length === 0 && !loading && (
-          <div className="text-center py-8">
-            <p className="text-gray-400">No team members found</p>
-          </div>
-        )}
-      </div>
-    </CompanyDashboardLayout>
+        </CardContent>
+      </Card>
+    </div>
   )
 }

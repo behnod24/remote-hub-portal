@@ -24,26 +24,30 @@ export default function TalentGrid({ sector, onSelect, selectedTalents }: Talent
     const fetchTalents = async () => {
       setLoading(true)
       try {
-        // Use a type assertion for tables not in the schema
+        // Use any for non-schema tables 
         let query = supabase.from('talent_profiles').select('*') as any
-        query = query.eq('availability_status', true)
+        
+        if (query) {
+          query = query.eq('availability_status', true)
 
-        if (sector) {
-          query = query.eq('sector', sector)
+          if (sector) {
+            query = query.eq('sector', sector)
+          }
+
+          const { data, error } = await query
+
+          if (error) throw error
+
+          // Use the type helper to convert the data
+          setTalents(data ? typeHelper<TalentProfile[]>()(data) : [])
         }
-
-        const { data, error } = await query
-
-        if (error) throw error
-
-        // Use the type helper to convert the data
-        setTalents(data ? typeHelper<TalentProfile[]>()(data) : [])
       } catch (error: any) {
         toast({
           title: 'Error',
           description: 'Failed to load talents. Please try again.',
           variant: 'destructive',
         })
+        console.error('Error fetching talents:', error)
       } finally {
         setLoading(false)
       }

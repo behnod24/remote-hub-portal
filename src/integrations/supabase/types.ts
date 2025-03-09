@@ -228,6 +228,48 @@ export type Database = {
         }
         Relationships: []
       }
+      project_applications: {
+        Row: {
+          company_id: string
+          created_at: string
+          id: string
+          status: string
+          talent_id: string
+          updated_at: string
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          id?: string
+          status: string
+          talent_id: string
+          updated_at?: string
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          id?: string
+          status?: string
+          talent_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_applications_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project_applications_talent_id_fkey"
+            columns: ["talent_id"]
+            isOneToOne: false
+            referencedRelation: "talent_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       project_requirements: {
         Row: {
           created_at: string
@@ -316,42 +358,96 @@ export type Database = {
           },
         ]
       }
+      talent_profiles: {
+        Row: {
+          availability_status: boolean
+          created_at: string
+          hourly_rate: number
+          id: string
+          sector: string
+          updated_at: string
+          user_id: string
+          years_of_experience: number
+        }
+        Insert: {
+          availability_status?: boolean
+          created_at?: string
+          hourly_rate: number
+          id?: string
+          sector: string
+          updated_at?: string
+          user_id: string
+          years_of_experience: number
+        }
+        Update: {
+          availability_status?: boolean
+          created_at?: string
+          hourly_rate?: number
+          id?: string
+          sector?: string
+          updated_at?: string
+          user_id?: string
+          years_of_experience?: number
+        }
+        Relationships: []
+      }
       team_members: {
         Row: {
+          can_manage_projects: boolean
+          can_manage_talents: boolean
+          can_manage_team: boolean
           company_id: string
           created_at: string
           department: string | null
           email: string | null
           first_name: string
           id: string
+          is_active: boolean
           last_name: string
+          permissions: string[] | null
           position: string | null
+          role: string
           start_date: string | null
           updated_at: string
+          user_id: string | null
         }
         Insert: {
+          can_manage_projects?: boolean
+          can_manage_talents?: boolean
+          can_manage_team?: boolean
           company_id: string
           created_at?: string
           department?: string | null
           email?: string | null
           first_name: string
           id?: string
+          is_active?: boolean
           last_name: string
+          permissions?: string[] | null
           position?: string | null
+          role?: string
           start_date?: string | null
           updated_at?: string
+          user_id?: string | null
         }
         Update: {
+          can_manage_projects?: boolean
+          can_manage_talents?: boolean
+          can_manage_team?: boolean
           company_id?: string
           created_at?: string
           department?: string | null
           email?: string | null
           first_name?: string
           id?: string
+          is_active?: boolean
           last_name?: string
+          permissions?: string[] | null
           position?: string | null
+          role?: string
           start_date?: string | null
           updated_at?: string
+          user_id?: string | null
         }
         Relationships: [
           {
@@ -362,6 +458,48 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      user_profiles: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          company: string | null
+          company_name: string | null
+          created_at: string
+          id: string
+          phone: string | null
+          position: string | null
+          role: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          company?: string | null
+          company_name?: string | null
+          created_at?: string
+          id?: string
+          phone?: string | null
+          position?: string | null
+          role?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          company?: string | null
+          company_name?: string | null
+          created_at?: string
+          id?: string
+          phone?: string | null
+          position?: string | null
+          role?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
     }
     Views: {

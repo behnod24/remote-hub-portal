@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react'
 import { 
   LayoutDashboard,
@@ -39,6 +40,7 @@ export default function Dashboard() {
         setIsLoading(true)
         setError(null)
 
+        // Use any for non-schema tables
         const { data, error } = await (supabase
           .from('user_profiles')
           .select('*')
@@ -58,6 +60,7 @@ export default function Dashboard() {
           description: errorMessage,
           variant: "destructive",
         })
+        console.error('Error fetching user profile:', err)
       } finally {
         setIsLoading(false)
       }

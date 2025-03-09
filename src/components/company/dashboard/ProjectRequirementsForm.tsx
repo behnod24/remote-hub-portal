@@ -1,157 +1,217 @@
-
-import { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
-import { ProjectRequirement } from '@/types/company'
+import { useState, useEffect } from 'react'
 import { supabase } from '@/integrations/supabase/client'
+import { useAuth } from '@/contexts/AuthContext'
 import { useToast } from '@/components/ui/use-toast'
+import { ProjectRequirement } from '@/types/company'
+import { typeHelper } from '@/types/supabase'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Button } from '@/components/ui/button'
 
-interface ProjectRequirementsFormProps {
-  projectId: string
-  onSubmit: (requirement: ProjectRequirement) => void
-}
-
-export default function ProjectRequirementsForm({
-  projectId,
-  onSubmit
-}: ProjectRequirementsFormProps) {
-  const [isSubmitting, setIsSubmitting] = useState(false)
+export default function ProjectRequirementsForm() {
+  const { user } = useAuth()
   const { toast } = useToast()
-  const form = useForm({
-    defaultValues: {
-      title: '',
-      description: '',
-      required_skills: '',
-      priority: 'medium',
-    },
+  const [loading, setLoading] = useState(true)
+  const [projectId, setProjectId] = useState<string | null>(null)
+  const [projects, setProjects] = useState<any[]>([])
+  const [requirements, setRequirements] = useState<ProjectRequirement[]>([])
+  const [newRequirement, setNewRequirement] = useState({
+    title: '',
+    description: '',
+    priority: 'medium' as 'low' | 'medium' | 'high', // Type cast to ensure correct type
+    required_skills: [] as string[],
   })
 
-  const handleSubmit = async (values: any) => {
-    setIsSubmitting(true)
-    try {
-      const requirement = {
-        project_id: projectId,
-        title: values.title,
-        description: values.description,
-        required_skills: values.required_skills.split(',').map((s: string) => s.trim()),
-        priority: values.priority,
-        status: 'open',
+  useEffect(() => {
+    const fetchProjects = async () => {
+      if (!user) return
+      
+      try {
+        // Fetch company ID
+        const { data: companyData, error: companyError } = await supabase
+          .from('company_members')
+          .select('company_id')
+          .eq('user_id', user.id)
+          .single()
+        
+        if (companyError) throw companyError
+        
+        if (companyData) {
+          // Fetch projects for the company
+          const { data: projectData, error: projectError } = await supabase
+            .from('projects')
+            .select('id, name')
+            .eq('company_id', companyData.company_id)
+          
+          if (projectError) throw projectError
+          
+          setProjects(projectData || [])
+          setLoading(false)
+        }
+      } catch (error: any) {
+        console.error('Error fetching projects:', error)
+        toast({
+          title: 'Error',
+          description: error.message || 'Failed to load projects',
+          variant: 'destructive',
+        })
+      } finally {
+        setLoading(false)
       }
+    }
 
-      const { data, error } = await supabase
-        .from('project_requirements')
-        .insert([requirement])
-        .select()
-        .single()
+    fetchProjects()
+  }, [user, toast])
 
-      if (error) throw error
-
-      onSubmit(data)
-      form.reset()
-      toast({
-        title: 'Success',
-        description: 'Project requirement added successfully',
-      })
-    } catch (error: any) {
+  const handleRequirementSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    
+    if (!projectId) {
       toast({
         title: 'Error',
-        description: 'Failed to add requirement. Please try again.',
+        description: 'No project selected',
         variant: 'destructive',
       })
-    } finally {
-      setIsSubmitting(false)
+      return
+    }
+    
+    try {
+      const { data, error } = await supabase
+        .from('project_requirements')
+        .insert({
+          project_id: projectId,
+          title: newRequirement.title,
+          description: newRequirement.description || null,
+          priority: newRequirement.priority,
+          required_skills: newRequirement.required_skills,
+          status: 'open',
+        })
+        .select()
+        .single()
+      
+      if (error) throw error
+      
+      // Add the new requirement to the state
+      setRequirements([...requirements, typeHelper<ProjectRequirement>()(data)])
+      
+      // Reset the form
+      setNewRequirement({
+        title: '',
+        description: '',
+        priority: 'medium',
+        required_skills: [],
+      })
+      
+      toast({
+        title: 'Success',
+        description: 'Requirement added successfully',
+      })
+    } catch (error: any) {
+      console.error('Error adding requirement:', error)
+      toast({
+        title: 'Error',
+        description: error.message || 'Failed to add requirement',
+        variant: 'destructive',
+      })
     }
   }
 
+  const handleSkillChange = (skill: string) => {
+    if (newRequirement.required_skills.includes(skill)) {
+      setNewRequirement({
+        ...newRequirement,
+        required_skills: newRequirement.required_skills.filter((s) => s !== skill),
+      })
+    } else {
+      setNewRequirement({
+        ...newRequirement,
+        required_skills: [...newRequirement.required_skills, skill],
+      })
+    }
+  }
+
+  if (loading) {
+    return <div>Loading...</div>
+  }
+
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
-        <FormField
-          control={form.control}
-          name="title"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Title</FormLabel>
-              <FormControl>
-                <Input {...field} placeholder="Enter requirement title" />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="description"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Description</FormLabel>
-              <FormControl>
-                <Textarea {...field} placeholder="Enter requirement description" />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="required_skills"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Required Skills (comma-separated)</FormLabel>
-              <FormControl>
-                <Input {...field} placeholder="React, TypeScript, Node.js" />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="priority"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Priority</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select priority" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="low">Low</SelectItem>
-                  <SelectItem value="medium">Medium</SelectItem>
-                  <SelectItem value="high">High</SelectItem>
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <Button type="submit" disabled={isSubmitting} className="w-full">
-          {isSubmitting ? 'Adding...' : 'Add Requirement'}
-        </Button>
-      </form>
-    </Form>
+    <Card>
+      <CardHeader>
+        <CardTitle>Project Requirements Form</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <form onSubmit={handleRequirementSubmit} className="space-y-4">
+          <div>
+            <Label htmlFor="project">Select Project</Label>
+            <Select onValueChange={setProjectId}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select a project" />
+              </SelectTrigger>
+              <SelectContent>
+                {projects.map((project) => (
+                  <SelectItem key={project.id} value={project.id}>
+                    {project.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div>
+            <Label htmlFor="title">Title</Label>
+            <Input
+              type="text"
+              id="title"
+              value={newRequirement.title}
+              onChange={(e) => setNewRequirement({ ...newRequirement, title: e.target.value })}
+            />
+          </div>
+          <div>
+            <Label htmlFor="description">Description</Label>
+            <Textarea
+              id="description"
+              value={newRequirement.description}
+              onChange={(e) => setNewRequirement({ ...newRequirement, description: e.target.value })}
+            />
+          </div>
+          <div>
+            <Label htmlFor="priority">Priority</Label>
+            <Select
+              onValueChange={(value) =>
+                setNewRequirement({ ...newRequirement, priority: value as 'low' | 'medium' | 'high' })
+              }
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select priority" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="low">Low</SelectItem>
+                <SelectItem value="medium">Medium</SelectItem>
+                <SelectItem value="high">High</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div>
+            <Label>Required Skills</Label>
+            <div className="flex flex-wrap gap-2">
+              {['JavaScript', 'React', 'Node.js', 'SQL', 'TypeScript'].map((skill) => (
+                <div key={skill} className="flex items-center space-x-2">
+                  <Checkbox
+                    id={skill}
+                    checked={newRequirement.required_skills.includes(skill)}
+                    onCheckedChange={() => handleSkillChange(skill)}
+                  />
+                  <Label htmlFor={skill}>{skill}</Label>
+                </div>
+              ))}
+            </div>
+          </div>
+          <Button type="submit">Add Requirement</Button>
+        </form>
+      </CardContent>
+    </Card>
   )
 }

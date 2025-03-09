@@ -1,26 +1,64 @@
-
-import { useState } from 'react'
-import { useAuth } from '@/contexts/AuthContext'
+import { useState, useEffect } from 'react'
 import { supabase } from '@/integrations/supabase/client'
+import { useAuth } from '@/contexts/AuthContext'
 import { useToast } from '@/components/ui/use-toast'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
-import { Card } from '@/components/ui/card'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import TalentSelector from './TalentSelector'
-import ProjectRequirementsForm from './ProjectRequirementsForm'
-import { TalentProfile, ProjectRequirement } from '@/types/company'
+import { TalentProfile, ProjectApplication } from '@/types/company'
+import { typeHelper, ProjectApplicationWithDetails } from '@/types/supabase'
 
 export default function TalentSearch() {
-  const [selectedSector, setSelectedSector] = useState<string>('engineering')
-  const [selectedTalent, setSelectedTalent] = useState<TalentProfile | null>(null)
   const { user } = useAuth()
   const { toast } = useToast()
+  const [loading, setLoading] = useState(true)
+  const [applications, setApplications] = useState<ProjectApplicationWithDetails[]>([])
+  const [companyId, setCompanyId] = useState<string | null>(null)
+
+  useEffect(() => {
+    const fetchCompanyAndApplications = async () => {
+      if (!user) return
+      
+      try {
+        // First get the company_id for the current user
+        const { data: companyData, error: companyError } = await supabase
+          .from('company_members')
+          .select('company_id')
+          .eq('user_id', user.id)
+          .maybeSingle()
+        
+        if (companyError) throw companyError
+        
+        if (companyData) {
+          setCompanyId(companyData.company_id)
+          
+          // Then fetch project applications for this company
+          // Use any for non-schema tables
+          const { data: applicationsData, error: applicationsError } = await (supabase
+            .from('project_applications')
+            .select(`
+              *,
+              talents:talent_id (*)
+            `)
+            .eq('company_id', companyData.company_id) as any)
+          
+          if (applicationsError) throw applicationsError
+          
+          if (applicationsData) {
+            setApplications(typeHelper<ProjectApplicationWithDetails[]>()(applicationsData))
+          }
+        }
+      } catch (error: any) {
+        console.error('Error fetching applications:', error)
+        toast({
+          title: 'Error',
+          description: error.message || 'Failed to load applications',
+          variant: 'destructive',
+        })
+      } finally {
+        setLoading(false)
+      }
+    }
+    
+    fetchCompanyAndApplications()
+  }, [user, toast])
 
   const handleTalentSelect = async (talent: TalentProfile) => {
     try {

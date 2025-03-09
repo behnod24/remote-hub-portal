@@ -1,5 +1,6 @@
 
 import { Database } from '@/integrations/supabase/types'
+import { ProjectApplication, TalentProfile } from './company'
 
 // Type helper to work with Supabase tables
 export function typeHelper<T>() {
@@ -8,19 +9,21 @@ export function typeHelper<T>() {
 
 // Create types for tables not in the Supabase schema
 export interface UserProfile {
-  id: string
-  user_id: string
-  avatar_url: string | null
-  bio: string | null
-  phone: string | null
-  company: string | null
-  company_name: string | null
-  position: string | null
-  role: 'admin' | 'user'
+  id: string;
+  user_id: string;
+  avatar_url: string | null;
+  bio: string | null;
+  phone: string | null;
+  company: string | null;
+  company_name: string | null;
+  position: string | null;
+  role: 'admin' | 'user';
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface ProjectApplicationWithDetails extends ProjectApplication {
-  talents?: TalentProfile
+  talents?: TalentProfile;
 }
 
 // Define proper types for database tables
