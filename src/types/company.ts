@@ -38,7 +38,7 @@ export interface TeamMember {
   role: 'admin' | 'manager' | 'member';
   title?: string;
   department?: string;
-  position?: string; // Added this property
+  position?: string; // This property is used in team.tsx
   start_date?: string;
   is_active: boolean;
   email?: string;

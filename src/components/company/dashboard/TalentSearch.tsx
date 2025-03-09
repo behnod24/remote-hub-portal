@@ -30,6 +30,7 @@ export default function TalentSearch() {
   const [companyId, setCompanyId] = useState<string | null>(null)
   const [selectedTalent, setSelectedTalent] = useState<TalentProfile | null>(null)
   const [selectedSector, setSelectedSector] = useState<string | null>(null)
+  const [projectId, setProjectId] = useState<string | null>(null)
 
   useEffect(() => {
     const fetchCompanyAndApplications = async () => {
@@ -49,14 +50,13 @@ export default function TalentSearch() {
           setCompanyId(companyData.company_id)
           
           // Then fetch project applications for this company
-          // Use any for non-schema tables
-          const { data: applicationsData, error: applicationsError } = await (supabase
+          const { data: applicationsData, error: applicationsError } = await supabase
             .from('project_applications')
             .select(`
               *,
               talents:talent_id (*)
             `)
-            .eq('company_id', companyData.company_id) as any)
+            .eq('company_id', companyData.company_id)
           
           if (applicationsError) throw applicationsError
           
@@ -110,6 +110,10 @@ export default function TalentSearch() {
       if (applicationError) throw applicationError
 
       setSelectedTalent(talent)
+      if (project) {
+        setProjectId(project.id)
+      }
+      
       toast({
         title: 'Success',
         description: 'Talent selected successfully. Please add project requirements.',
@@ -126,6 +130,7 @@ export default function TalentSearch() {
   const handleRequirementSubmit = (requirement: ProjectRequirement) => {
     // The form component handles the submission
     setSelectedTalent(null) // Reset selection after submission
+    setProjectId(null)
   }
 
   return (
@@ -163,12 +168,12 @@ export default function TalentSearch() {
         </TabsContent>
 
         <TabsContent value="requirements">
-          {selectedTalent && (
+          {selectedTalent && projectId && (
             <div className="space-y-4">
               <Card className="p-6">
                 <h2 className="text-xl font-semibold mb-4">Add Project Requirements</h2>
                 <ProjectRequirementsForm
-                  projectId={selectedTalent.id}
+                  projectId={projectId}
                   onSubmit={handleRequirementSubmit}
                 />
               </Card>

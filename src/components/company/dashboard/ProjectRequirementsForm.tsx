@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react'
 import { supabase } from '@/integrations/supabase/client'
 import { useAuth } from '@/contexts/AuthContext'
@@ -12,60 +13,21 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Checkbox } from '@/components/ui/checkbox'
 import { Button } from '@/components/ui/button'
 
-export default function ProjectRequirementsForm() {
-  const { user } = useAuth()
+interface ProjectRequirementsFormProps {
+  projectId: string;
+  onSubmit: (requirement: ProjectRequirement) => void;
+}
+
+export default function ProjectRequirementsForm({ projectId, onSubmit }: ProjectRequirementsFormProps) {
   const { toast } = useToast()
-  const [loading, setLoading] = useState(true)
-  const [projectId, setProjectId] = useState<string | null>(null)
-  const [projects, setProjects] = useState<any[]>([])
+  const [loading, setLoading] = useState(false)
   const [requirements, setRequirements] = useState<ProjectRequirement[]>([])
   const [newRequirement, setNewRequirement] = useState({
     title: '',
     description: '',
-    priority: 'medium' as 'low' | 'medium' | 'high', // Type cast to ensure correct type
+    priority: 'medium' as 'low' | 'medium' | 'high',
     required_skills: [] as string[],
   })
-
-  useEffect(() => {
-    const fetchProjects = async () => {
-      if (!user) return
-      
-      try {
-        // Fetch company ID
-        const { data: companyData, error: companyError } = await supabase
-          .from('company_members')
-          .select('company_id')
-          .eq('user_id', user.id)
-          .single()
-        
-        if (companyError) throw companyError
-        
-        if (companyData) {
-          // Fetch projects for the company
-          const { data: projectData, error: projectError } = await supabase
-            .from('projects')
-            .select('id, name')
-            .eq('company_id', companyData.company_id)
-          
-          if (projectError) throw projectError
-          
-          setProjects(projectData || [])
-          setLoading(false)
-        }
-      } catch (error: any) {
-        console.error('Error fetching projects:', error)
-        toast({
-          title: 'Error',
-          description: error.message || 'Failed to load projects',
-          variant: 'destructive',
-        })
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchProjects()
-  }, [user, toast])
 
   const handleRequirementSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -80,6 +42,7 @@ export default function ProjectRequirementsForm() {
     }
     
     try {
+      setLoading(true)
       const { data, error } = await supabase
         .from('project_requirements')
         .insert({
@@ -96,7 +59,11 @@ export default function ProjectRequirementsForm() {
       if (error) throw error
       
       // Add the new requirement to the state
-      setRequirements([...requirements, typeHelper<ProjectRequirement>()(data)])
+      const typedRequirement = typeHelper<ProjectRequirement>()(data)
+      setRequirements([...requirements, typedRequirement])
+      
+      // Call the onSubmit prop with the new requirement
+      onSubmit(typedRequirement)
       
       // Reset the form
       setNewRequirement({
@@ -117,6 +84,8 @@ export default function ProjectRequirementsForm() {
         description: error.message || 'Failed to add requirement',
         variant: 'destructive',
       })
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -134,32 +103,13 @@ export default function ProjectRequirementsForm() {
     }
   }
 
-  if (loading) {
-    return <div>Loading...</div>
-  }
-
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Project Requirements Form</CardTitle>
+        <CardTitle>Project Requirements</CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleRequirementSubmit} className="space-y-4">
-          <div>
-            <Label htmlFor="project">Select Project</Label>
-            <Select onValueChange={setProjectId}>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select a project" />
-              </SelectTrigger>
-              <SelectContent>
-                {projects.map((project) => (
-                  <SelectItem key={project.id} value={project.id}>
-                    {project.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
           <div>
             <Label htmlFor="title">Title</Label>
             <Input
@@ -167,6 +117,7 @@ export default function ProjectRequirementsForm() {
               id="title"
               value={newRequirement.title}
               onChange={(e) => setNewRequirement({ ...newRequirement, title: e.target.value })}
+              required
             />
           </div>
           <div>
@@ -180,6 +131,7 @@ export default function ProjectRequirementsForm() {
           <div>
             <Label htmlFor="priority">Priority</Label>
             <Select
+              value={newRequirement.priority}
               onValueChange={(value) =>
                 setNewRequirement({ ...newRequirement, priority: value as 'low' | 'medium' | 'high' })
               }
@@ -209,7 +161,9 @@ export default function ProjectRequirementsForm() {
               ))}
             </div>
           </div>
-          <Button type="submit">Add Requirement</Button>
+          <Button type="submit" disabled={loading}>
+            {loading ? 'Adding...' : 'Add Requirement'}
+          </Button>
         </form>
       </CardContent>
     </Card>
