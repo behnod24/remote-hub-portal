@@ -43,13 +43,20 @@ const MobileMenu = ({ isOpen, setIsOpen, logoUrl, user }: MobileMenuProps) => {
         onClick={e => e.stopPropagation()}
       >
         <div className="flex h-16 items-center justify-between px-4 border-b bg-white">
-          <Link to="/" className="flex items-center" onClick={() => setIsOpen(false)}>
-            {logoUrl && (
+          <Link to="/front-pages/landing-page" className="flex items-center" onClick={() => setIsOpen(false)}>
+            {logoUrl ? (
               <img 
                 src={logoUrl} 
                 alt="PamirHub Logo" 
                 className="h-8 w-auto object-contain"
               />
+            ) : (
+              <div className="flex items-center text-xl font-bold text-purple-600">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2">
+                  <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" />
+                </svg>
+                PamirHub
+              </div>
             )}
           </Link>
           <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)}>
@@ -63,7 +70,7 @@ const MobileMenu = ({ isOpen, setIsOpen, logoUrl, user }: MobileMenuProps) => {
                 to={item.path}
                 className={`flex items-center gap-2 px-4 py-3 text-base font-medium rounded-lg transition-colors ${
                   isActive(item.path)
-                    ? 'text-[#E50914] bg-red-50'
+                    ? 'text-[#E63946] bg-red-50'
                     : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
                 }`}
                 onClick={() => setIsOpen(false)}
@@ -76,7 +83,7 @@ const MobileMenu = ({ isOpen, setIsOpen, logoUrl, user }: MobileMenuProps) => {
                     <Link
                       key={subItem.path}
                       to={subItem.path}
-                      className="block px-4 py-2 text-sm text-gray-600 hover:text-[#E50914] hover:bg-gray-50 rounded-lg"
+                      className="block px-4 py-2 text-sm text-gray-600 hover:text-[#E63946] hover:bg-gray-50 rounded-lg"
                       onClick={() => setIsOpen(false)}
                     >
                       {subItem.label}
@@ -95,7 +102,7 @@ const MobileMenu = ({ isOpen, setIsOpen, logoUrl, user }: MobileMenuProps) => {
                   setIsOpen(false)
                 }}
               >
-                Sign Up
+                Register
               </Button>
               <Button 
                 variant="outline" 
